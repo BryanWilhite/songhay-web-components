@@ -1,0 +1,23 @@
+{
+  "name": "songhay-web-components",
+  "version": "1.0.0",
+  "description": "planting small shadow-tree seeds 🌱👁 and watching them grow in the manner of 🦉 the living standard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BryanWilhite/songhay-web-components.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BryanWilhite/songhay-web-components/issues"
+  },
+  "homepage": "https://github.com/BryanWilhite/songhay-web-components#readme",
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  }
+}

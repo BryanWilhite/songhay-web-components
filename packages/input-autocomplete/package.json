@@ -1,0 +1,19 @@
+{
+    "name": "rx-input-autocomplete",
+    "version": "0.0.1",
+    "description": "",
+    "main": "rx-input-autocomplete.js",
+    "module": "rx-input-autocomplete.js",
+    "dependencies": {
+        "lit-element": "2.3.1",
+        "lit-html": "1.2.1",
+        "rxjs": "6.5.5",
+        "tslib": "1.11.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Bryan D. Wilhite",
+    "license": "MIT"
+}

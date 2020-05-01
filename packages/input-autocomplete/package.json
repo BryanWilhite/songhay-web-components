@@ -22,7 +22,7 @@
         "url": "git+https://github.com/BryanWilhite/songhay-web-components.git"
     },
     "scripts": {
-        "test": "echo \"Error: run tests from root\" && exit 1"
+        "build:typescript": "tsc --build"
     },
     "dependencies": {
         "lit-element": "2.3.1",

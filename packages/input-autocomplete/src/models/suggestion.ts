@@ -1,1 +1,0 @@
-export interface Suggestion { text: string, value: string, suggestion?: string }

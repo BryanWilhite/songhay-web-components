@@ -1,45 +1,200 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { css, html, LitElement, TemplateResult } from 'lit-element';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+    customElement,
+    html,
+    LitElement,
+    property,
+    TemplateResult
+} from 'lit-element';
 
-import { Suggestion } from './models/suggestion';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
+import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
 
+@customElement('rx-input-autocomplete')
 export class InputAutoComplete extends LitElement {
 
-    static get properties() {
-        return {
-            text: { type: String }, // The text is displayed by the form field for users
-            value: { type: String }, // The actual value of the form field
-            placeholder: { type: String }, // The placeholder for the input field
-            disabled: { type: String }, // Enable/Disable the input field
-            minInput: { type: Number }, // The minimum input size for generating suggestions
-            maxSuggestions: { type: Number }, // The maximally shown suggestions in the list
-            required: { type: Boolean }, // Form validation: is the form input required
-            inputId: { type: Boolean }, // id of the input field
-        };
-    }
-
-    private _inputMode: InputModes = 'none';
-    private _suggestionSubject = new BehaviorSubject<Suggestion[]>([]);
+    private _suggestionSubject = new BehaviorSubject<AutoCompleteSuggestion[]>([]);
+    private _subscriptions: Subscription[] = [];
 
     active: boolean = false;
     activeIndex = -1;
-    data: Array<{ text: string, value: string, suggestion?: string }> = [];
+    data: AutoCompleteSuggestion[] = [];
 
-    get inputmode(): InputModes {
-        return this._inputMode;
+    @property({ type: Boolean }) disabled = false;
+    @property({ type: Boolean }) required = true;
+
+    @property({ type: Number }) maxSuggestions = 5;
+    @property({ type: Number }) minInput = 0;
+
+    @property({ type: Object }) cssClasses = new AutoCompleteCssClasses();
+    @property({ type: Object }) inputMode: InputModes = 'none';
+    @property({ type: Object }) suggestionGenerator: Observable<AutoCompleteSuggestion[]> = this._suggestionSubject.asObservable();
+
+    @property({ type: String }) inputId = '';
+    @property({ type: String }) placeholder = '';
+    @property({ type: String }) text = '';
+    @property({ type: String }) value = '';
+
+    constructor() {
+        super();
+
+        const sub = this.suggestionGenerator.subscribe();
+        this._subscriptions.push(sub);
+
+        window.addEventListener('unload', this.handleUnload)
     }
 
-    set inputmode(value: InputModes) {
-        this._inputMode = value;
-        this.render();
+    clearData() {
+        this.data = [];
+        this.activeIndex = -1;
+        this.active = false;
     }
 
-    suggestionGenerator: Observable<Suggestion[]> = this._suggestionSubject.asObservable();
+    clearSelection(clearOnlyValue = false) {
+        if (this.value != '') {
+            this.dispatchEvent(new CustomEvent('unselected', {
+                detail: {
+                    text: this.text,
+                    value: this.value
+                }
+            }));
+            this.value = '';
+        }
+        if (!clearOnlyValue) {
+            this.text = '';
+        }
+    }
+
+    handleActivation(next = true) {
+        if (this.data.length > 0) {
+            if (next && (this.activeIndex + 1) < this.data.length) {
+                this.activeIndex += 1;
+            } else if (next) {
+                this.activeIndex = 0;
+            } else if (!next && (this.activeIndex) > 0) {
+                this.activeIndex -= 1;
+            } else if (!next) {
+                this.activeIndex = this.data.length - 1;
+            }
+        }
+    }
+
+    handleBlur(e: FocusEvent) {
+        e.preventDefault();
+
+        setTimeout(() => {
+            if (this.active) {
+                if (this.value) {
+                    this.clearData();
+                } else {
+                    this.handleClose();
+                }
+            }
+        }, 250);
+    }
+
+    handleClose() {
+        this.clearSelection();
+        this.clearData();
+    }
+
+    handleFocus(e: FocusEvent) {
+        e.preventDefault();
+        this.active = true;
+    }
+
+    handleKeyDown(e: KeyboardEvent) {
+        if (!e) {
+            console.error('The expected KeyboardEvent is not here.');
+            return;
+        }
+
+        const keyCode = e.keyCode;
+
+        if (keyCode == 40 || keyCode == 38) { // up/down arrows
+            e.preventDefault();
+            this.handleActivation(keyCode == 40)
+        } else if (keyCode == 13 || keyCode == 9) { // enter/tab
+            e.preventDefault();
+            this.handleSelection(this.activeIndex);
+        } else if (keyCode == 27) { // esc
+            this.handleClose();
+        }
+    }
+
+    handleKeyUp(e: KeyboardEvent) {
+        if (!e) {
+            console.error('The expected KeyboardEvent is not here.');
+            return;
+        }
+
+        if (!e.target) {
+            console.error('The expected KeyboardEvent EventTarget is not here.');
+            return;
+        }
+
+        const keyCode = e.keyCode;
+        const text = e.target['value'];
+
+        if ([40, 38, 13, 9, 27].indexOf(keyCode) < 0) {
+            this.clearSelection(true);
+            this._suggestionSubject.next(text);
+        }
+        this.active = true;
+        this.text = text;
+    }
+
+    handleSelection(index) {
+        if (index >= 0 && index < this.data.length) {
+            this.text = this.data[index].text;
+            this.value = this.data[index].value;
+            this.dispatchEvent(new CustomEvent('selected', { detail: this.data[index] }));
+            this.clearData();
+        }
+    }
+
+    handleUnload() {
+        this._subscriptions.forEach(i => {
+            if (i) {
+                i.unsubscribe();
+            }
+        });
+    }
+
+    prepareSuggestions(text: string) {
+    }
 
     render(): TemplateResult {
-        return html``;
+        return html`<div .class={this.cssClasses.wrapper}>
+        <input
+          @onBlur={this.handleBlur}
+          @onFocus={this.handleFocus}
+          @onKeyDown={this.handleKeyDown}
+          @onKeyUp={this.handleKeyUp}
+
+          .class={this.cssClasses.input}
+          .id={this.inputId}
+          .inputMode={this.inputmode}
+          .required={this.required}
+          .value={this.text}
+
+          autocomplete="off"
+          disabled={this.disabled}
+          placeholder={this.placeholder}
+          type="text"
+
+          />
+        { this.data && this.data.length > 0
+          ? <div class={this.cssClasses.suggestions}>{ this.data.map((suggestion, index) => {
+            return <button
+                    @onClick={ () => this.handleSelection(index) }
+                    type="button"
+                    .class={this.cssClasses.suggestion + (this.activeIndex == index ? (" " + this.cssClasses.active) : "")}
+                    .data-value={suggestion.value}>{suggestion.suggestion ? suggestion.suggestion : suggestion.text}</button>
+          })}</div>
+          : ""
+        }
+      </div>`;
     }
 }
-
-window.customElements.define('rx-input-autocomplete', InputAutoComplete);

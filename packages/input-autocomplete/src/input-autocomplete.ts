@@ -170,9 +170,6 @@ export class InputAutoComplete extends LitElement {
         return this.data && this.data.length > 0;
     }
 
-    prepareSuggestions(text: string) {
-    }
-
     render(): TemplateResult {
         return html`
         <div .class=${this.cssClasses.wrapper}>

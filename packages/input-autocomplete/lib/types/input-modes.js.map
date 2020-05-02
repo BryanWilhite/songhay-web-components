@@ -1,0 +1,1 @@
+{"version":3,"file":"input-modes.js","sourceRoot":"","sources":["../../src/types/input-modes.ts"],"names":[],"mappings":"","sourcesContent":["export type InputModes =\n    'none' |\n    'text' |\n    'tel' |\n    'url' |\n    'email' |\n    'numeric' |\n    'decimal' |\n    'search'\n    ;\n"]}

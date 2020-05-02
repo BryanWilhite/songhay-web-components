@@ -4,7 +4,9 @@
     "description": "planting small shadow-tree seeds 🌱👁 and watching them grow in the manner of 🦉 the living standard",
     "main": "index.js",
     "scripts": {
-        "build:typescript": "tsc --build"
+        "lerna:build:typescript": "npx lerna exec -- tsc",
+        "lerna:clean": "npx lerna clean --yes",
+        "lerna:install": "npx lerna exec -- npm i"
     },
     "repository": {
         "type": "git",

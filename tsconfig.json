@@ -19,6 +19,7 @@
         "skipLibCheck": true,
         "strict": true,
         "noImplicitAny": false,
+        "rootDir": "./src",
         "outDir": "./",
         "baseUrl": "./packages",
         "paths": {
@@ -26,7 +27,6 @@
                 "./*/src"
             ]
         },
-        "composite": true,
         "importHelpers": true
     },
     "include": [

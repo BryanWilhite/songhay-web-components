@@ -45,13 +45,13 @@ export class InputAutoComplete extends LitElement {
         window.addEventListener('unload', this.handleUnload)
     }
 
-    clearData() {
+    clearData(): void {
         this.data = [];
         this.activeIndex = -1;
         this.active = false;
     }
 
-    clearSelection(clearOnlyValue = false) {
+    clearSelection(clearOnlyValue = false): void {
         if (this.value != '') {
             this.dispatchEvent(new CustomEvent('unselected', {
                 detail: {
@@ -66,7 +66,11 @@ export class InputAutoComplete extends LitElement {
         }
     }
 
-    handleActivation(next = true) {
+    getSuggestionsCssClasses(index: number): string {
+        return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
+    }
+
+    handleActivation(next = true): void {
         if (this.data.length > 0) {
             if (next && (this.activeIndex + 1) < this.data.length) {
                 this.activeIndex += 1;
@@ -80,7 +84,7 @@ export class InputAutoComplete extends LitElement {
         }
     }
 
-    handleBlur(e: FocusEvent) {
+    handleBlur(e: FocusEvent): void {
         e.preventDefault();
 
         setTimeout(() => {
@@ -94,17 +98,17 @@ export class InputAutoComplete extends LitElement {
         }, 250);
     }
 
-    handleClose() {
+    handleClose(): void {
         this.clearSelection();
         this.clearData();
     }
 
-    handleFocus(e: FocusEvent) {
+    handleFocus(e: FocusEvent): void {
         e.preventDefault();
         this.active = true;
     }
 
-    handleKeyDown(e: KeyboardEvent) {
+    handleKeyDown(e: KeyboardEvent): void {
         if (!e) {
             console.error('The expected KeyboardEvent is not here.');
             return;
@@ -123,7 +127,7 @@ export class InputAutoComplete extends LitElement {
         }
     }
 
-    handleKeyUp(e: KeyboardEvent) {
+    handleKeyUp(e: KeyboardEvent): void {
         if (!e) {
             console.error('The expected KeyboardEvent is not here.');
             return;
@@ -145,7 +149,7 @@ export class InputAutoComplete extends LitElement {
         this.text = text;
     }
 
-    handleSelection(index) {
+    handleSelection(index: number): void {
         if (index >= 0 && index < this.data.length) {
             this.text = this.data[index].text;
             this.value = this.data[index].value;
@@ -154,7 +158,7 @@ export class InputAutoComplete extends LitElement {
         }
     }
 
-    handleUnload() {
+    handleUnload(): void {
         this._subscriptions.forEach(i => {
             if (i) {
                 i.unsubscribe();
@@ -162,39 +166,57 @@ export class InputAutoComplete extends LitElement {
         });
     }
 
+    hasData(): boolean {
+        return this.data && this.data.length > 0;
+    }
+
     prepareSuggestions(text: string) {
     }
 
     render(): TemplateResult {
-        return html`<div .class={this.cssClasses.wrapper}>
-        <input
-          @onBlur={this.handleBlur}
-          @onFocus={this.handleFocus}
-          @onKeyDown={this.handleKeyDown}
-          @onKeyUp={this.handleKeyUp}
+        return html`
+        <div .class=${this.cssClasses.wrapper}>
+            <input
+                @blur="${this.handleBlur}"
+                @focus="${this.handleFocus}"
+                @keyDown="${this.handleKeyDown}"
+                @keyUp="${this.handleKeyUp}"
 
-          .class={this.cssClasses.input}
-          .id={this.inputId}
-          .inputMode={this.inputmode}
-          .required={this.required}
-          .value={this.text}
+                ?disabled="${this.disabled}"
 
-          autocomplete="off"
-          disabled={this.disabled}
-          placeholder={this.placeholder}
-          type="text"
+                .class="${this.cssClasses.input}"
+                .id="${this.inputId}"
+                .inputMode="${this.inputMode}"
+                .placeholder="${this.placeholder}"
+                .required="${this.required}"
+                .value="${this.text}"
 
-          />
-        { this.data && this.data.length > 0
-          ? <div class={this.cssClasses.suggestions}>{ this.data.map((suggestion, index) => {
-            return <button
-                    @onClick={ () => this.handleSelection(index) }
-                    type="button"
-                    .class={this.cssClasses.suggestion + (this.activeIndex == index ? (" " + this.cssClasses.active) : "")}
-                    .data-value={suggestion.value}>{suggestion.suggestion ? suggestion.suggestion : suggestion.text}</button>
-          })}</div>
-          : ""
-        }
-      </div>`;
+                autocomplete="off"
+                type="text"
+
+                />
+
+            ${ this.hasData() ? this.renderSuggestions() : ''}
+        </div>`;
+    }
+
+    renderSuggestion(suggestion: AutoCompleteSuggestion, index: number) {
+        return html`
+        <button
+            @click="${() => this.handleSelection(index)}"
+
+            .class="${this.getSuggestionsCssClasses(index)}"
+            .data-value="${suggestion.value}"
+
+            type="button">
+            ${ suggestion.suggestion ? suggestion.suggestion : suggestion.text }
+        </button>`;
+    }
+
+    renderSuggestions(): TemplateResult {
+        return html`
+        <div class="${this.cssClasses.suggestions}">
+            ${ this.data.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+        </div>`;
     }
 }

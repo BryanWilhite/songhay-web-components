@@ -22,11 +22,15 @@
         "url": "git+https://github.com/BryanWilhite/songhay-web-components.git"
     },
     "dependencies": {
+        "await-timeout": "1.1.1",
+        "keycode-js": "2.0.3",
         "lit-element": "2.3.1",
-        "lit-html": "1.2.1",
-        "rxjs": "~6.5.4"
+        "lit-html": "1.2.1"
     },
     "bugs": {
         "url": "https://github.com/BryanWilhite/songhay-web-components/issues"
+    },
+    "devDependencies": {
+        "@types/await-timeout": "^0.3.1"
     }
 }

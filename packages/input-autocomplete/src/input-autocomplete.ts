@@ -1,4 +1,3 @@
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import {
     customElement,
     html,
@@ -7,16 +6,26 @@ import {
     TemplateResult
 } from 'lit-element';
 
+import Timeout from 'await-timeout';
+
+import {
+    KEY_DOWN,
+    KEY_ESCAPE,
+    KEY_TAB,
+    KEY_RETURN,
+    KEY_UP
+} from 'keycode-js'
+
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
 import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
 
+const CUSTOM_EVENT_NAME_SELECTED = 'selected';
+const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
+
 @customElement('rx-input-autocomplete')
 export class InputAutoComplete extends LitElement {
-
-    private _suggestionSubject = new BehaviorSubject<AutoCompleteSuggestion[]>([]);
-    private _subscriptions: Subscription[] = [];
-
+    
     active: boolean = false;
     activeIndex = -1;
     data: AutoCompleteSuggestion[] = [];
@@ -29,21 +38,12 @@ export class InputAutoComplete extends LitElement {
 
     @property({ type: Object }) cssClasses = new AutoCompleteCssClasses();
     @property({ type: Object }) inputMode: InputModes = 'none';
-    @property({ type: Object }) suggestionGenerator: Observable<AutoCompleteSuggestion[]> = this._suggestionSubject.asObservable();
+    @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
     @property({ type: String }) inputId = '';
     @property({ type: String }) placeholder = '';
     @property({ type: String }) text = '';
     @property({ type: String }) value = '';
-
-    constructor() {
-        super();
-
-        const sub = this.suggestionGenerator.subscribe();
-        this._subscriptions.push(sub);
-
-        window.addEventListener('unload', this.handleUnload)
-    }
 
     clearData(): void {
         this.data = [];
@@ -53,12 +53,16 @@ export class InputAutoComplete extends LitElement {
 
     clearSelection(clearOnlyValue = false): void {
         if (this.value != '') {
-            this.dispatchEvent(new CustomEvent('unselected', {
-                detail: {
-                    text: this.text,
-                    value: this.value
-                }
-            }));
+            this.dispatchEvent(
+                new CustomEvent(
+                    CUSTOM_EVENT_NAME_UNSELECTED,
+                    {
+                        detail: {
+                            text: this.text,
+                            value: this.value
+                        }
+                    })
+            );
             this.value = '';
         }
         if (!clearOnlyValue) {
@@ -71,31 +75,40 @@ export class InputAutoComplete extends LitElement {
     }
 
     handleActivation(next = true): void {
-        if (this.data.length > 0) {
-            if (next && (this.activeIndex + 1) < this.data.length) {
-                this.activeIndex += 1;
-            } else if (next) {
-                this.activeIndex = 0;
-            } else if (!next && (this.activeIndex) > 0) {
-                this.activeIndex -= 1;
-            } else if (!next) {
-                this.activeIndex = this.data.length - 1;
-            }
+        if (!this.data.length) {
+            return;
+        }
+
+        if (next && (this.activeIndex + 1) < this.data.length) {
+            this.activeIndex += 1;
+        } else if (next) {
+            this.activeIndex = 0;
+        } else if (!next && (this.activeIndex) > 0) {
+            this.activeIndex -= 1;
+        } else if (!next) {
+            this.activeIndex = this.data.length - 1;
         }
     }
 
     handleBlur(e: FocusEvent): void {
         e.preventDefault();
 
-        setTimeout(() => {
-            if (this.active) {
+        const timer = new Timeout();
+        timer
+            .set(250)
+            .then(() => {
+
+                if (!this.active) {
+                    return;
+                }
+
                 if (this.value) {
                     this.clearData();
                 } else {
                     this.handleClose();
                 }
-            }
-        }, 250);
+
+            });
     }
 
     handleClose(): void {
@@ -115,15 +128,22 @@ export class InputAutoComplete extends LitElement {
         }
 
         const keyCode = e.keyCode;
+        switch (keyCode) {
+            case KEY_DOWN:
+            case KEY_UP:
+                e.preventDefault();
+                this.handleActivation(keyCode === 40)
+                break;
 
-        if (keyCode == 40 || keyCode == 38) { // up/down arrows
-            e.preventDefault();
-            this.handleActivation(keyCode == 40)
-        } else if (keyCode == 13 || keyCode == 9) { // enter/tab
-            e.preventDefault();
-            this.handleSelection(this.activeIndex);
-        } else if (keyCode == 27) { // esc
-            this.handleClose();
+            case KEY_RETURN:
+            case KEY_TAB:
+                e.preventDefault();
+                this.handleSelection(this.activeIndex);
+                break;
+
+            case KEY_ESCAPE:
+                this.handleClose();
+                break;
         }
     }
 
@@ -138,13 +158,19 @@ export class InputAutoComplete extends LitElement {
             return;
         }
 
-        const keyCode = e.keyCode;
-        const text = e.target['value'];
+        const text: string = e.target['value'];
 
-        if ([40, 38, 13, 9, 27].indexOf(keyCode) < 0) {
-            this.clearSelection(true);
-            this._suggestionSubject.next(text);
+        switch (e.keyCode) {
+            case KEY_DOWN:
+            case KEY_UP:
+            case KEY_RETURN:
+            case KEY_TAB:
+            case KEY_ESCAPE:
+                this.clearSelection(true);
+                this.prepareSuggestions(text);
+                break;
         }
+
         this.active = true;
         this.text = text;
     }
@@ -153,21 +179,27 @@ export class InputAutoComplete extends LitElement {
         if (index >= 0 && index < this.data.length) {
             this.text = this.data[index].text;
             this.value = this.data[index].value;
-            this.dispatchEvent(new CustomEvent('selected', { detail: this.data[index] }));
+            this.dispatchEvent(
+                new CustomEvent(
+                    CUSTOM_EVENT_NAME_SELECTED,
+                    { detail: this.data[index] })
+            );
             this.clearData();
         }
     }
 
-    handleUnload(): void {
-        this._subscriptions.forEach(i => {
-            if (i) {
-                i.unsubscribe();
-            }
-        });
-    }
-
     hasData(): boolean {
         return this.data && this.data.length > 0;
+    }
+
+    async prepareSuggestions(text: string): Promise<void> {
+        if (this.suggestionGenerator && text.length >= this.minInput) {
+            let suggestions = await this.suggestionGenerator(text);
+            suggestions.splice(this.maxSuggestions);
+            this.data = suggestions;
+        } else {
+            this.data = [];
+        }
     }
 
     render(): TemplateResult {
@@ -193,7 +225,7 @@ export class InputAutoComplete extends LitElement {
 
                 />
 
-            ${ this.hasData() ? this.renderSuggestions() : ''}
+            ${this.hasData() ? this.renderSuggestions() : ''}
         </div>`;
     }
 
@@ -206,14 +238,14 @@ export class InputAutoComplete extends LitElement {
             .data-value="${suggestion.value}"
 
             type="button">
-            ${ suggestion.suggestion ? suggestion.suggestion : suggestion.text }
+            ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
         </button>`;
     }
 
     renderSuggestions(): TemplateResult {
         return html`
         <div class="${this.cssClasses.suggestions}">
-            ${ this.data.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+            ${this.data.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
         </div>`;
     }
 }

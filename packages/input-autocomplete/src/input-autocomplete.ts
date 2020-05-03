@@ -14,7 +14,7 @@ import {
     KEY_TAB,
     KEY_RETURN,
     KEY_UP
-} from 'keycode-js'
+} from 'keycode-js';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
@@ -25,8 +25,8 @@ const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
 @customElement('rx-input-autocomplete')
 export class InputAutoComplete extends LitElement {
-    
-    active: boolean = false;
+
+    active = false;
     activeIndex = -1;
     data: AutoCompleteSuggestion[] = [];
 
@@ -38,12 +38,13 @@ export class InputAutoComplete extends LitElement {
 
     @property({ type: Object }) cssClasses = new AutoCompleteCssClasses();
     @property({ type: Object }) inputMode: InputModes = 'none';
-    @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
     @property({ type: String }) inputId = '';
     @property({ type: String }) placeholder = '';
     @property({ type: String }) text = '';
     @property({ type: String }) value = '';
+
+    @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
     clearData(): void {
         this.data = [];
@@ -52,7 +53,7 @@ export class InputAutoComplete extends LitElement {
     }
 
     clearSelection(clearOnlyValue = false): void {
-        if (this.value != '') {
+        if (this.value !== '') {
             this.dispatchEvent(
                 new CustomEvent(
                     CUSTOM_EVENT_NAME_UNSELECTED,
@@ -132,7 +133,7 @@ export class InputAutoComplete extends LitElement {
             case KEY_DOWN:
             case KEY_UP:
                 e.preventDefault();
-                this.handleActivation(keyCode === 40)
+                this.handleActivation(keyCode === 40);
                 break;
 
             case KEY_RETURN:
@@ -194,7 +195,7 @@ export class InputAutoComplete extends LitElement {
 
     async prepareSuggestions(text: string): Promise<void> {
         if (this.suggestionGenerator && text.length >= this.minInput) {
-            let suggestions = await this.suggestionGenerator(text);
+            const suggestions = await this.suggestionGenerator(text);
             suggestions.splice(this.maxSuggestions);
             this.data = suggestions;
         } else {

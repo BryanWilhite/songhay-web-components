@@ -1,7 +1,8 @@
 import { __decorate } from "tslib";
 import { customElement, html, LitElement, property } from 'lit-element';
+import { Key } from 'ts-key-enum';
+import { KeyTranslate } from 'fnkg-keytranslator';
 import Timeout from 'await-timeout';
-import { KEY_DOWN, KEY_ESCAPE, KEY_TAB, KEY_RETURN, KEY_UP } from 'keycode-js';
 import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
@@ -45,20 +46,21 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
     getSuggestionsCssClasses(index) {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
-    handleActivation(next = true) {
+    handleActivation(keyCode) {
         if (!this.data.length) {
             return;
         }
-        if (next && (this.activeIndex + 1) < this.data.length) {
+        const isKeyDown = keyCode === Key.ArrowDown;
+        if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
             this.activeIndex += 1;
         }
-        else if (next) {
+        else if (isKeyDown) {
             this.activeIndex = 0;
         }
-        else if (!next && (this.activeIndex) > 0) {
+        else if (!isKeyDown && (this.activeIndex) > 0) {
             this.activeIndex -= 1;
         }
-        else if (!next) {
+        else if (!isKeyDown) {
             this.activeIndex = this.data.length - 1;
         }
     }
@@ -92,19 +94,19 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             console.error('The expected KeyboardEvent is not here.');
             return;
         }
-        const keyCode = e.keyCode;
+        const keyCode = KeyTranslate(e);
         switch (keyCode) {
-            case KEY_DOWN:
-            case KEY_UP:
+            case Key.ArrowDown:
+            case Key.ArrowUp:
                 e.preventDefault();
-                this.handleActivation(keyCode === 40);
+                this.handleActivation(keyCode);
                 break;
-            case KEY_RETURN:
-            case KEY_TAB:
+            case Key.Enter:
+            case Key.Tab:
                 e.preventDefault();
                 this.handleSelection(this.activeIndex);
                 break;
-            case KEY_ESCAPE:
+            case Key.Escape:
                 this.handleClose();
                 break;
         }
@@ -119,12 +121,13 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             return;
         }
         const text = e.target['value'];
-        switch (e.keyCode) {
-            case KEY_DOWN:
-            case KEY_UP:
-            case KEY_RETURN:
-            case KEY_TAB:
-            case KEY_ESCAPE:
+        const keyCode = KeyTranslate(e);
+        switch (keyCode) {
+            case Key.ArrowDown:
+            case Key.ArrowUp:
+            case Key.Enter:
+            case Key.Tab:
+            case Key.Escape:
                 this.clearSelection(true);
                 this.prepareSuggestions(text);
                 break;

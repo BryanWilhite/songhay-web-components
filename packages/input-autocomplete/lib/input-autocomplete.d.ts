@@ -20,7 +20,7 @@ export declare class InputAutoComplete extends LitElement {
     clearData(): void;
     clearSelection(clearOnlyValue?: boolean): void;
     getSuggestionsCssClasses(index: number): string;
-    handleActivation(next?: boolean): void;
+    handleActivation(keyCode: string): void;
     handleBlur(e: FocusEvent): void;
     handleClose(): void;
     handleFocus(e: FocusEvent): void;

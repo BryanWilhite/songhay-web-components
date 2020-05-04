@@ -6,15 +6,9 @@ import {
     TemplateResult
 } from 'lit-element';
 
+import { Key } from 'ts-key-enum';
+import { KeyTranslate } from 'fnkg-keytranslator';
 import Timeout from 'await-timeout';
-
-import {
-    KEY_DOWN,
-    KEY_ESCAPE,
-    KEY_TAB,
-    KEY_RETURN,
-    KEY_UP
-} from 'keycode-js';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
@@ -75,12 +69,12 @@ export class InputAutoComplete extends LitElement {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
 
-    handleActivation(keyCode: number): void {
+    handleActivation(keyCode: string): void {
         if (!this.data.length) {
             return;
         }
 
-        const isKeyDown = keyCode === KEY_DOWN;
+        const isKeyDown = keyCode === Key.ArrowDown;
 
         if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
             this.activeIndex += 1;
@@ -130,21 +124,21 @@ export class InputAutoComplete extends LitElement {
             return;
         }
 
-        const keyCode = e.keyCode;
+        const keyCode = KeyTranslate(e);
         switch (keyCode) {
-            case KEY_DOWN:
-            case KEY_UP:
+            case Key.ArrowDown:
+            case Key.ArrowUp:
                 e.preventDefault();
                 this.handleActivation(keyCode);
                 break;
 
-            case KEY_RETURN:
-            case KEY_TAB:
+            case Key.Enter:
+            case Key.Tab:
                 e.preventDefault();
                 this.handleSelection(this.activeIndex);
                 break;
 
-            case KEY_ESCAPE:
+            case Key.Escape:
                 this.handleClose();
                 break;
         }
@@ -163,12 +157,13 @@ export class InputAutoComplete extends LitElement {
 
         const text: string = e.target['value'];
 
-        switch (e.keyCode) {
-            case KEY_DOWN:
-            case KEY_UP:
-            case KEY_RETURN:
-            case KEY_TAB:
-            case KEY_ESCAPE:
+        const keyCode = KeyTranslate(e);
+        switch (keyCode) {
+            case Key.ArrowDown:
+            case Key.ArrowUp:
+            case Key.Enter:
+            case Key.Tab:
+            case Key.Escape:
                 this.clearSelection(true);
                 this.prepareSuggestions(text);
                 break;

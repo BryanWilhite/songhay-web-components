@@ -75,18 +75,20 @@ export class InputAutoComplete extends LitElement {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
 
-    handleActivation(next = true): void {
+    handleActivation(keyCode: number): void {
         if (!this.data.length) {
             return;
         }
 
-        if (next && (this.activeIndex + 1) < this.data.length) {
+        const isKeyDown = keyCode === KEY_DOWN;
+
+        if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
             this.activeIndex += 1;
-        } else if (next) {
+        } else if (isKeyDown) {
             this.activeIndex = 0;
-        } else if (!next && (this.activeIndex) > 0) {
+        } else if (!isKeyDown && (this.activeIndex) > 0) {
             this.activeIndex -= 1;
-        } else if (!next) {
+        } else if (!isKeyDown) {
             this.activeIndex = this.data.length - 1;
         }
     }
@@ -133,7 +135,7 @@ export class InputAutoComplete extends LitElement {
             case KEY_DOWN:
             case KEY_UP:
                 e.preventDefault();
-                this.handleActivation(keyCode === 40);
+                this.handleActivation(keyCode);
                 break;
 
             case KEY_RETURN:

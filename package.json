@@ -21,7 +21,7 @@
     "homepage": "https://github.com/BryanWilhite/songhay-web-components#readme",
     "devDependencies": {
         "lerna": "^3.20.2",
-        "tslint": "6.1.2",
+        "tslint": "^6.1.2",
         "typescript": "^3.8.3"
     }
 }

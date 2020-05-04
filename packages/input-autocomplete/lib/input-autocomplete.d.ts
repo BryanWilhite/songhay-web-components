@@ -12,11 +12,11 @@ export declare class InputAutoComplete extends LitElement {
     minInput: number;
     cssClasses: AutoCompleteCssClasses;
     inputMode: InputModes;
-    suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
     inputId: string;
     placeholder: string;
     text: string;
     value: string;
+    suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
     clearData(): void;
     clearSelection(clearOnlyValue?: boolean): void;
     getSuggestionsCssClasses(index: number): string;

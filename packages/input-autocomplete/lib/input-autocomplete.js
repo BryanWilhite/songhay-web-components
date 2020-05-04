@@ -17,11 +17,11 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.minInput = 0;
         this.cssClasses = new AutoCompleteCssClasses();
         this.inputMode = 'none';
-        this.suggestionGenerator = () => Promise.resolve([]);
         this.inputId = '';
         this.placeholder = '';
         this.text = '';
         this.value = '';
+        this.suggestionGenerator = () => Promise.resolve([]);
     }
     clearData() {
         this.data = [];
@@ -29,7 +29,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.active = false;
     }
     clearSelection(clearOnlyValue = false) {
-        if (this.value != '') {
+        if (this.value !== '') {
             this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_UNSELECTED, {
                 detail: {
                     text: this.text,
@@ -145,7 +145,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
     }
     async prepareSuggestions(text) {
         if (this.suggestionGenerator && text.length >= this.minInput) {
-            let suggestions = await this.suggestionGenerator(text);
+            const suggestions = await this.suggestionGenerator(text);
             suggestions.splice(this.maxSuggestions);
             this.data = suggestions;
         }
@@ -217,9 +217,6 @@ __decorate([
     property({ type: Object })
 ], InputAutoComplete.prototype, "inputMode", void 0);
 __decorate([
-    property({ type: Object })
-], InputAutoComplete.prototype, "suggestionGenerator", void 0);
-__decorate([
     property({ type: String })
 ], InputAutoComplete.prototype, "inputId", void 0);
 __decorate([
@@ -231,6 +228,9 @@ __decorate([
 __decorate([
     property({ type: String })
 ], InputAutoComplete.prototype, "value", void 0);
+__decorate([
+    property({ type: Object })
+], InputAutoComplete.prototype, "suggestionGenerator", void 0);
 InputAutoComplete = __decorate([
     customElement('rx-input-autocomplete')
 ], InputAutoComplete);

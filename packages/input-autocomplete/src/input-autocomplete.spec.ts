@@ -1,4 +1,4 @@
-import component from './input-autocomplete.js';
+import { InputAutoComplete } from './input-autocomplete';
 
 class DOMTestingUtility {
     static async getDocumentNode(selector: string): Promise<Node> {
@@ -16,7 +16,7 @@ class DOMTestingUtility {
     }
 }
 
-describe(component.name, function () {
+describe(InputAutoComplete.name, function () {
     it('is rendered', async function () {
         const container = await DOMTestingUtility.getDocumentNode('#web-component-container');
         chai.assert.isDefined(container);

@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import component from './input-autocomplete.js';
+import { InputAutoComplete } from './input-autocomplete';
 class DOMTestingUtility {
     static getDocumentNode(selector) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -26,7 +26,7 @@ class DOMTestingUtility {
         });
     }
 }
-describe(component.name, function () {
+describe(InputAutoComplete.name, function () {
     it('is rendered', function () {
         return __awaiter(this, void 0, void 0, function* () {
             const container = yield DOMTestingUtility.getDocumentNode('#web-component-container');

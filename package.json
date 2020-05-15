@@ -7,7 +7,8 @@
         "lerna:build:typescript": "npx lerna exec -- tsc",
         "lerna:clean": "npx lerna clean --yes",
         "lerna:install": "npx lerna exec -- npm i",
-        "tsc:test:input-autocomplete": "tsc --project packages/input-autocomplete/tsconfig.spec.json && http-server . -o -c-1"
+        "start:test:input-autocomplete": "npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js",
+        "tsc:test:input-autocomplete": "tsc --project packages/input-autocomplete/tsconfig.spec.json"
     },
     "repository": {
         "type": "git",
@@ -31,6 +32,7 @@
         "@types/expect": "^24.3.0",
         "@types/mocha": "^7.0.2",
         "chai": "^4.2.0",
+        "es-dev-server": "1.50.2",
         "lerna": "^3.20.2",
         "mocha": "^7.1.2",
         "ts-mocha": "^7.0.0",

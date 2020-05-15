@@ -267,5 +267,5 @@ __decorate([
 InputAutoComplete = __decorate([
     customElement('rx-input-autocomplete')
 ], InputAutoComplete);
-export default InputAutoComplete;
+export { InputAutoComplete };
 //# sourceMappingURL=input-autocomplete.js.map

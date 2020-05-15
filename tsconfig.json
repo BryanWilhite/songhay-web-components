@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
+        "target": "ES2015",
         "module": "ES2015",
         "moduleResolution": "node",
         "rootDir": "./src",
         "outDir": "./",
         "baseUrl": "./packages",
         "lib": [
-            "es2017",
+            "ES2019",
             "dom",
             "dom.iterable"
         ],

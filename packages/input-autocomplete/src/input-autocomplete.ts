@@ -18,7 +18,7 @@ const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
 @customElement('rx-input-autocomplete')
-export class InputAutoComplete extends LitElement {
+export default class InputAutoComplete extends LitElement {
 
     active = false;
     activeIndex = -1;

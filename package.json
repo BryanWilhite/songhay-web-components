@@ -6,7 +6,8 @@
     "scripts": {
         "lerna:build:typescript": "npx lerna exec -- tsc",
         "lerna:clean": "npx lerna clean --yes",
-        "lerna:install": "npx lerna exec -- npm i"
+        "lerna:install": "npx lerna exec -- npm i",
+        "tsc:test:input-autocomplete": "tsc --project packages/input-autocomplete/tsconfig.spec.json && http-server . -o -c-1"
     },
     "repository": {
         "type": "git",

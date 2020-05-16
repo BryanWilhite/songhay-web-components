@@ -17,9 +17,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { customElement, html, LitElement, property } from 'lit-element';
-import { Key } from 'ts-key-enum';
-import { KeyTranslate } from 'fnkg-keytranslator';
 import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
+import { Key } from './models/key';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
@@ -65,11 +64,11 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
     getSuggestionsCssClasses(index) {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
-    handleActivation(keyCode) {
+    handleActivation(key) {
         if (!this.data.length) {
             return;
         }
-        const isKeyDown = keyCode === Key.ArrowDown;
+        const isKeyDown = (key === Key.ArrowDown);
         if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
             this.activeIndex += 1;
         }
@@ -84,6 +83,11 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         }
     }
     handleBlur(e) {
+        if (!e) {
+            console.error(`The expected \`${FocusEvent.name}\` is not here.`);
+            return;
+        }
+        console.log('handleBlur', { e });
         e.preventDefault();
         EVENT_HANDLER_DELAY(250)
             .then(() => {
@@ -103,20 +107,23 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.clearData();
     }
     handleFocus(e) {
+        if (!e) {
+            console.error(`The expected \`${FocusEvent.name}\` is not here.`);
+            return;
+        }
         e.preventDefault();
         this.active = true;
     }
     handleKeyDown(e) {
         if (!e) {
-            console.error('The expected KeyboardEvent is not here.');
+            console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
         }
-        const keyCode = KeyTranslate(e);
-        switch (keyCode) {
+        switch (e.key) {
             case Key.ArrowDown:
             case Key.ArrowUp:
                 e.preventDefault();
-                this.handleActivation(keyCode);
+                this.handleActivation(e.key);
                 break;
             case Key.Enter:
             case Key.Tab:
@@ -130,16 +137,16 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
     }
     handleKeyUp(e) {
         if (!e) {
-            console.error('The expected KeyboardEvent is not here.');
+            console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
         }
         if (!e.target) {
             console.error('The expected KeyboardEvent EventTarget is not here.');
             return;
         }
+        console.log('handleKeyUp', { e });
         const text = e.target['value'];
-        const keyCode = KeyTranslate(e);
-        switch (keyCode) {
+        switch (e.key) {
             case Key.ArrowDown:
             case Key.ArrowUp:
             case Key.Enter:
@@ -181,8 +188,8 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             <input
                 @blur="${this.handleBlur}"
                 @focus="${this.handleFocus}"
-                @keyDown="${this.handleKeyDown}"
-                @keyUp="${this.handleKeyUp}"
+                @keydown="${this.handleKeyDown}"
+                @keyup="${this.handleKeyUp}"
 
                 ?disabled="${this.disabled}"
 

@@ -8,11 +8,14 @@ import {
 
 import { Key } from 'ts-key-enum';
 import { KeyTranslate } from 'fnkg-keytranslator';
-import Timeout from 'await-timeout';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
 import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
+
+const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
+    setTimeout(function () { resolve(); }, timeInMilliseconds);
+});
 
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
@@ -90,9 +93,7 @@ export class InputAutoComplete extends LitElement {
     handleBlur(e: FocusEvent): void {
         e.preventDefault();
 
-        const timer = new Timeout();
-        timer
-            .set(250)
+        EVENT_HANDLER_DELAY(250)
             .then(() => {
 
                 if (!this.active) {

@@ -42,7 +42,7 @@ describe(InputAutoComplete.name, function () {
         });
     });
     it('is rendered', function () {
-        chai.expect(customElement).to.be.instanceOf(HTMLElement);
+        chai.expect(customElement).to.be.instanceOf(InputAutoComplete);
         chai.expect(customElement.localName).to.be.eq(InputAutoComplete.customElementName);
     });
     it('has `shadowRoot`', function () {
@@ -57,6 +57,12 @@ describe(InputAutoComplete.name, function () {
         chai.expect(divElement.children.length).to.be.eq(1);
         inputElement = divElement.children[0];
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
+    });
+    it('has `input` element that is not `disabled` and is `required`', function () {
+        chai.expect(inputElement.disabled).eq(false);
+        chai.expect(inputElement.required).eq(true);
+        chai.expect(inputElement.id).eq(customElement.inputId);
+        chai.expect(inputElement.placeholder).eq(customElement.placeholder);
     });
 });
 //# sourceMappingURL=input-autocomplete.spec.js.map

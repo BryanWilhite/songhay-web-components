@@ -30,21 +30,21 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         super(...arguments);
         this.active = false;
         this.activeIndex = -1;
-        this.data = [];
+        this.suggestionData = [];
+        this.inputId = '';
+        this.placeholder = '';
+        this.text = '';
+        this.value = '';
         this.disabled = false;
         this.required = true;
         this.maxSuggestions = 5;
         this.minInput = 0;
         this.cssClasses = new AutoCompleteCssClasses();
         this.inputMode = 'none';
-        this.inputId = '';
-        this.placeholder = '';
-        this.text = '';
-        this.value = '';
         this.suggestionGenerator = () => Promise.resolve([]);
     }
     clearData() {
-        this.data = [];
+        this.suggestionData = [];
         this.activeIndex = -1;
         this.active = false;
     }
@@ -66,11 +66,11 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
     handleActivation(key) {
-        if (!this.data.length) {
+        if (!this.suggestionData.length) {
             return;
         }
         const isKeyDown = (key === Key.ArrowDown);
-        if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
+        if (isKeyDown && (this.activeIndex + 1) < this.suggestionData.length) {
             this.activeIndex += 1;
         }
         else if (isKeyDown) {
@@ -80,7 +80,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             this.activeIndex -= 1;
         }
         else if (!isKeyDown) {
-            this.activeIndex = this.data.length - 1;
+            this.activeIndex = this.suggestionData.length - 1;
         }
     }
     handleBlur(e) {
@@ -88,7 +88,6 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
-        console.log('handleBlur', { e });
         e.preventDefault();
         EVENT_HANDLER_DELAY(250)
             .then(() => {
@@ -145,7 +144,6 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             console.error('The expected KeyboardEvent EventTarget is not here.');
             return;
         }
-        console.log('handleKeyUp', { e });
         const text = e.target['value'];
         switch (e.key) {
             case Key.ArrowDown:
@@ -161,25 +159,25 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.text = text;
     }
     handleSelection(index) {
-        if (index >= 0 && index < this.data.length) {
-            this.text = this.data[index].text;
-            this.value = this.data[index].value;
-            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this.data[index] }));
+        if (index >= 0 && index < this.suggestionData.length) {
+            this.text = this.suggestionData[index].text;
+            this.value = this.suggestionData[index].value;
+            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this.suggestionData[index] }));
             this.clearData();
         }
     }
     hasData() {
-        return this.data && this.data.length > 0;
+        return this.suggestionData && this.suggestionData.length > 0;
     }
     prepareSuggestions(text) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.suggestionGenerator && text.length >= this.minInput) {
                 const suggestions = yield this.suggestionGenerator(text);
                 suggestions.splice(this.maxSuggestions);
-                this.data = suggestions;
+                this.suggestionData = suggestions;
             }
             else {
-                this.data = [];
+                this.suggestionData = [];
             }
         });
     }
@@ -224,11 +222,27 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
     renderSuggestions() {
         return html `
         <div class="${this.cssClasses.suggestions}">
-            ${this.data.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+            ${this.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
         </div>`;
     }
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoComplete.prototype, "inputId", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoComplete.prototype, "placeholder", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoComplete.prototype, "text", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoComplete.prototype, "value", void 0);
 __decorate([
     property({ type: Boolean }),
     __metadata("design:type", Object)
@@ -253,22 +267,6 @@ __decorate([
     property({ type: Object }),
     __metadata("design:type", String)
 ], InputAutoComplete.prototype, "inputMode", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoComplete.prototype, "inputId", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoComplete.prototype, "placeholder", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoComplete.prototype, "text", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoComplete.prototype, "value", void 0);
 __decorate([
     property({ type: Object }),
     __metadata("design:type", Function)

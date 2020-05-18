@@ -28,7 +28,12 @@ export class InputAutoComplete extends LitElement {
 
     active = false;
     activeIndex = -1;
-    data: AutoCompleteSuggestion[] = [];
+    suggestionData: AutoCompleteSuggestion[] = [];
+
+    @property({ type: String }) inputId = '';
+    @property({ type: String }) placeholder = '';
+    @property({ type: String }) text = '';
+    @property({ type: String }) value = '';
 
     @property({ type: Boolean }) disabled = false;
     @property({ type: Boolean }) required = true;
@@ -39,15 +44,10 @@ export class InputAutoComplete extends LitElement {
     @property({ type: Object }) cssClasses = new AutoCompleteCssClasses();
     @property({ type: Object }) inputMode: InputModes = 'none';
 
-    @property({ type: String }) inputId = '';
-    @property({ type: String }) placeholder = '';
-    @property({ type: String }) text = '';
-    @property({ type: String }) value = '';
-
     @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
     clearData(): void {
-        this.data = [];
+        this.suggestionData = [];
         this.activeIndex = -1;
         this.active = false;
     }
@@ -76,20 +76,20 @@ export class InputAutoComplete extends LitElement {
     }
 
     handleActivation(key: string): void {
-        if (!this.data.length) {
+        if (!this.suggestionData.length) {
             return;
         }
 
         const isKeyDown = (key === Key.ArrowDown);
 
-        if (isKeyDown && (this.activeIndex + 1) < this.data.length) {
+        if (isKeyDown && (this.activeIndex + 1) < this.suggestionData.length) {
             this.activeIndex += 1;
         } else if (isKeyDown) {
             this.activeIndex = 0;
         } else if (!isKeyDown && (this.activeIndex) > 0) {
             this.activeIndex -= 1;
         } else if (!isKeyDown) {
-            this.activeIndex = this.data.length - 1;
+            this.activeIndex = this.suggestionData.length - 1;
         }
     }
 
@@ -98,8 +98,6 @@ export class InputAutoComplete extends LitElement {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
-
-        console.log('handleBlur', { e });
 
         e.preventDefault();
 
@@ -170,8 +168,6 @@ export class InputAutoComplete extends LitElement {
             return;
         }
 
-        console.log('handleKeyUp', { e });
-
         const text: string = e.target['value'];
 
         switch (e.key) {
@@ -190,29 +186,29 @@ export class InputAutoComplete extends LitElement {
     }
 
     handleSelection(index: number): void {
-        if (index >= 0 && index < this.data.length) {
-            this.text = this.data[index].text;
-            this.value = this.data[index].value;
+        if (index >= 0 && index < this.suggestionData.length) {
+            this.text = this.suggestionData[index].text;
+            this.value = this.suggestionData[index].value;
             this.dispatchEvent(
                 new CustomEvent(
                     CUSTOM_EVENT_NAME_SELECTED,
-                    { detail: this.data[index] })
+                    { detail: this.suggestionData[index] })
             );
             this.clearData();
         }
     }
 
     hasData(): boolean {
-        return this.data && this.data.length > 0;
+        return this.suggestionData && this.suggestionData.length > 0;
     }
 
     async prepareSuggestions(text: string): Promise<void> {
         if (this.suggestionGenerator && text.length >= this.minInput) {
             const suggestions = await this.suggestionGenerator(text);
             suggestions.splice(this.maxSuggestions);
-            this.data = suggestions;
+            this.suggestionData = suggestions;
         } else {
-            this.data = [];
+            this.suggestionData = [];
         }
     }
 
@@ -259,7 +255,7 @@ export class InputAutoComplete extends LitElement {
     renderSuggestions(): TemplateResult {
         return html`
         <div class="${this.cssClasses.suggestions}">
-            ${this.data.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+            ${this.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
         </div>`;
     }
 }

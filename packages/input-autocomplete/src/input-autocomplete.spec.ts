@@ -17,7 +17,7 @@ class DOMTestingUtility {
 }
 
 describe(InputAutoComplete.name, function () {
-    let customElement: HTMLElement;
+    let customElement: InputAutoComplete;
     let shadowRoot: ShadowRoot;
     let divElement: HTMLDivElement;
     let inputElement: HTMLInputElement;
@@ -30,11 +30,11 @@ describe(InputAutoComplete.name, function () {
         chai.expect(container.children).to.be.instanceOf(HTMLCollection);
         chai.expect(container.children.length).to.be.eq(1);
 
-        customElement = container.children[0] as HTMLElement;
+        customElement = container.children[0] as InputAutoComplete;
     });
 
     it('is rendered', function () {
-        chai.expect(customElement).to.be.instanceOf(HTMLElement);
+        chai.expect(customElement).to.be.instanceOf(InputAutoComplete);
         chai.expect(customElement.localName).to.be.eq(InputAutoComplete.customElementName);
     });
 
@@ -53,5 +53,13 @@ describe(InputAutoComplete.name, function () {
 
         inputElement = divElement.children[0] as HTMLInputElement;
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
+    });
+
+    it('has `input` element that is not `disabled` and is `required`', function() {
+        chai.expect(inputElement.disabled).eq(false);
+        chai.expect(inputElement.required).eq(true);
+
+        chai.expect(inputElement.id).eq(customElement.inputId);
+        chai.expect(inputElement.placeholder).eq(customElement.placeholder);
     });
 });

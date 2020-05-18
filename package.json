@@ -7,7 +7,7 @@
         "lerna:build:typescript": "npx lerna exec -- tsc",
         "lerna:clean": "npx lerna clean --yes",
         "lerna:install": "npx lerna exec -- npm i",
-        "start:test:input-autocomplete": "npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js",
+        "start:test:input-autocomplete": "npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
         "tsc:test:input-autocomplete": "tsc --project packages/input-autocomplete/tsconfig.spec.json"
     },
     "repository": {

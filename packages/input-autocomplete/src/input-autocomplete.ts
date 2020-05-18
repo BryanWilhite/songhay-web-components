@@ -12,15 +12,19 @@ import { Key } from './models/key';
 
 import { InputModes } from './types/input-modes';
 
-const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
-    setTimeout(function () { resolve(); }, timeInMilliseconds);
-});
+const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
-@customElement('rx-input-autocomplete')
+const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
+    setTimeout(function () { resolve(); }, timeInMilliseconds);
+});
+
+@customElement(CUSTOM_ELEMENT_NAME)
 export class InputAutoComplete extends LitElement {
+
+    static customElementName = CUSTOM_ELEMENT_NAME;
 
     active = false;
     activeIndex = -1;
@@ -216,22 +220,22 @@ export class InputAutoComplete extends LitElement {
         return html`
         <div .class=${this.cssClasses.wrapper}>
             <input
-                @blur="${this.handleBlur}"
-                @focus="${this.handleFocus}"
-                @keydown="${this.handleKeyDown}"
-                @keyup="${this.handleKeyUp}"
+                autocomplete="off"
+                type="text"
 
                 ?disabled="${this.disabled}"
+                ?required="${this.required}"
 
                 .class="${this.cssClasses.input}"
                 .id="${this.inputId}"
                 .inputMode="${this.inputMode}"
                 .placeholder="${this.placeholder}"
-                .required="${this.required}"
                 .value="${this.text}"
 
-                autocomplete="off"
-                type="text"
+                @blur="${this.handleBlur}"
+                @focus="${this.handleFocus}"
+                @keydown="${this.handleKeyDown}"
+                @keyup="${this.handleKeyUp}"
 
                 />
 

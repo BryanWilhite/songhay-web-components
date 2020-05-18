@@ -19,11 +19,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { customElement, html, LitElement, property } from 'lit-element';
 import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
 import { Key } from './models/key';
+const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
+const CUSTOM_EVENT_NAME_SELECTED = 'selected';
+const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
-const CUSTOM_EVENT_NAME_SELECTED = 'selected';
-const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 let InputAutoComplete = class InputAutoComplete extends LitElement {
     constructor() {
         super(...arguments);
@@ -186,22 +187,22 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         return html `
         <div .class=${this.cssClasses.wrapper}>
             <input
-                @blur="${this.handleBlur}"
-                @focus="${this.handleFocus}"
-                @keydown="${this.handleKeyDown}"
-                @keyup="${this.handleKeyUp}"
+                autocomplete="off"
+                type="text"
 
                 ?disabled="${this.disabled}"
+                ?required="${this.required}"
 
                 .class="${this.cssClasses.input}"
                 .id="${this.inputId}"
                 .inputMode="${this.inputMode}"
                 .placeholder="${this.placeholder}"
-                .required="${this.required}"
                 .value="${this.text}"
 
-                autocomplete="off"
-                type="text"
+                @blur="${this.handleBlur}"
+                @focus="${this.handleFocus}"
+                @keydown="${this.handleKeyDown}"
+                @keyup="${this.handleKeyUp}"
 
                 />
 
@@ -227,6 +228,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         </div>`;
     }
 };
+InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
 __decorate([
     property({ type: Boolean }),
     __metadata("design:type", Object)
@@ -272,7 +274,7 @@ __decorate([
     __metadata("design:type", Function)
 ], InputAutoComplete.prototype, "suggestionGenerator", void 0);
 InputAutoComplete = __decorate([
-    customElement('rx-input-autocomplete')
+    customElement(CUSTOM_ELEMENT_NAME)
 ], InputAutoComplete);
 export { InputAutoComplete };
 //# sourceMappingURL=input-autocomplete.js.map

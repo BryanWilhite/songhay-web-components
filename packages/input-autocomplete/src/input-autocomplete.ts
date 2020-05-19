@@ -6,13 +6,13 @@ import {
     TemplateResult
 } from 'lit-element';
 
-import { AutoCompleteSuggestions } from './autocomplete-suggestions';
-
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 
 import { InputModes } from './types/input-modes';
+
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 

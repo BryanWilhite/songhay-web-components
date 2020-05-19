@@ -48,7 +48,7 @@ describe(InputAutoComplete.name, function () {
             { text: 'fifty-three', value: '53' },
             { text: 'fifty-four', value: '54' },
             { text: 'fifty-five', value: '55' },
-        ].filter(i => i.text.search(text) !== -1));
+        ].filter(i => i.text.startsWith(text)));
     });
 
     it('has a `shadowRoot`', function () {

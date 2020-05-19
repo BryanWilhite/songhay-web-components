@@ -1,4 +1,4 @@
-import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
+import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion';
 
 export class AutoCompleteSuggestions {
 

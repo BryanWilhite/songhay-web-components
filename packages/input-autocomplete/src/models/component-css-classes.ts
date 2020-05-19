@@ -1,4 +1,4 @@
-export class AutoCompleteCssClasses {
+export class ComponentCssClasses {
     wrapper = '';
     input = '';
     suggestions = 'suggestions';

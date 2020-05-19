@@ -6,8 +6,10 @@ import {
     TemplateResult
 } from 'lit-element';
 
+import { AutoCompleteSuggestions } from './autocomplete-suggestions';
+
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
+import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 
 import { InputModes } from './types/input-modes';
@@ -28,7 +30,8 @@ export class InputAutoComplete extends LitElement {
 
     active = false;
     activeIndex = -1;
-    suggestionData: AutoCompleteSuggestion[] = [];
+
+    private _autoCompleteSuggestions: AutoCompleteSuggestions;
 
     @property({ type: String }) inputId = '';
     @property({ type: String }) placeholder = '';
@@ -41,13 +44,20 @@ export class InputAutoComplete extends LitElement {
     @property({ type: Number }) maxSuggestions = 5;
     @property({ type: Number }) minInput = 0;
 
-    @property({ type: Object }) cssClasses = new AutoCompleteCssClasses();
+    @property({ type: Object }) cssClasses = new ComponentCssClasses();
     @property({ type: Object }) inputMode: InputModes = 'none';
 
     @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
+    constructor() {
+        super();
+        this._autoCompleteSuggestions = new AutoCompleteSuggestions(this.suggestionGenerator);
+        this._autoCompleteSuggestions.maxSuggestions = this.maxSuggestions;
+        this._autoCompleteSuggestions.minInput = this.minInput;
+    }
+
     clearData(): void {
-        this.suggestionData = [];
+        this._autoCompleteSuggestions.clearData();
         this.activeIndex = -1;
         this.active = false;
     }
@@ -76,20 +86,20 @@ export class InputAutoComplete extends LitElement {
     }
 
     handleActivation(key: string): void {
-        if (!this.suggestionData.length) {
+        if (!this._autoCompleteSuggestions.suggestionData.length) {
             return;
         }
 
         const isKeyDown = (key === Key.ArrowDown);
 
-        if (isKeyDown && (this.activeIndex + 1) < this.suggestionData.length) {
+        if (isKeyDown && (this.activeIndex + 1) < this._autoCompleteSuggestions.suggestionData.length) {
             this.activeIndex += 1;
         } else if (isKeyDown) {
             this.activeIndex = 0;
         } else if (!isKeyDown && (this.activeIndex) > 0) {
             this.activeIndex -= 1;
         } else if (!isKeyDown) {
-            this.activeIndex = this.suggestionData.length - 1;
+            this.activeIndex = this._autoCompleteSuggestions.suggestionData.length - 1;
         }
     }
 
@@ -177,38 +187,26 @@ export class InputAutoComplete extends LitElement {
             case Key.Tab:
             case Key.Escape:
                 this.clearSelection(true);
-                this.prepareSuggestions(text);
+                this.render();
+                break;
+
+            default:
+                this.active = true;
+                this._autoCompleteSuggestions.prepareSuggestions(text);
                 break;
         }
-
-        this.active = true;
-        this.text = text;
     }
 
-    handleSelection(index: number): void {
-        if (index >= 0 && index < this.suggestionData.length) {
-            this.text = this.suggestionData[index].text;
-            this.value = this.suggestionData[index].value;
+    handleSelection(suggestionIndex: number): void {
+        if (suggestionIndex >= 0 && suggestionIndex < this._autoCompleteSuggestions.suggestionData.length) {
+            this.text = this._autoCompleteSuggestions.suggestionData[suggestionIndex].text;
+            this.value = this._autoCompleteSuggestions.suggestionData[suggestionIndex].value;
             this.dispatchEvent(
                 new CustomEvent(
                     CUSTOM_EVENT_NAME_SELECTED,
-                    { detail: this.suggestionData[index] })
+                    { detail: this._autoCompleteSuggestions.suggestionData[suggestionIndex] })
             );
             this.clearData();
-        }
-    }
-
-    hasData(): boolean {
-        return this.suggestionData && this.suggestionData.length > 0;
-    }
-
-    async prepareSuggestions(text: string): Promise<void> {
-        if (this.suggestionGenerator && text.length >= this.minInput) {
-            const suggestions = await this.suggestionGenerator(text);
-            suggestions.splice(this.maxSuggestions);
-            this.suggestionData = suggestions;
-        } else {
-            this.suggestionData = [];
         }
     }
 
@@ -235,11 +233,14 @@ export class InputAutoComplete extends LitElement {
 
                 />
 
-            ${this.hasData() ? this.renderSuggestions() : ''}
+            <div class="${this.cssClasses.suggestions}">
+            ${this._autoCompleteSuggestions.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+            </div>
         </div>`;
     }
 
     renderSuggestion(suggestion: AutoCompleteSuggestion, index: number) {
+        console.log({suggestion, index});
         return html`
         <button
             @click="${() => this.handleSelection(index)}"
@@ -250,12 +251,5 @@ export class InputAutoComplete extends LitElement {
             type="button">
             ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
         </button>`;
-    }
-
-    renderSuggestions(): TemplateResult {
-        return html`
-        <div class="${this.cssClasses.suggestions}">
-            ${this.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
-        </div>`;
     }
 }

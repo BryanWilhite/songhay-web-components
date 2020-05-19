@@ -7,17 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { customElement, html, LitElement, property } from 'lit-element';
-import { AutoCompleteCssClasses } from './models/autocomplete-css-classes';
+import { AutoCompleteSuggestions } from './autocomplete-suggestions';
+import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
@@ -27,10 +19,9 @@ const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
 });
 let InputAutoComplete = class InputAutoComplete extends LitElement {
     constructor() {
-        super(...arguments);
+        super();
         this.active = false;
         this.activeIndex = -1;
-        this.suggestionData = [];
         this.inputId = '';
         this.placeholder = '';
         this.text = '';
@@ -39,12 +30,15 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.required = true;
         this.maxSuggestions = 5;
         this.minInput = 0;
-        this.cssClasses = new AutoCompleteCssClasses();
+        this.cssClasses = new ComponentCssClasses();
         this.inputMode = 'none';
         this.suggestionGenerator = () => Promise.resolve([]);
+        this._autoCompleteSuggestions = new AutoCompleteSuggestions(this.suggestionGenerator);
+        this._autoCompleteSuggestions.maxSuggestions = this.maxSuggestions;
+        this._autoCompleteSuggestions.minInput = this.minInput;
     }
     clearData() {
-        this.suggestionData = [];
+        this._autoCompleteSuggestions.clearData();
         this.activeIndex = -1;
         this.active = false;
     }
@@ -66,11 +60,11 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
     handleActivation(key) {
-        if (!this.suggestionData.length) {
+        if (!this._autoCompleteSuggestions.suggestionData.length) {
             return;
         }
         const isKeyDown = (key === Key.ArrowDown);
-        if (isKeyDown && (this.activeIndex + 1) < this.suggestionData.length) {
+        if (isKeyDown && (this.activeIndex + 1) < this._autoCompleteSuggestions.suggestionData.length) {
             this.activeIndex += 1;
         }
         else if (isKeyDown) {
@@ -80,7 +74,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             this.activeIndex -= 1;
         }
         else if (!isKeyDown) {
-            this.activeIndex = this.suggestionData.length - 1;
+            this.activeIndex = this._autoCompleteSuggestions.suggestionData.length - 1;
         }
     }
     handleBlur(e) {
@@ -152,34 +146,21 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             case Key.Tab:
             case Key.Escape:
                 this.clearSelection(true);
-                this.prepareSuggestions(text);
+                this.render();
+                break;
+            default:
+                this.active = true;
+                this._autoCompleteSuggestions.prepareSuggestions(text);
                 break;
         }
-        this.active = true;
-        this.text = text;
     }
-    handleSelection(index) {
-        if (index >= 0 && index < this.suggestionData.length) {
-            this.text = this.suggestionData[index].text;
-            this.value = this.suggestionData[index].value;
-            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this.suggestionData[index] }));
+    handleSelection(suggestionIndex) {
+        if (suggestionIndex >= 0 && suggestionIndex < this._autoCompleteSuggestions.suggestionData.length) {
+            this.text = this._autoCompleteSuggestions.suggestionData[suggestionIndex].text;
+            this.value = this._autoCompleteSuggestions.suggestionData[suggestionIndex].value;
+            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this._autoCompleteSuggestions.suggestionData[suggestionIndex] }));
             this.clearData();
         }
-    }
-    hasData() {
-        return this.suggestionData && this.suggestionData.length > 0;
-    }
-    prepareSuggestions(text) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.suggestionGenerator && text.length >= this.minInput) {
-                const suggestions = yield this.suggestionGenerator(text);
-                suggestions.splice(this.maxSuggestions);
-                this.suggestionData = suggestions;
-            }
-            else {
-                this.suggestionData = [];
-            }
-        });
     }
     render() {
         return html `
@@ -204,10 +185,13 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
 
                 />
 
-            ${this.hasData() ? this.renderSuggestions() : ''}
+            <div class="${this.cssClasses.suggestions}">
+            ${this._autoCompleteSuggestions.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+            </div>
         </div>`;
     }
     renderSuggestion(suggestion, index) {
+        console.log({ suggestion, index });
         return html `
         <button
             @click="${() => this.handleSelection(index)}"
@@ -218,12 +202,6 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             type="button">
             ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
         </button>`;
-    }
-    renderSuggestions() {
-        return html `
-        <div class="${this.cssClasses.suggestions}">
-            ${this.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
-        </div>`;
     }
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
@@ -272,7 +250,8 @@ __decorate([
     __metadata("design:type", Function)
 ], InputAutoComplete.prototype, "suggestionGenerator", void 0);
 InputAutoComplete = __decorate([
-    customElement(CUSTOM_ELEMENT_NAME)
+    customElement(CUSTOM_ELEMENT_NAME),
+    __metadata("design:paramtypes", [])
 ], InputAutoComplete);
 export { InputAutoComplete };
 //# sourceMappingURL=input-autocomplete.js.map

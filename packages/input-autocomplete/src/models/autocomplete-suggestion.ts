@@ -1,1 +1,1 @@
-export interface AutoCompleteSuggestion { text: string, value: string, suggestion?: string }
+export interface AutoCompleteSuggestion { text: string; value: string; suggestion?: string; }

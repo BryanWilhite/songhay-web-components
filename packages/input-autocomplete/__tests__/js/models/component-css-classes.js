@@ -1,4 +1,6 @@
-export class ComponentCssClasses {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class ComponentCssClasses {
     constructor() {
         this.wrapper = '';
         this.input = '';
@@ -7,4 +9,5 @@ export class ComponentCssClasses {
         this.active = 'active';
     }
 }
+exports.ComponentCssClasses = ComponentCssClasses;
 //# sourceMappingURL=component-css-classes.js.map

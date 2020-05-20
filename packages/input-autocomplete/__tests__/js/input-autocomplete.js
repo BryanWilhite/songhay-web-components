@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,21 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { customElement, html, LitElement, property } from 'lit-element';
-import { AutoCompleteSuggestions } from './autocomplete-suggestions';
-import { ComponentCssClasses } from './models/component-css-classes';
-import { Key } from './models/key';
+Object.defineProperty(exports, "__esModule", { value: true });
+const lit_element_1 = require("lit-element");
+const component_css_classes_1 = require("./models/component-css-classes");
+const key_1 = require("./models/key");
+const autocomplete_suggestions_1 = require("./services/autocomplete-suggestions");
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
-let InputAutoComplete = class InputAutoComplete extends LitElement {
+let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement {
     constructor() {
         super();
-        this.active = false;
-        this.activeIndex = -1;
+        this.activeSuggestionIndex = -1;
+        this.componentActive = false;
         this.inputId = '';
         this.placeholder = '';
         this.text = '';
@@ -30,51 +32,75 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.required = true;
         this.maxSuggestions = 5;
         this.minInput = 0;
-        this.cssClasses = new ComponentCssClasses();
+        this.cssClasses = new component_css_classes_1.ComponentCssClasses();
         this.inputMode = 'none';
         this.suggestionGenerator = () => Promise.resolve([]);
-        this._autoCompleteSuggestions = new AutoCompleteSuggestions(this.suggestionGenerator);
-        this._autoCompleteSuggestions.maxSuggestions = this.maxSuggestions;
-        this._autoCompleteSuggestions.minInput = this.minInput;
+        this._autoCompleteSuggestions = new autocomplete_suggestions_1.AutoCompleteSuggestions(this.suggestionGenerator, this.maxSuggestions, this.minInput);
     }
     clearData() {
         this._autoCompleteSuggestions.clearData();
-        this.activeIndex = -1;
-        this.active = false;
+        this.activeSuggestionIndex = -1;
+        this.componentActive = false;
+    }
+    clearOrClose() {
+        if (!this.componentActive) {
+            return;
+        }
+        if (this.value) {
+            this.clearData();
+        }
+        else {
+            this.close();
+        }
     }
     clearSelection(clearOnlyValue = false) {
         if (this.value !== '') {
-            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_UNSELECTED, {
-                detail: {
-                    text: this.text,
-                    value: this.value
-                }
-            }));
+            this.dispatchCustomEvent(CUSTOM_EVENT_NAME_UNSELECTED, { detail: { text: this.text, value: this.value } });
             this.value = '';
         }
         if (!clearOnlyValue) {
             this.text = '';
         }
     }
+    close() {
+        this.clearSelection();
+        this.clearData();
+    }
+    dispatchCustomEvent(eventName, data) {
+        switch (eventName) {
+            case CUSTOM_EVENT_NAME_SELECTED:
+            case CUSTOM_EVENT_NAME_UNSELECTED:
+                this.dispatchEvent(new CustomEvent(eventName, data));
+                break;
+        }
+    }
     getSuggestionsCssClasses(index) {
-        return `${this.cssClasses.suggestion}${(this.activeIndex === index) ? ' ' + this.cssClasses.active : ''}`;
+        return `${this.cssClasses.suggestion}${(this.activeSuggestionIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
     handleActivation(key) {
         if (!this._autoCompleteSuggestions.suggestionData.length) {
             return;
         }
-        const isKeyDown = (key === Key.ArrowDown);
-        if (isKeyDown && (this.activeIndex + 1) < this._autoCompleteSuggestions.suggestionData.length) {
-            this.activeIndex += 1;
+        const isKeyDown = (key === key_1.Key.ArrowDown);
+        //#region functional members:
+        const activeSuggestionIndexIsValid = () => ((this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions.suggestionData.length);
+        const setActiveSuggestionIndexBoundary = () => {
+            if (isKeyDown) {
+                this.activeSuggestionIndex = 0;
+            }
+            else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
+                this.activeSuggestionIndex -= 1;
+            }
+            else if (!isKeyDown) {
+                this.activeSuggestionIndex = this._autoCompleteSuggestions.suggestionData.length - 1;
+            }
+        };
+        //#endregion
+        if (isKeyDown && activeSuggestionIndexIsValid()) {
+            this.activeSuggestionIndex += 1;
         }
-        else if (isKeyDown) {
-            this.activeIndex = 0;
-        }
-        else if (!isKeyDown && (this.activeIndex) > 0) {
-            this.activeIndex -= 1;
-        }
-        else if (!isKeyDown) {
-            this.activeIndex = this._autoCompleteSuggestions.suggestionData.length - 1;
+        else {
+            setActiveSuggestionIndexBoundary();
         }
     }
     handleBlur(e) {
@@ -83,22 +109,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             return;
         }
         e.preventDefault();
-        EVENT_HANDLER_DELAY(250)
-            .then(() => {
-            if (!this.active) {
-                return;
-            }
-            if (this.value) {
-                this.clearData();
-            }
-            else {
-                this.handleClose();
-            }
-        });
-    }
-    handleClose() {
-        this.clearSelection();
-        this.clearData();
+        EVENT_HANDLER_DELAY(250).then(this.clearOrClose);
     }
     handleFocus(e) {
         if (!e) {
@@ -106,7 +117,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             return;
         }
         e.preventDefault();
-        this.active = true;
+        this.componentActive = true;
     }
     handleKeyDown(e) {
         if (!e) {
@@ -114,18 +125,18 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             return;
         }
         switch (e.key) {
-            case Key.ArrowDown:
-            case Key.ArrowUp:
+            case key_1.Key.ArrowDown:
+            case key_1.Key.ArrowUp:
                 e.preventDefault();
                 this.handleActivation(e.key);
                 break;
-            case Key.Enter:
-            case Key.Tab:
+            case key_1.Key.Enter:
+            case key_1.Key.Tab:
                 e.preventDefault();
-                this.handleSelection(this.activeIndex);
+                this.handleSuggestionSelection(this.activeSuggestionIndex);
                 break;
-            case Key.Escape:
-                this.handleClose();
+            case key_1.Key.Escape:
+                this.close();
                 break;
         }
     }
@@ -140,30 +151,37 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         }
         const text = e.target['value'];
         switch (e.key) {
-            case Key.ArrowDown:
-            case Key.ArrowUp:
-            case Key.Enter:
-            case Key.Tab:
-            case Key.Escape:
+            case key_1.Key.ArrowDown:
+            case key_1.Key.ArrowUp:
+            case key_1.Key.Enter:
+            case key_1.Key.Tab:
+            case key_1.Key.Escape:
                 this.clearSelection(true);
                 this.render();
                 break;
             default:
-                this.active = true;
+                this.componentActive = true;
                 this._autoCompleteSuggestions.prepareSuggestions(text);
                 break;
         }
     }
-    handleSelection(suggestionIndex) {
-        if (suggestionIndex >= 0 && suggestionIndex < this._autoCompleteSuggestions.suggestionData.length) {
+    handleSuggestionSelection(suggestionIndex) {
+        //#region functional members:
+        const suggestionIndexIsValid = () => suggestionIndex >= 0 &&
+            suggestionIndex < this._autoCompleteSuggestions.suggestionData.length;
+        const setTextAndValue = () => {
             this.text = this._autoCompleteSuggestions.suggestionData[suggestionIndex].text;
             this.value = this._autoCompleteSuggestions.suggestionData[suggestionIndex].value;
-            this.dispatchEvent(new CustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this._autoCompleteSuggestions.suggestionData[suggestionIndex] }));
+        };
+        //#endregion
+        if (suggestionIndexIsValid()) {
+            setTextAndValue();
+            this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: this._autoCompleteSuggestions.suggestionData[suggestionIndex] });
             this.clearData();
         }
     }
     render() {
-        return html `
+        return lit_element_1.html `
         <div .class=${this.cssClasses.wrapper}>
             <input
                 autocomplete="off"
@@ -186,15 +204,16 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
                 />
 
             <div class="${this.cssClasses.suggestions}">
-            ${this._autoCompleteSuggestions.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+                ${this._autoCompleteSuggestions
+            .suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
             </div>
         </div>`;
     }
     renderSuggestion(suggestion, index) {
         console.log({ suggestion, index });
-        return html `
+        return lit_element_1.html `
         <button
-            @click="${() => this.handleSelection(index)}"
+            @click="${() => this.handleSuggestionSelection(index)}"
 
             .class="${this.getSuggestionsCssClasses(index)}"
             .data-value="${suggestion.value}"
@@ -206,52 +225,52 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
 __decorate([
-    property({ type: String }),
+    lit_element_1.property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "inputId", void 0);
 __decorate([
-    property({ type: String }),
+    lit_element_1.property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "placeholder", void 0);
 __decorate([
-    property({ type: String }),
+    lit_element_1.property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "text", void 0);
 __decorate([
-    property({ type: String }),
+    lit_element_1.property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "value", void 0);
 __decorate([
-    property({ type: Boolean }),
+    lit_element_1.property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "disabled", void 0);
 __decorate([
-    property({ type: Boolean }),
+    lit_element_1.property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "required", void 0);
 __decorate([
-    property({ type: Number }),
+    lit_element_1.property({ type: Number }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "maxSuggestions", void 0);
 __decorate([
-    property({ type: Number }),
+    lit_element_1.property({ type: Number }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "minInput", void 0);
 __decorate([
-    property({ type: Object }),
+    lit_element_1.property({ type: Object }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "cssClasses", void 0);
 __decorate([
-    property({ type: Object }),
+    lit_element_1.property({ type: Object }),
     __metadata("design:type", String)
 ], InputAutoComplete.prototype, "inputMode", void 0);
 __decorate([
-    property({ type: Object }),
+    lit_element_1.property({ type: Object }),
     __metadata("design:type", Function)
 ], InputAutoComplete.prototype, "suggestionGenerator", void 0);
 InputAutoComplete = __decorate([
-    customElement(CUSTOM_ELEMENT_NAME),
+    lit_element_1.customElement(CUSTOM_ELEMENT_NAME),
     __metadata("design:paramtypes", [])
 ], InputAutoComplete);
-export { InputAutoComplete };
+exports.InputAutoComplete = InputAutoComplete;
 //# sourceMappingURL=input-autocomplete.js.map

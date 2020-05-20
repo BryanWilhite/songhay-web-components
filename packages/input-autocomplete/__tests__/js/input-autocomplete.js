@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,18 +7,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const lit_element_1 = require("lit-element");
-const component_css_classes_1 = require("./models/component-css-classes");
-const key_1 = require("./models/key");
-const autocomplete_suggestions_1 = require("./services/autocomplete-suggestions");
+import { customElement, html, LitElement, property } from 'lit-element';
+import { ComponentCssClasses } from './models/component-css-classes';
+import { Key } from './models/key';
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
-let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement {
+let InputAutoComplete = class InputAutoComplete extends LitElement {
     constructor() {
         super();
         this.activeSuggestionIndex = -1;
@@ -32,10 +30,10 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
         this.required = true;
         this.maxSuggestions = 5;
         this.minInput = 0;
-        this.cssClasses = new component_css_classes_1.ComponentCssClasses();
+        this.cssClasses = new ComponentCssClasses();
         this.inputMode = 'none';
         this.suggestionGenerator = () => Promise.resolve([]);
-        this._autoCompleteSuggestions = new autocomplete_suggestions_1.AutoCompleteSuggestions(this.suggestionGenerator, this.maxSuggestions, this.minInput);
+        this._autoCompleteSuggestions = new AutoCompleteSuggestions(this.suggestionGenerator, this.maxSuggestions, this.minInput);
     }
     clearData() {
         this._autoCompleteSuggestions.clearData();
@@ -81,7 +79,7 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
         if (!this._autoCompleteSuggestions.suggestionData.length) {
             return;
         }
-        const isKeyDown = (key === key_1.Key.ArrowDown);
+        const isKeyDown = (key === Key.ArrowDown);
         //#region functional members:
         const activeSuggestionIndexIsValid = () => ((this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions.suggestionData.length);
         const setActiveSuggestionIndexBoundary = () => {
@@ -125,17 +123,17 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
             return;
         }
         switch (e.key) {
-            case key_1.Key.ArrowDown:
-            case key_1.Key.ArrowUp:
+            case Key.ArrowDown:
+            case Key.ArrowUp:
                 e.preventDefault();
                 this.handleActivation(e.key);
                 break;
-            case key_1.Key.Enter:
-            case key_1.Key.Tab:
+            case Key.Enter:
+            case Key.Tab:
                 e.preventDefault();
                 this.handleSuggestionSelection(this.activeSuggestionIndex);
                 break;
-            case key_1.Key.Escape:
+            case Key.Escape:
                 this.close();
                 break;
         }
@@ -151,11 +149,11 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
         }
         const text = e.target['value'];
         switch (e.key) {
-            case key_1.Key.ArrowDown:
-            case key_1.Key.ArrowUp:
-            case key_1.Key.Enter:
-            case key_1.Key.Tab:
-            case key_1.Key.Escape:
+            case Key.ArrowDown:
+            case Key.ArrowUp:
+            case Key.Enter:
+            case Key.Tab:
+            case Key.Escape:
                 this.clearSelection(true);
                 this.render();
                 break;
@@ -181,7 +179,7 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
         }
     }
     render() {
-        return lit_element_1.html `
+        return html `
         <div .class=${this.cssClasses.wrapper}>
             <input
                 autocomplete="off"
@@ -211,7 +209,7 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
     }
     renderSuggestion(suggestion, index) {
         console.log({ suggestion, index });
-        return lit_element_1.html `
+        return html `
         <button
             @click="${() => this.handleSuggestionSelection(index)}"
 
@@ -225,52 +223,52 @@ let InputAutoComplete = class InputAutoComplete extends lit_element_1.LitElement
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
 __decorate([
-    lit_element_1.property({ type: String }),
+    property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "inputId", void 0);
 __decorate([
-    lit_element_1.property({ type: String }),
+    property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "placeholder", void 0);
 __decorate([
-    lit_element_1.property({ type: String }),
+    property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "text", void 0);
 __decorate([
-    lit_element_1.property({ type: String }),
+    property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "value", void 0);
 __decorate([
-    lit_element_1.property({ type: Boolean }),
+    property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "disabled", void 0);
 __decorate([
-    lit_element_1.property({ type: Boolean }),
+    property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "required", void 0);
 __decorate([
-    lit_element_1.property({ type: Number }),
+    property({ type: Number }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "maxSuggestions", void 0);
 __decorate([
-    lit_element_1.property({ type: Number }),
+    property({ type: Number }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "minInput", void 0);
 __decorate([
-    lit_element_1.property({ type: Object }),
+    property({ type: Object }),
     __metadata("design:type", Object)
 ], InputAutoComplete.prototype, "cssClasses", void 0);
 __decorate([
-    lit_element_1.property({ type: Object }),
+    property({ type: Object }),
     __metadata("design:type", String)
 ], InputAutoComplete.prototype, "inputMode", void 0);
 __decorate([
-    lit_element_1.property({ type: Object }),
+    property({ type: Object }),
     __metadata("design:type", Function)
 ], InputAutoComplete.prototype, "suggestionGenerator", void 0);
 InputAutoComplete = __decorate([
-    lit_element_1.customElement(CUSTOM_ELEMENT_NAME),
+    customElement(CUSTOM_ELEMENT_NAME),
     __metadata("design:paramtypes", [])
 ], InputAutoComplete);
-exports.InputAutoComplete = InputAutoComplete;
+export { InputAutoComplete };
 //# sourceMappingURL=input-autocomplete.js.map

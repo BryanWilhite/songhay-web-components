@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const input_autocomplete_1 = require("./input-autocomplete");
+import { InputAutoComplete } from './input-autocomplete';
 class DOMTestingUtility {
     static getDocumentNode(selector) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,7 +26,7 @@ class DOMTestingUtility {
         });
     }
 }
-describe(input_autocomplete_1.InputAutoComplete.name, function () {
+describe(InputAutoComplete.name, function () {
     let customElement;
     let shadowRoot;
     let divElement;
@@ -44,8 +42,8 @@ describe(input_autocomplete_1.InputAutoComplete.name, function () {
         });
     });
     it('is rendered', function () {
-        chai.expect(customElement).to.be.instanceOf(input_autocomplete_1.InputAutoComplete);
-        chai.expect(customElement.localName).to.be.eq(input_autocomplete_1.InputAutoComplete.customElementName);
+        chai.expect(customElement).to.be.instanceOf(InputAutoComplete);
+        chai.expect(customElement.localName).to.be.eq(InputAutoComplete.customElementName);
         customElement.suggestionGenerator = (text) => Promise.resolve([
             { text: 'one', value: '01' },
             { text: 'two', value: '02' },

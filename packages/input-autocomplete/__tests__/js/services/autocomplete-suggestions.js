@@ -10,17 +10,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export class AutoCompleteSuggestions {
     constructor(suggestionGenerator, maxSuggestions = 5, minInput = 0) {
         this.suggestionData = [];
-        this._suggestionGenerator = suggestionGenerator;
+        this.suggestionGenerator = suggestionGenerator;
         this.maxSuggestions = maxSuggestions;
         this.minInput = minInput;
     }
     clearData() {
+        console.log('AutoCompleteSuggestions.clearData');
         this.suggestionData = [];
+    }
+    getSuggestionDatum(index) {
+        return this.suggestionData[index];
+    }
+    getSuggestionDataCount() {
+        return this.suggestionData.length;
+    }
+    hasSuggestionData() {
+        return this.suggestionData.length > 0;
     }
     prepareSuggestions(text) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this._suggestionGenerator && (text.length >= this.minInput)) {
-                const suggestions = yield this._suggestionGenerator(text);
+            //#region functional members:
+            const textIsValid = () => (this.suggestionGenerator && (text.length >= this.minInput));
+            //#endregion
+            if (textIsValid()) {
+                const suggestions = yield this.suggestionGenerator(text);
                 suggestions.splice(this.maxSuggestions);
                 this.suggestionData = suggestions;
             }

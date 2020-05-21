@@ -3,7 +3,8 @@ import {
     html,
     LitElement,
     property,
-    TemplateResult
+    TemplateResult,
+    PropertyValues
 } from 'lit-element';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
@@ -31,7 +32,7 @@ export class InputAutoComplete extends LitElement {
     activeSuggestionIndex = -1;
     componentActive = false;
 
-    private _autoCompleteSuggestions: AutoCompleteSuggestions;
+    private _autoCompleteSuggestions: AutoCompleteSuggestions | null = null;
 
     @property({ type: String }) inputId = '';
     @property({ type: String }) placeholder = '';
@@ -51,14 +52,29 @@ export class InputAutoComplete extends LitElement {
 
     constructor() {
         super();
-        this._autoCompleteSuggestions = new AutoCompleteSuggestions(
-            this.suggestionGenerator,
-            this.maxSuggestions,
-            this.minInput);
+
+        const suggestionGenerator = (text: string) => Promise.resolve([
+            { text: 'one', value: '01' },
+            { text: 'two', value: '02' },
+            { text: 'three', value: '03' },
+            { text: 'four', value: '05' },
+            { text: 'five', value: '05' },
+            { text: 'fifty-one', value: '51' },
+            { text: 'fifty-two', value: '52' },
+            { text: 'fifty-three', value: '53' },
+            { text: 'fifty-four', value: '54' },
+            { text: 'fifty-five', value: '55' },
+        ].filter(i => {
+            // console.log('constructor', { text });
+            return i.text.startsWith(text);
+        }));
+
+        this._autoCompleteSuggestions = new AutoCompleteSuggestions(suggestionGenerator);
+
     }
 
     clearData(): void {
-        this._autoCompleteSuggestions.clearData();
+        this._autoCompleteSuggestions?.clearData();
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
     }
@@ -110,7 +126,7 @@ export class InputAutoComplete extends LitElement {
     }
 
     handleActivation(key: string): void {
-        if (!this._autoCompleteSuggestions.suggestionData.length) {
+        if (!this._autoCompleteSuggestions?.hasSuggestionData()) {
             return;
         }
 
@@ -119,14 +135,15 @@ export class InputAutoComplete extends LitElement {
         //#region functional members:
 
         const activeSuggestionIndexIsValid = () => (
-            (this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions.suggestionData.length);
+            this._autoCompleteSuggestions &&
+            (this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions?.getSuggestionDataCount());
         const setActiveSuggestionIndexBoundary = () => {
             if (isKeyDown) {
                 this.activeSuggestionIndex = 0;
             } else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
                 this.activeSuggestionIndex -= 1;
-            } else if (!isKeyDown) {
-                this.activeSuggestionIndex = this._autoCompleteSuggestions.suggestionData.length - 1;
+            } else if (!isKeyDown && this._autoCompleteSuggestions) {
+                this.activeSuggestionIndex = this._autoCompleteSuggestions?.getSuggestionDataCount() - 1;
             }
         };
 
@@ -184,7 +201,7 @@ export class InputAutoComplete extends LitElement {
         }
     }
 
-    handleKeyUp(e: KeyboardEvent): void {
+    async handleKeyUp(e: KeyboardEvent): Promise<void> {
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -204,12 +221,15 @@ export class InputAutoComplete extends LitElement {
             case Key.Tab:
             case Key.Escape:
                 this.clearSelection(true);
-                this.render();
                 break;
 
             default:
                 this.componentActive = true;
-                this._autoCompleteSuggestions.prepareSuggestions(text);
+
+                await this._autoCompleteSuggestions?.prepareSuggestions(text);
+
+                await this.requestUpdate();
+
                 break;
         }
     }
@@ -219,11 +239,15 @@ export class InputAutoComplete extends LitElement {
 
         const suggestionIndexIsValid = () =>
             suggestionIndex >= 0 &&
-            suggestionIndex < this._autoCompleteSuggestions.suggestionData.length;
+            this._autoCompleteSuggestions &&
+            suggestionIndex < this._autoCompleteSuggestions?.getSuggestionDataCount();
 
         const setTextAndValue = () => {
-            this.text = this._autoCompleteSuggestions.suggestionData[suggestionIndex].text;
-            this.value = this._autoCompleteSuggestions.suggestionData[suggestionIndex].value;
+            if (this._autoCompleteSuggestions) {
+                const datum = this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex);
+                this.text = datum.text;
+                this.value = datum.value;
+            }
         };
 
         //#endregion
@@ -232,7 +256,7 @@ export class InputAutoComplete extends LitElement {
             setTextAndValue();
             this.dispatchCustomEvent(
                 CUSTOM_EVENT_NAME_SELECTED,
-                { detail: this._autoCompleteSuggestions.suggestionData[suggestionIndex] }
+                { detail: this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex) }
             );
             this.clearData();
         }
@@ -262,15 +286,12 @@ export class InputAutoComplete extends LitElement {
                 />
 
             <div class="${this.cssClasses.suggestions}">
-                ${this._autoCompleteSuggestions
-                .suggestionData.map((suggestion, index) =>
-                    this.renderSuggestion(suggestion, index))}
+                ${this._autoCompleteSuggestions?.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
             </div>
         </div>`;
     }
 
-    renderSuggestion(suggestion: AutoCompleteSuggestion, index: number) {
-        console.log({ suggestion, index });
+    renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult {
         return html`
         <button
             @click="${() => this.handleSuggestionSelection(index)}"
@@ -281,5 +302,11 @@ export class InputAutoComplete extends LitElement {
             type="button">
             ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
         </button>`;
+    }
+
+    update(changedProperties: PropertyValues) {
+        super.update(changedProperties);
+
+        // console.log({ changedProperties });
     }
 }

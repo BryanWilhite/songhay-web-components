@@ -28,11 +28,12 @@ const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve
 export class InputAutoComplete extends LitElement {
 
     static customElementName = CUSTOM_ELEMENT_NAME;
+    static suggestionGeneratorPropertyName = 'suggestionGenerator';
 
     activeSuggestionIndex = -1;
     componentActive = false;
 
-    private _autoCompleteSuggestions: AutoCompleteSuggestions | null = null;
+    private _autoCompleteSuggestions = new AutoCompleteSuggestions();
 
     @property({ type: String }) inputId = '';
     @property({ type: String }) placeholder = '';
@@ -49,29 +50,6 @@ export class InputAutoComplete extends LitElement {
     @property({ type: Object }) inputMode: InputModes = 'none';
 
     @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
-
-    constructor() {
-        super();
-
-        const suggestionGenerator = (text: string) => Promise.resolve([
-            { text: 'one', value: '01' },
-            { text: 'two', value: '02' },
-            { text: 'three', value: '03' },
-            { text: 'four', value: '05' },
-            { text: 'five', value: '05' },
-            { text: 'fifty-one', value: '51' },
-            { text: 'fifty-two', value: '52' },
-            { text: 'fifty-three', value: '53' },
-            { text: 'fifty-four', value: '54' },
-            { text: 'fifty-five', value: '55' },
-        ].filter(i => {
-            // console.log('constructor', { text });
-            return i.text.startsWith(text);
-        }));
-
-        this._autoCompleteSuggestions = new AutoCompleteSuggestions(suggestionGenerator);
-
-    }
 
     clearData(): void {
         this._autoCompleteSuggestions?.clearData();
@@ -90,7 +68,6 @@ export class InputAutoComplete extends LitElement {
         } else {
             this.close();
         }
-
     }
 
     clearSelection(clearOnlyValue = false): void {
@@ -135,14 +112,13 @@ export class InputAutoComplete extends LitElement {
         //#region functional members:
 
         const activeSuggestionIndexIsValid = () => (
-            this._autoCompleteSuggestions &&
             (this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions?.getSuggestionDataCount());
         const setActiveSuggestionIndexBoundary = () => {
             if (isKeyDown) {
                 this.activeSuggestionIndex = 0;
             } else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
                 this.activeSuggestionIndex -= 1;
-            } else if (!isKeyDown && this._autoCompleteSuggestions) {
+            } else if (!isKeyDown) {
                 this.activeSuggestionIndex = this._autoCompleteSuggestions?.getSuggestionDataCount() - 1;
             }
         };
@@ -239,15 +215,12 @@ export class InputAutoComplete extends LitElement {
 
         const suggestionIndexIsValid = () =>
             suggestionIndex >= 0 &&
-            this._autoCompleteSuggestions &&
             suggestionIndex < this._autoCompleteSuggestions?.getSuggestionDataCount();
 
         const setTextAndValue = () => {
-            if (this._autoCompleteSuggestions) {
-                const datum = this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex);
-                this.text = datum.text;
-                this.value = datum.value;
-            }
+            const datum = this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex);
+            this.text = datum.text;
+            this.value = datum.value;
         };
 
         //#endregion
@@ -286,7 +259,9 @@ export class InputAutoComplete extends LitElement {
                 />
 
             <div class="${this.cssClasses.suggestions}">
-                ${this._autoCompleteSuggestions?.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+                ${this._autoCompleteSuggestions
+                ?.suggestionData.map((suggestion, index) =>
+                    this.renderSuggestion(suggestion, index))}
             </div>
         </div>`;
     }
@@ -304,9 +279,11 @@ export class InputAutoComplete extends LitElement {
         </button>`;
     }
 
-    update(changedProperties: PropertyValues) {
-        super.update(changedProperties);
+    updated(changedProperties: PropertyValues) {
+        super.updated(changedProperties);
 
-        // console.log({ changedProperties });
+        if (changedProperties.has(InputAutoComplete.suggestionGeneratorPropertyName)) {
+            this._autoCompleteSuggestions.suggestionGenerator = this.suggestionGenerator;
+        }
     }
 }

@@ -8,7 +8,7 @@ export class AutoCompleteSuggestions {
     suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
 
     constructor(
-        suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>,
+        suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]),
         maxSuggestions: number = 5,
         minInput: number = 0
     ) {

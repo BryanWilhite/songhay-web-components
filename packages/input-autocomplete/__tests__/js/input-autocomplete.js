@@ -16,6 +16,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var InputAutoComplete_1;
 import { customElement, html, LitElement, property } from 'lit-element';
 import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
@@ -26,12 +27,12 @@ const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
-let InputAutoComplete = class InputAutoComplete extends LitElement {
+let InputAutoComplete = InputAutoComplete_1 = class InputAutoComplete extends LitElement {
     constructor() {
-        super();
+        super(...arguments);
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
-        this._autoCompleteSuggestions = null;
+        this._autoCompleteSuggestions = new AutoCompleteSuggestions();
         this.inputId = '';
         this.placeholder = '';
         this.text = '';
@@ -43,22 +44,6 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         this.cssClasses = new ComponentCssClasses();
         this.inputMode = 'none';
         this.suggestionGenerator = () => Promise.resolve([]);
-        const suggestionGenerator = (text) => Promise.resolve([
-            { text: 'one', value: '01' },
-            { text: 'two', value: '02' },
-            { text: 'three', value: '03' },
-            { text: 'four', value: '05' },
-            { text: 'five', value: '05' },
-            { text: 'fifty-one', value: '51' },
-            { text: 'fifty-two', value: '52' },
-            { text: 'fifty-three', value: '53' },
-            { text: 'fifty-four', value: '54' },
-            { text: 'fifty-five', value: '55' },
-        ].filter(i => {
-            // console.log('constructor', { text });
-            return i.text.startsWith(text);
-        }));
-        this._autoCompleteSuggestions = new AutoCompleteSuggestions(suggestionGenerator);
     }
     clearData() {
         var _a;
@@ -110,8 +95,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         //#region functional members:
         const activeSuggestionIndexIsValid = () => {
             var _a;
-            return (this._autoCompleteSuggestions &&
-                (this.activeSuggestionIndex + 1) < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()));
+            return ((this.activeSuggestionIndex + 1) < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()));
         };
         const setActiveSuggestionIndexBoundary = () => {
             var _a;
@@ -121,7 +105,7 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
                 this.activeSuggestionIndex -= 1;
             }
-            else if (!isKeyDown && this._autoCompleteSuggestions) {
+            else if (!isKeyDown) {
                 this.activeSuggestionIndex = ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()) - 1;
             }
         };
@@ -204,16 +188,13 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
         const suggestionIndexIsValid = () => {
             var _a;
             return suggestionIndex >= 0 &&
-                this._autoCompleteSuggestions &&
                 suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
         };
         const setTextAndValue = () => {
             var _a;
-            if (this._autoCompleteSuggestions) {
-                const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
-                this.text = datum.text;
-                this.value = datum.value;
-            }
+            const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
+            this.text = datum.text;
+            this.value = datum.value;
         };
         //#endregion
         if (suggestionIndexIsValid()) {
@@ -263,12 +244,15 @@ let InputAutoComplete = class InputAutoComplete extends LitElement {
             ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
         </button>`;
     }
-    update(changedProperties) {
-        super.update(changedProperties);
-        // console.log({ changedProperties });
+    updated(changedProperties) {
+        super.updated(changedProperties);
+        if (changedProperties.has(InputAutoComplete_1.suggestionGeneratorPropertyName)) {
+            this._autoCompleteSuggestions.suggestionGenerator = this.suggestionGenerator;
+        }
     }
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
+InputAutoComplete.suggestionGeneratorPropertyName = 'suggestionGenerator';
 __decorate([
     property({ type: String }),
     __metadata("design:type", Object)
@@ -313,9 +297,8 @@ __decorate([
     property({ type: Object }),
     __metadata("design:type", Function)
 ], InputAutoComplete.prototype, "suggestionGenerator", void 0);
-InputAutoComplete = __decorate([
-    customElement(CUSTOM_ELEMENT_NAME),
-    __metadata("design:paramtypes", [])
+InputAutoComplete = InputAutoComplete_1 = __decorate([
+    customElement(CUSTOM_ELEMENT_NAME)
 ], InputAutoComplete);
 export { InputAutoComplete };
 //# sourceMappingURL=input-autocomplete.js.map

@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 export class AutoCompleteSuggestions {
-    constructor(suggestionGenerator, maxSuggestions = 5, minInput = 0) {
+    constructor(suggestionGenerator = () => Promise.resolve([]), maxSuggestions = 5, minInput = 0) {
         this.suggestionData = [];
         this.suggestionGenerator = suggestionGenerator;
         this.maxSuggestions = maxSuggestions;

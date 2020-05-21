@@ -49,7 +49,6 @@ describe(InputAutoComplete.name, function () {
             { text: 'fifty-four', value: '54' },
             { text: 'fifty-five', value: '55' },
         ].filter(i => {
-            console.log('customElement.suggestionGenerator', { text });
             return i.text.startsWith(text);
         }));
     });

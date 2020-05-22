@@ -227,22 +227,24 @@ let InputAutoComplete = InputAutoComplete_1 = class InputAutoComplete extends Li
 
                 />
 
-            <div class="${this.cssClasses.suggestions}">
+            <ul class="${this.cssClasses.suggestions}">
                 ${(_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
-            </div>
+            </ul>
         </div>`;
     }
     renderSuggestion(suggestion, index) {
         return html `
-        <button
-            @click="${() => this.handleSuggestionSelection(index)}"
+        <li>
+            <button
+                @click="${() => this.handleSuggestionSelection(index)}"
 
-            .class="${this.getSuggestionsCssClasses(index)}"
-            .data-value="${suggestion.value}"
+                .class="${this.getSuggestionsCssClasses(index)}"
+                .data-value="${suggestion.value}"
 
-            type="button">
-            ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
-        </button>`;
+                type="button">
+                ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
+            </button>
+        </li>`;
     }
     updated(changedProperties) {
         super.updated(changedProperties);

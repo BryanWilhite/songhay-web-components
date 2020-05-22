@@ -258,25 +258,27 @@ export class InputAutoComplete extends LitElement {
 
                 />
 
-            <div class="${this.cssClasses.suggestions}">
+            <ul class="${this.cssClasses.suggestions}">
                 ${this._autoCompleteSuggestions
                 ?.suggestionData.map((suggestion, index) =>
                     this.renderSuggestion(suggestion, index))}
-            </div>
+            </ul>
         </div>`;
     }
 
     renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult {
         return html`
-        <button
-            @click="${() => this.handleSuggestionSelection(index)}"
+        <li>
+            <button
+                @click="${() => this.handleSuggestionSelection(index)}"
 
-            .class="${this.getSuggestionsCssClasses(index)}"
-            .data-value="${suggestion.value}"
+                .class="${this.getSuggestionsCssClasses(index)}"
+                .data-value="${suggestion.value}"
 
-            type="button">
-            ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
-        </button>`;
+                type="button">
+                ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
+            </button>
+        </li>`;
     }
 
     updated(changedProperties: PropertyValues) {

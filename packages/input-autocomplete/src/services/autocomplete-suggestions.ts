@@ -18,7 +18,6 @@ export class AutoCompleteSuggestions {
     }
 
     clearData(): void {
-        console.log('AutoCompleteSuggestions.clearData');
         this.suggestionData = [];
     }
 
@@ -50,5 +49,4 @@ export class AutoCompleteSuggestions {
             this.suggestionData = [];
         }
     }
-
 }

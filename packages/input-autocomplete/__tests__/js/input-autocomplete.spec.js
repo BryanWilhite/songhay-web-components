@@ -26,11 +26,15 @@ class DOMTestingUtility {
         });
     }
 }
+DOMTestingUtility.delay = (timeInMilliseconds) => new Promise((resolve) => {
+    setTimeout(function () { resolve(); }, timeInMilliseconds);
+});
 describe(InputAutoComplete.name, function () {
     let customElement;
     let shadowRoot;
     let divElement;
     let inputElement;
+    let unorderedListElement;
     before(function () {
         return __awaiter(this, void 0, void 0, function* () {
             const node = yield DOMTestingUtility.getDocumentNode('#web-component-container');
@@ -71,6 +75,8 @@ describe(InputAutoComplete.name, function () {
         chai.expect(divElement.children.length).to.be.eq(2);
         inputElement = divElement.children[0];
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
+        unorderedListElement = divElement.children[1];
+        chai.expect(unorderedListElement).to.be.instanceOf(HTMLUListElement);
     });
     it('has an `input` element with expected default properties/attributes', function () {
         chai.expect(inputElement.disabled).eq(false);
@@ -78,6 +84,40 @@ describe(InputAutoComplete.name, function () {
         chai.expect(inputElement.id).eq(customElement.inputId);
         chai.expect(inputElement.inputMode).eq(customElement.inputMode);
         chai.expect(inputElement.placeholder).eq(customElement.placeholder);
+    });
+    it('has the expected number of suggestions', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('customElement.componentActive', customElement.componentActive);
+            const expectedNumberOfSuggestions = 5;
+            let collection = unorderedListElement.children;
+            chai.expect(collection).is.instanceOf(HTMLCollection);
+            chai.expect(collection.length).eq(0);
+            const blurEvent = new FocusEvent('blur');
+            const focusEvent = new FocusEvent('focus');
+            inputElement.dispatchEvent(focusEvent);
+            inputElement.focus();
+            const keys = ['f', 'i', 'f'];
+            for (const key of keys) {
+                const keyboardEvent = new KeyboardEvent('keyup', {
+                    key: key,
+                    shiftKey: true
+                });
+                inputElement.dispatchEvent(keyboardEvent);
+                inputElement.value += key;
+                yield DOMTestingUtility.delay(10);
+            }
+            console.log('customElement.componentActive', customElement.componentActive);
+            collection = unorderedListElement.children;
+            chai.expect(collection).is.instanceOf(HTMLCollection);
+            chai.expect(collection.length).eq(expectedNumberOfSuggestions);
+            const node = yield DOMTestingUtility.getDocumentNode('#light-dom-input');
+            const lightDomInput = node;
+            lightDomInput.dispatchEvent(focusEvent);
+            lightDomInput.focus();
+            inputElement.dispatchEvent(blurEvent);
+            yield DOMTestingUtility.delay(50);
+            console.log('customElement.componentActive', customElement.componentActive);
+        });
     });
 });
 //# sourceMappingURL=input-autocomplete.spec.js.map

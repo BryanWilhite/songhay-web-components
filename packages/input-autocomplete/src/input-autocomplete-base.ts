@@ -125,17 +125,21 @@ export abstract class InputAutoCompleteBase extends LitElement {
         }
     }
 
-    handleBlur(e: FocusEvent): void {
+    async handleBlur(e: FocusEvent): Promise<void> { console.log('handleBlur', {e});
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
 
         e.preventDefault();
-        EVENT_HANDLER_DELAY(250).then(this.clearOrClose);
+
+        await EVENT_HANDLER_DELAY(250);
+
+        this.clearOrClose();
+        console.log('handleBlur', { componentActive: this.componentActive });
     }
 
-    handleFocus(e: FocusEvent): void {
+    handleFocus(e: FocusEvent): void { console.log('handleFocus', {e});
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
@@ -143,9 +147,10 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
         e.preventDefault();
         this.componentActive = true;
+        console.log('handleFocus', { componentActive: this.componentActive });
     }
 
-    handleKeyDown(e: KeyboardEvent): void {
+    handleKeyDown(e: KeyboardEvent): void { console.log('handleKeyDown');
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -170,7 +175,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
         }
     }
 
-    async handleKeyUp(e: KeyboardEvent): Promise<void> {
+    async handleKeyUp(e: KeyboardEvent): Promise<void> { console.log('handleKeyUp');
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -193,11 +198,8 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 break;
 
             default:
-                this.componentActive = true;
 
-                await this._autoCompleteSuggestions?.prepareSuggestions(text);
-
-                await this.requestUpdate();
+                await this.prepareSuggestions(text);
 
                 break;
         }
@@ -225,6 +227,14 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 { detail: this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex) }
             );
             this.clearData();
+        }
+    }
+
+    async prepareSuggestions(text: string): Promise<void> {
+        await this._autoCompleteSuggestions?.prepareSuggestions(text);
+
+        if (this._autoCompleteSuggestions?.hasSuggestionData()) {
+            await this.requestUpdate();
         }
     }
 

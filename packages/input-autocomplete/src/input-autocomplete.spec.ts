@@ -1,6 +1,10 @@
 import { InputAutoComplete } from './input-autocomplete';
 
 class DOMTestingUtility {
+    static delay = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
+        setTimeout(function () { resolve(); }, timeInMilliseconds);
+    })
+
     static async getDocumentNode(selector: string): Promise<Node> {
         return new Promise(resolve => {
             function requestComponent() {
@@ -21,6 +25,7 @@ describe(InputAutoComplete.name, function () {
     let shadowRoot: ShadowRoot;
     let divElement: HTMLDivElement;
     let inputElement: HTMLInputElement;
+    let unorderedListElement: HTMLUListElement;
 
     before(async function () {
         const node = await DOMTestingUtility.getDocumentNode('#web-component-container');
@@ -68,6 +73,9 @@ describe(InputAutoComplete.name, function () {
 
         inputElement = divElement.children[0] as HTMLInputElement;
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
+
+        unorderedListElement = divElement.children[1] as HTMLUListElement;
+        chai.expect(unorderedListElement).to.be.instanceOf(HTMLUListElement);
     });
 
     it('has an `input` element with expected default properties/attributes', function () {
@@ -77,5 +85,49 @@ describe(InputAutoComplete.name, function () {
         chai.expect(inputElement.id).eq(customElement.inputId);
         chai.expect(inputElement.inputMode).eq(customElement.inputMode);
         chai.expect(inputElement.placeholder).eq(customElement.placeholder);
+    });
+
+    it('has the expected number of suggestions', async function () {
+        console.log('customElement.componentActive', customElement.componentActive);
+
+        const expectedNumberOfSuggestions = 5;
+        let collection = unorderedListElement.children;
+        chai.expect(collection).is.instanceOf(HTMLCollection);
+        chai.expect(collection.length).eq(0);
+
+        const blurEvent = new FocusEvent('blur');
+        const focusEvent = new FocusEvent('focus');
+        inputElement.dispatchEvent(focusEvent);
+        inputElement.focus();
+
+        const keys = ['f', 'i', 'f'];
+
+        for (const key of keys) {
+            const keyboardEvent = new KeyboardEvent('keyup', {
+                key: key,
+                shiftKey: true
+            });
+
+            inputElement.dispatchEvent(keyboardEvent);
+            inputElement.value += key;
+
+            await DOMTestingUtility.delay(10);
+        }
+        console.log('customElement.componentActive', customElement.componentActive);
+
+        collection = unorderedListElement.children;
+        chai.expect(collection).is.instanceOf(HTMLCollection);
+        chai.expect(collection.length).eq(expectedNumberOfSuggestions);
+
+        const node = await DOMTestingUtility.getDocumentNode('#light-dom-input');
+        const lightDomInput = node as HTMLInputElement;
+        lightDomInput.dispatchEvent(focusEvent);
+        lightDomInput.focus();
+
+        inputElement.dispatchEvent(blurEvent);
+
+        await DOMTestingUtility.delay(10);
+
+        console.log('customElement.componentActive', customElement.componentActive);
     });
 });

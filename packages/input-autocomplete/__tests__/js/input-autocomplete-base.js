@@ -116,22 +116,30 @@ export class InputAutoCompleteBase extends LitElement {
         }
     }
     handleBlur(e) {
-        if (!e) {
-            console.error(`The expected \`${FocusEvent.name}\` is not here.`);
-            return;
-        }
-        e.preventDefault();
-        EVENT_HANDLER_DELAY(250).then(this.clearOrClose);
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('handleBlur', { e });
+            if (!e) {
+                console.error(`The expected \`${FocusEvent.name}\` is not here.`);
+                return;
+            }
+            e.preventDefault();
+            yield EVENT_HANDLER_DELAY(250);
+            this.clearOrClose();
+            console.log('handleBlur', { componentActive: this.componentActive });
+        });
     }
     handleFocus(e) {
+        console.log('handleFocus', { e });
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
         e.preventDefault();
         this.componentActive = true;
+        console.log('handleFocus', { componentActive: this.componentActive });
     }
     handleKeyDown(e) {
+        console.log('handleKeyDown');
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -153,8 +161,8 @@ export class InputAutoCompleteBase extends LitElement {
         }
     }
     handleKeyUp(e) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('handleKeyUp');
             if (!e) {
                 console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
                 return;
@@ -173,9 +181,7 @@ export class InputAutoCompleteBase extends LitElement {
                     this.clearSelection(true);
                     break;
                 default:
-                    this.componentActive = true;
-                    yield ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.prepareSuggestions(text));
-                    yield this.requestUpdate();
+                    yield this.prepareSuggestions(text);
                     break;
             }
         });
@@ -200,6 +206,15 @@ export class InputAutoCompleteBase extends LitElement {
             this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex) });
             this.clearData();
         }
+    }
+    prepareSuggestions(text) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            yield ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.prepareSuggestions(text));
+            if ((_b = this._autoCompleteSuggestions) === null || _b === void 0 ? void 0 : _b.hasSuggestionData()) {
+                yield this.requestUpdate();
+            }
+        });
     }
     updated(changedProperties) {
         super.updated(changedProperties);

@@ -15,7 +15,6 @@ export class AutoCompleteSuggestions {
         this.minInput = minInput;
     }
     clearData() {
-        console.log('AutoCompleteSuggestions.clearData');
         this.suggestionData = [];
     }
     getSuggestionDatum(index) {

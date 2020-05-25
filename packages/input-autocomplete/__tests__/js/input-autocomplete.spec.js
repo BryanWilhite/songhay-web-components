@@ -85,18 +85,28 @@ describe(InputAutoComplete.name, function () {
         chai.expect(inputElement.inputMode).eq(customElement.inputMode);
         chai.expect(inputElement.placeholder).eq(customElement.placeholder);
     });
-    it('has the expected number of suggestions', function () {
+    it('has the expected number of suggestions after handling DOM events', function () {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('customElement.componentActive', customElement.componentActive);
+            const spyOn_handleFocus = chai.spy.on(customElement, 'handleFocus');
+            const spyOn_handleKeyUp = chai.spy.on(customElement, 'handleKeyUp');
             const expectedNumberOfSuggestions = 5;
+            this.timeout(500);
+            //#region expected initial state:
+            chai.expect(customElement.componentActive).to.eq(false);
             let collection = unorderedListElement.children;
             chai.expect(collection).is.instanceOf(HTMLCollection);
             chai.expect(collection.length).eq(0);
-            const blurEvent = new FocusEvent('blur');
+            //#endregion
+            yield DOMTestingUtility.delay(10);
+            //#region expected `focus` state:
             const focusEvent = new FocusEvent('focus');
             inputElement.dispatchEvent(focusEvent);
+            yield DOMTestingUtility.delay(10);
+            chai.expect(spyOn_handleFocus).to.have.been.called();
             inputElement.focus();
+            //#endregion
             const keys = ['f', 'i', 'f'];
+            //#region expected `keyup` states:
             for (const key of keys) {
                 const keyboardEvent = new KeyboardEvent('keyup', {
                     key: key,
@@ -106,17 +116,20 @@ describe(InputAutoComplete.name, function () {
                 inputElement.value += key;
                 yield DOMTestingUtility.delay(10);
             }
-            console.log('customElement.componentActive', customElement.componentActive);
+            chai.expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
+            chai.expect(customElement.componentActive).to.eq(true);
             collection = unorderedListElement.children;
             chai.expect(collection).is.instanceOf(HTMLCollection);
             chai.expect(collection.length).eq(expectedNumberOfSuggestions);
-            const node = yield DOMTestingUtility.getDocumentNode('#light-dom-input');
-            const lightDomInput = node;
-            lightDomInput.dispatchEvent(focusEvent);
-            lightDomInput.focus();
+            //#endregion
+            yield DOMTestingUtility.delay(10);
+            //#region expected `blur` state:
+            const blurEvent = new FocusEvent('blur');
             inputElement.dispatchEvent(blurEvent);
-            yield DOMTestingUtility.delay(50);
-            console.log('customElement.componentActive', customElement.componentActive);
+            yield DOMTestingUtility.delay(251); // `handleBlur` has a delay of 250ms 🕗
+            chai.expect(customElement.componentActive).to.eq(false);
+            inputElement.value = '';
+            //#endregion
         });
     });
 });

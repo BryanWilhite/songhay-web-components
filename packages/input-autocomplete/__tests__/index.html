@@ -15,17 +15,15 @@
         <div id="mocha"></div>
         <div class="mdc-typography mdc-layout-grid">
             <div class="mdc-layout-grid__cell">
-                <input id="light-dom-input" placeholder="light DOM input" type="text" />
-            </div>
-            <div class="mdc-layout-grid__cell">
                 <div id="web-component-container">
                     <rx-input-autocomplete inputId="my-input" placeholder="enter here"></rx-input-autocomplete>
                 </div>
             </div>
         </div>
 
-        <script src="../../../node_modules/chai/chai.js"></script>
         <script src="../../../node_modules/mocha/mocha.js"></script>
+        <script src="../../../node_modules/chai/chai.js"></script>
+        <script src="../../../node_modules/chai-spies/chai-spies.js"></script>
         <script src="../../../node_modules/tslib/tslib.js"></script>
 
         <script class="mocha-init">

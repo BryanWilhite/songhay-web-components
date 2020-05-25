@@ -15,6 +15,10 @@ Key.ArrowDown = 'ArrowDown';
 Key.ArrowUp = 'ArrowUp';
 /**
  * @summary `KeyboardEvent.key` value
+ */
+Key.Backspace = 'Backspace';
+/**
+ * @summary `KeyboardEvent.key` value
  *
  * @description Supports the `Enter` or ↵ key (sometimes labeled Return).
  */

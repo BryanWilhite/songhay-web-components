@@ -45,20 +45,25 @@ export class InputAutoCompleteBase extends LitElement {
     }
     clearData() {
         var _a;
-        (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.clearData();
-        this.activeSuggestionIndex = -1;
-        this.componentActive = false;
+        return __awaiter(this, void 0, void 0, function* () {
+            (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.clearData();
+            yield this.requestUpdate();
+            this.activeSuggestionIndex = -1;
+            this.componentActive = false;
+        });
     }
     clearOrClose() {
-        if (!this.componentActive) {
-            return;
-        }
-        if (this.value) {
-            this.clearData();
-        }
-        else {
-            this.close();
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.componentActive) {
+                return;
+            }
+            if (this.value) {
+                yield this.clearData();
+            }
+            else {
+                yield this.close();
+            }
+        });
     }
     clearSelection(clearOnlyValue = false) {
         if (this.value !== '') {
@@ -70,8 +75,10 @@ export class InputAutoCompleteBase extends LitElement {
         }
     }
     close() {
-        this.clearSelection();
-        this.clearData();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.clearSelection();
+            yield this.clearData();
+        });
     }
     dispatchCustomEvent(eventName, data) {
         switch (eventName) {
@@ -117,52 +124,47 @@ export class InputAutoCompleteBase extends LitElement {
     }
     handleBlur(e) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('handleBlur', { e });
             if (!e) {
                 console.error(`The expected \`${FocusEvent.name}\` is not here.`);
                 return;
             }
             e.preventDefault();
             yield EVENT_HANDLER_DELAY(250);
-            this.clearOrClose();
-            console.log('handleBlur', { componentActive: this.componentActive });
+            yield this.close();
         });
     }
     handleFocus(e) {
-        console.log('handleFocus', { e });
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
-        e.preventDefault();
         this.componentActive = true;
-        console.log('handleFocus', { componentActive: this.componentActive });
     }
     handleKeyDown(e) {
-        console.log('handleKeyDown');
-        if (!e) {
-            console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
-            return;
-        }
-        switch (e.key) {
-            case Key.ArrowDown:
-            case Key.ArrowUp:
-                e.preventDefault();
-                this.handleActivation(e.key);
-                break;
-            case Key.Enter:
-            case Key.Tab:
-                e.preventDefault();
-                this.handleSuggestionSelection(this.activeSuggestionIndex);
-                break;
-            case Key.Escape:
-                this.close();
-                break;
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!e) {
+                console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
+                return;
+            }
+            switch (e.key) {
+                case Key.ArrowDown:
+                case Key.ArrowUp:
+                    e.preventDefault();
+                    this.handleActivation(e.key);
+                    break;
+                case Key.Enter:
+                case Key.Tab:
+                    e.preventDefault();
+                    this.handleSuggestionSelection(this.activeSuggestionIndex);
+                    break;
+                case Key.Escape:
+                    yield this.close();
+                    break;
+            }
+        });
     }
     handleKeyUp(e) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('handleKeyUp');
             if (!e) {
                 console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
                 return;
@@ -187,25 +189,27 @@ export class InputAutoCompleteBase extends LitElement {
         });
     }
     handleSuggestionSelection(suggestionIndex) {
-        //#region functional members:
         var _a;
-        const suggestionIndexIsValid = () => {
-            var _a;
-            return suggestionIndex >= 0 &&
-                suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
-        };
-        const setTextAndValue = () => {
-            var _a;
-            const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
-            this.text = datum.text;
-            this.value = datum.value;
-        };
-        //#endregion
-        if (suggestionIndexIsValid()) {
-            setTextAndValue();
-            this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex) });
-            this.clearData();
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            //#region functional members:
+            const suggestionIndexIsValid = () => {
+                var _a;
+                return suggestionIndex >= 0 &&
+                    suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
+            };
+            const setTextAndValue = () => {
+                var _a;
+                const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
+                this.text = datum.text;
+                this.value = datum.value;
+            };
+            //#endregion
+            if (suggestionIndexIsValid()) {
+                setTextAndValue();
+                this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex) });
+                yield this.clearData();
+            }
+        });
     }
     prepareSuggestions(text) {
         var _a, _b;

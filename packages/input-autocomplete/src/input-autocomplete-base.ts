@@ -44,22 +44,25 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
     @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
-    clearData(): void {
+    async clearData(): Promise<void> {
         this._autoCompleteSuggestions?.clearData();
+
+        await this.requestUpdate();
+
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
     }
 
-    clearOrClose(): void {
+    async clearOrClose(): Promise<void> {
 
         if (!this.componentActive) {
             return;
         }
 
         if (this.value) {
-            this.clearData();
+            await this.clearData();
         } else {
-            this.close();
+            await this.close();
         }
     }
 
@@ -77,9 +80,11 @@ export abstract class InputAutoCompleteBase extends LitElement {
         }
     }
 
-    close(): void {
+    async close(): Promise<void> {
         this.clearSelection();
-        this.clearData();
+
+        await this.clearData();
+
     }
 
     dispatchCustomEvent(eventName: string, data: { detail: any }): void {
@@ -125,7 +130,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
         }
     }
 
-    async handleBlur(e: FocusEvent): Promise<void> { console.log('handleBlur', {e});
+    async handleBlur(e: FocusEvent): Promise<void> {
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
@@ -135,22 +140,19 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
         await EVENT_HANDLER_DELAY(250);
 
-        this.clearOrClose();
-        console.log('handleBlur', { componentActive: this.componentActive });
+        await this.close();
     }
 
-    handleFocus(e: FocusEvent): void { console.log('handleFocus', {e});
+    handleFocus(e: FocusEvent): void {
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
             return;
         }
 
-        e.preventDefault();
         this.componentActive = true;
-        console.log('handleFocus', { componentActive: this.componentActive });
     }
 
-    handleKeyDown(e: KeyboardEvent): void { console.log('handleKeyDown');
+    async handleKeyDown(e: KeyboardEvent): Promise<void> {
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -170,12 +172,14 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 break;
 
             case Key.Escape:
-                this.close();
+
+                await this.close();
+
                 break;
         }
     }
 
-    async handleKeyUp(e: KeyboardEvent): Promise<void> { console.log('handleKeyUp');
+    async handleKeyUp(e: KeyboardEvent): Promise<void> {
         if (!e) {
             console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
             return;
@@ -205,7 +209,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
         }
     }
 
-    handleSuggestionSelection(suggestionIndex: number): void {
+    async handleSuggestionSelection(suggestionIndex: number): Promise<void> {
         //#region functional members:
 
         const suggestionIndexIsValid = () =>
@@ -226,7 +230,9 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 CUSTOM_EVENT_NAME_SELECTED,
                 { detail: this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex) }
             );
-            this.clearData();
+
+            await this.clearData();
+
         }
     }
 

@@ -16,6 +16,11 @@ export class Key {
 
     /**
      * @summary `KeyboardEvent.key` value
+     */
+    static Backspace = 'Backspace';
+
+    /**
+     * @summary `KeyboardEvent.key` value
      *
      * @description Supports the `Enter` or ↵ key (sometimes labeled Return).
      */

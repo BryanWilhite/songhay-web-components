@@ -60,19 +60,29 @@ describe(InputAutoComplete.name, function () {
             { text: 'fifty-four', value: '54' },
             { text: 'fifty-five', value: '55' },
         ].filter(i => {
-            return i.text.startsWith(text);
+            return text ? i.text.startsWith(text) : false;
         }));
     });
     it('has a `shadowRoot`', function () {
         shadowRoot = customElement.shadowRoot;
         chai.expect(shadowRoot).to.be.instanceOf(ShadowRoot);
     });
-    it('has a `shadowRoot` with container, input element and suggestions element', function () {
+    it('has a `shadowRoot` with `style` element, container, input element and suggestions element', function () {
+        const expectedShadowRootElementNames = [
+            'div',
+            'style',
+            'style',
+            'style',
+        ];
         chai.expect(shadowRoot.children).to.be.instanceOf(HTMLCollection);
-        chai.expect(shadowRoot.children.length).to.be.eq(1);
+        chai.expect(shadowRoot.children.length).to.be.eq(expectedShadowRootElementNames.length);
+        const expectedContainerElementNames = [
+            'input',
+            'ul'
+        ];
         divElement = shadowRoot.children[0];
         chai.expect(divElement).to.be.instanceOf(HTMLDivElement);
-        chai.expect(divElement.children.length).to.be.eq(2);
+        chai.expect(divElement.children.length).to.be.eq(expectedContainerElementNames.length);
         inputElement = divElement.children[0];
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
         unorderedListElement = divElement.children[1];

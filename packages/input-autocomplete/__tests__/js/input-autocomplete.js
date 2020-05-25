@@ -5,12 +5,47 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { html } from 'lit-html';
+import { css } from 'lit-element/lib/css-tag';
 import { customElement } from 'lit-element/lib/decorators';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
+    static get styles() {
+        return css `
+            div > ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            div > ul > li > button {
+                border: none;
+                cursor: pointer;
+            }
+        `;
+    }
     render() {
         var _a;
+        const cssSuggestionAlignmentBlock = html `
+            <style>
+                :host div > ul > li > button {
+                    text-align: ${this.cssSuggestionAlignment};
+                }
+            </style>
+        `;
+        const cssWidthStyleBlock = html `
+            <style>
+                :host div {
+                    width: ${this.cssWidth};
+                }
+
+                :host div > input,
+                :host div > ul,
+                :host div > ul > li,
+                :host div > ul > li > button {
+                    width: 100%;
+                }
+            </style>`;
         return html `
         <div .class=${this.cssClasses.wrapper}>
             <input
@@ -36,7 +71,11 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             <ul class="${this.cssClasses.suggestions}">
                 ${(_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
             </ul>
-        </div>`;
+        </div>
+
+        ${this.cssWidth ? cssWidthStyleBlock : html ``}
+        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html ``}
+        `;
     }
     renderSuggestion(suggestion, index) {
         return html `

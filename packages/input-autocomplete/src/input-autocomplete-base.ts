@@ -8,6 +8,7 @@ import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 
+import { CssTextAlignment } from './types/css-text-alignment';
 import { InputModes } from './types/input-modes';
 
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
@@ -29,6 +30,9 @@ export abstract class InputAutoCompleteBase extends LitElement {
     protected _autoCompleteSuggestions = new AutoCompleteSuggestions();
 
     @property({ type: String }) inputId = '';
+
+    @property({ type: String }) cssSuggestionAlignment: CssTextAlignment | '' = '';
+    @property({ type: String }) cssWidth = '';
     @property({ type: String }) placeholder = '';
     @property({ type: String }) text = '';
     @property({ type: String }) value = '';
@@ -51,19 +55,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
-    }
-
-    async clearOrClose(): Promise<void> {
-
-        if (!this.componentActive) {
-            return;
-        }
-
-        if (this.value) {
-            await this.clearData();
-        } else {
-            await this.close();
-        }
     }
 
     clearSelection(clearOnlyValue = false): void {

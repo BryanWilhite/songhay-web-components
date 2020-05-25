@@ -1,4 +1,5 @@
-import { TemplateResult, html } from 'lit-html';
+import { html, TemplateResult } from 'lit-html';
+import { css } from 'lit-element/lib/css-tag';
 import { customElement } from 'lit-element/lib/decorators';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
@@ -9,10 +10,47 @@ const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 
 @customElement(CUSTOM_ELEMENT_NAME)
 export class InputAutoComplete extends InputAutoCompleteBase {
-
     static customElementName = CUSTOM_ELEMENT_NAME;
 
+    static get styles() {
+        return css`
+            div > ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            div > ul > li > button {
+                border: none;
+                cursor: pointer;
+            }
+        `;
+    }
+
     render(): TemplateResult {
+
+        const cssSuggestionAlignmentBlock = html`
+            <style>
+                :host div > ul > li > button {
+                    text-align: ${this.cssSuggestionAlignment};
+                }
+            </style>
+        `;
+
+        const cssWidthStyleBlock = html`
+            <style>
+                :host div {
+                    width: ${this.cssWidth};
+                }
+
+                :host div > input,
+                :host div > ul,
+                :host div > ul > li,
+                :host div > ul > li > button {
+                    width: 100%;
+                }
+            </style>`;
+
         return html`
         <div .class=${this.cssClasses.wrapper}>
             <input
@@ -40,7 +78,11 @@ export class InputAutoComplete extends InputAutoCompleteBase {
                 ?.suggestionData.map((suggestion, index) =>
                     this.renderSuggestion(suggestion, index))}
             </ul>
-        </div>`;
+        </div>
+
+        ${this.cssWidth ? cssWidthStyleBlock : html``}
+        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html``}
+        `;
     }
 
     renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult {

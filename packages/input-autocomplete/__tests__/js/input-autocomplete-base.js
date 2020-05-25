@@ -32,6 +32,8 @@ export class InputAutoCompleteBase extends LitElement {
         this.componentActive = false;
         this._autoCompleteSuggestions = new AutoCompleteSuggestions();
         this.inputId = '';
+        this.cssSuggestionAlignment = '';
+        this.cssWidth = '';
         this.placeholder = '';
         this.text = '';
         this.value = '';
@@ -50,19 +52,6 @@ export class InputAutoCompleteBase extends LitElement {
             yield this.requestUpdate();
             this.activeSuggestionIndex = -1;
             this.componentActive = false;
-        });
-    }
-    clearOrClose() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.componentActive) {
-                return;
-            }
-            if (this.value) {
-                yield this.clearData();
-            }
-            else {
-                yield this.close();
-            }
         });
     }
     clearSelection(clearOnlyValue = false) {
@@ -232,6 +221,14 @@ __decorate([
     property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "inputId", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", String)
+], InputAutoCompleteBase.prototype, "cssSuggestionAlignment", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoCompleteBase.prototype, "cssWidth", void 0);
 __decorate([
     property({ type: String }),
     __metadata("design:type", Object)

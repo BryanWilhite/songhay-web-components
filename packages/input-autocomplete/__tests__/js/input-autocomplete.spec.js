@@ -60,14 +60,14 @@ describe(InputAutoComplete.name, function () {
             { text: 'fifty-four', value: '54' },
             { text: 'fifty-five', value: '55' },
         ].filter(i => {
-            return text ? i.text.startsWith(text) : false;
+            return (text !== '') ? i.text.startsWith(text) : false;
         }));
     });
     it('has a `shadowRoot`', function () {
         shadowRoot = customElement.shadowRoot;
         chai.expect(shadowRoot).to.be.instanceOf(ShadowRoot);
     });
-    it('has a `shadowRoot` with `style` element, container, input element and suggestions element', function () {
+    it('has a `shadowRoot` with `style` element(s) and container', function () {
         const expectedShadowRootElementNames = [
             'div',
             'style',
@@ -83,6 +83,8 @@ describe(InputAutoComplete.name, function () {
         divElement = shadowRoot.children[0];
         chai.expect(divElement).to.be.instanceOf(HTMLDivElement);
         chai.expect(divElement.children.length).to.be.eq(expectedContainerElementNames.length);
+    });
+    it('has an input element and suggestions element', function () {
         inputElement = divElement.children[0];
         chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
         unorderedListElement = divElement.children[1];

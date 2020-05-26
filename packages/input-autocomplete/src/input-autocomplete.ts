@@ -1,6 +1,7 @@
 import { html, TemplateResult } from 'lit-html';
 import { css } from 'lit-element/lib/css-tag';
 import { customElement } from 'lit-element/lib/decorators';
+import { PropertyValues } from 'lit-element/lib/updating-element';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 
@@ -11,6 +12,8 @@ const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 @customElement(CUSTOM_ELEMENT_NAME)
 export class InputAutoComplete extends InputAutoCompleteBase {
     static customElementName = CUSTOM_ELEMENT_NAME;
+
+    suggestionsContainer: HTMLUListElement | null = null;
 
     static get styles() {
         return css`
@@ -25,6 +28,11 @@ export class InputAutoComplete extends InputAutoCompleteBase {
                 cursor: pointer;
             }
         `;
+    }
+
+    firstUpdated(changedProperties: PropertyValues) {
+        super.firstUpdated(changedProperties);
+        this.setSuggestionsContainer();
     }
 
     render(): TemplateResult {
@@ -89,14 +97,60 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         return html`
         <li>
             <button
-                @click="${() => this.handleSuggestionSelection(index)}"
+                type="button"
 
                 .class="${this.getSuggestionsCssClasses(index)}"
                 .data-value="${suggestion.value}"
 
-                type="button">
+                @click="${() => this.handleSuggestionClick(index)}"
+                >
                 ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
             </button>
         </li>`;
+    }
+
+    setSuggestionsContainer(): void {
+        const collection = this.shadowRoot?.children;
+
+        if (!collection) {
+            console.error(`The expected \`${HTMLCollection.name}\` is not here.`);
+            return;
+        }
+
+        const div = Array.from(collection)
+            .find(i => i.tagName.toLowerCase() === 'div') as HTMLDivElement;
+
+        if (!div) {
+            console.error(`The expected \`${HTMLDivElement.name}\` is not here.`);
+            return;
+        }
+
+        this.suggestionsContainer = Array.from(div.children)
+            .find(i => i.tagName.toLowerCase() === 'ul') as HTMLUListElement;
+
+        if (!this.suggestionsContainer) {
+            console.error(`The expected \`${HTMLUListElement.name}\` is not here.`);
+            return;
+        }
+    }
+
+    handleSuggestionSelection(suggestionIndex: number): void {
+        if (!this.suggestionsContainer) {
+            return;
+        }
+
+        const className = 'selected';
+
+        Array
+            .from(this.suggestionsContainer.children)
+            .forEach((li, index) => {
+                if (li.classList.contains(className)) {
+                    li.classList.remove(className);
+                }
+
+                if (suggestionIndex === index) {
+                    li.classList.add(className);
+                }
+            });
     }
 }

@@ -10,6 +10,10 @@ import { customElement } from 'lit-element/lib/decorators';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
+    constructor() {
+        super(...arguments);
+        this.suggestionsContainer = null;
+    }
     static get styles() {
         return css `
             div > ul {
@@ -23,6 +27,10 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 cursor: pointer;
             }
         `;
+    }
+    firstUpdated(changedProperties) {
+        super.firstUpdated(changedProperties);
+        this.setSuggestionsContainer();
     }
     render() {
         var _a;
@@ -81,15 +89,52 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         return html `
         <li>
             <button
-                @click="${() => this.handleSuggestionSelection(index)}"
+                type="button"
 
                 .class="${this.getSuggestionsCssClasses(index)}"
                 .data-value="${suggestion.value}"
 
-                type="button">
+                @click="${() => this.handleSuggestionClick(index)}"
+                >
                 ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
             </button>
         </li>`;
+    }
+    setSuggestionsContainer() {
+        var _a;
+        const collection = (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.children;
+        if (!collection) {
+            console.error(`The expected \`${HTMLCollection.name}\` is not here.`);
+            return;
+        }
+        const div = Array.from(collection)
+            .find(i => i.tagName.toLowerCase() === 'div');
+        if (!div) {
+            console.error(`The expected \`${HTMLDivElement.name}\` is not here.`);
+            return;
+        }
+        this.suggestionsContainer = Array.from(div.children)
+            .find(i => i.tagName.toLowerCase() === 'ul');
+        if (!this.suggestionsContainer) {
+            console.error(`The expected \`${HTMLUListElement.name}\` is not here.`);
+            return;
+        }
+    }
+    handleSuggestionSelection(suggestionIndex) {
+        if (!this.suggestionsContainer) {
+            return;
+        }
+        const className = 'selected';
+        Array
+            .from(this.suggestionsContainer.children)
+            .forEach((li, index) => {
+            if (li.classList.contains(className)) {
+                li.classList.remove(className);
+            }
+            if (suggestionIndex === index) {
+                li.classList.add(className);
+            }
+        });
     }
 };
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;

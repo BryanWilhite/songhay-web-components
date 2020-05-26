@@ -80,37 +80,6 @@ export class InputAutoCompleteBase extends LitElement {
     getSuggestionsCssClasses(index) {
         return `${this.cssClasses.suggestion}${(this.activeSuggestionIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
-    handleActivation(key) {
-        var _a;
-        if (!((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.hasSuggestionData())) {
-            return;
-        }
-        const isKeyDown = (key === Key.ArrowDown);
-        //#region functional members:
-        const activeSuggestionIndexIsValid = () => {
-            var _a;
-            return ((this.activeSuggestionIndex + 1) < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()));
-        };
-        const setActiveSuggestionIndexBoundary = () => {
-            var _a;
-            if (isKeyDown) {
-                this.activeSuggestionIndex = 0;
-            }
-            else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
-                this.activeSuggestionIndex -= 1;
-            }
-            else if (!isKeyDown) {
-                this.activeSuggestionIndex = ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()) - 1;
-            }
-        };
-        //#endregion
-        if (isKeyDown && activeSuggestionIndexIsValid()) {
-            this.activeSuggestionIndex += 1;
-        }
-        else {
-            setActiveSuggestionIndexBoundary();
-        }
-    }
     handleBlur(e) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!e) {
@@ -138,13 +107,12 @@ export class InputAutoCompleteBase extends LitElement {
             switch (e.key) {
                 case Key.ArrowDown:
                 case Key.ArrowUp:
-                    e.preventDefault();
-                    this.handleActivation(e.key);
+                    this.setActiveSuggestionIndex(e.key);
+                    this.handleSuggestionSelection(this.activeSuggestionIndex);
                     break;
                 case Key.Enter:
                 case Key.Tab:
-                    e.preventDefault();
-                    this.handleSuggestionSelection(this.activeSuggestionIndex);
+                    this.handleSuggestionClick(this.activeSuggestionIndex);
                     break;
                 case Key.Escape:
                     yield this.close();
@@ -177,7 +145,7 @@ export class InputAutoCompleteBase extends LitElement {
             }
         });
     }
-    handleSuggestionSelection(suggestionIndex) {
+    handleSuggestionClick(suggestionIndex) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             //#region functional members:
@@ -195,19 +163,50 @@ export class InputAutoCompleteBase extends LitElement {
             //#endregion
             if (suggestionIndexIsValid()) {
                 setTextAndValue();
-                this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, { detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex) });
+                this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, {
+                    detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex)
+                });
                 yield this.clearData();
             }
         });
     }
     prepareSuggestions(text) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             yield ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.prepareSuggestions(text));
-            if ((_b = this._autoCompleteSuggestions) === null || _b === void 0 ? void 0 : _b.hasSuggestionData()) {
-                yield this.requestUpdate();
-            }
+            yield this.requestUpdate();
         });
+    }
+    setActiveSuggestionIndex(key) {
+        var _a;
+        if (!((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.hasSuggestionData())) {
+            return;
+        }
+        const isKeyDown = (key === Key.ArrowDown);
+        //#region functional members:
+        const activeSuggestionIndexIsValid = () => {
+            var _a;
+            return ((this.activeSuggestionIndex + 1) < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()));
+        };
+        const setActiveSuggestionIndexBoundary = () => {
+            var _a;
+            if (isKeyDown) {
+                this.activeSuggestionIndex = 0;
+            }
+            else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
+                this.activeSuggestionIndex -= 1;
+            }
+            else if (!isKeyDown) {
+                this.activeSuggestionIndex = ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()) - 1;
+            }
+        };
+        //#endregion
+        if (isKeyDown && activeSuggestionIndexIsValid()) {
+            this.activeSuggestionIndex += 1;
+        }
+        else {
+            setActiveSuggestionIndexBoundary();
+        }
     }
     updated(changedProperties) {
         super.updated(changedProperties);

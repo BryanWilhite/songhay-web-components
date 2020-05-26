@@ -32,6 +32,8 @@ export abstract class InputAutoCompleteBase extends LitElement {
     @property({ type: String }) inputId = '';
 
     @property({ type: String }) cssSuggestionAlignment: CssTextAlignment | '' = '';
+    @property({ type: String }) cssSuggestionSelectedCommand = '';
+    @property({ type: String }) cssSuggestionSelectedContainer = '';
     @property({ type: String }) cssWidth = '';
     @property({ type: String }) placeholder = '';
     @property({ type: String }) text = '';

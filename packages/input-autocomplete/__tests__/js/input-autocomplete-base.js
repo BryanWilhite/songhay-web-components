@@ -33,6 +33,8 @@ export class InputAutoCompleteBase extends LitElement {
         this._autoCompleteSuggestions = new AutoCompleteSuggestions();
         this.inputId = '';
         this.cssSuggestionAlignment = '';
+        this.cssSuggestionSelectedCommand = '';
+        this.cssSuggestionSelectedContainer = '';
         this.cssWidth = '';
         this.placeholder = '';
         this.text = '';
@@ -224,6 +226,14 @@ __decorate([
     property({ type: String }),
     __metadata("design:type", String)
 ], InputAutoCompleteBase.prototype, "cssSuggestionAlignment", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoCompleteBase.prototype, "cssSuggestionSelectedCommand", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", Object)
+], InputAutoCompleteBase.prototype, "cssSuggestionSelectedContainer", void 0);
 __decorate([
     property({ type: String }),
     __metadata("design:type", Object)

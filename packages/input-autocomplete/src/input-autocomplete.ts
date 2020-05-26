@@ -8,6 +8,7 @@ import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
+const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
 
 @customElement(CUSTOM_ELEMENT_NAME)
 export class InputAutoComplete extends InputAutoCompleteBase {
@@ -59,6 +60,18 @@ export class InputAutoComplete extends InputAutoCompleteBase {
                 }
             </style>`;
 
+        const cssSuggestionSelectedBlock = html`
+            <style>
+                ${this.cssSuggestionSelectedContainer ?
+                    html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} ${this.cssSuggestionSelectedContainer}`
+                    :
+                    html``}
+                ${this.cssSuggestionSelectedCommand ?
+                    html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button ${this.cssSuggestionSelectedCommand}`
+                    :
+                    html``}
+            </style>`;
+
         return html`
         <div .class=${this.cssClasses.wrapper}>
             <input
@@ -90,6 +103,8 @@ export class InputAutoComplete extends InputAutoCompleteBase {
 
         ${this.cssWidth ? cssWidthStyleBlock : html``}
         ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html``}
+        ${
+            (this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html``}
         `;
     }
 
@@ -139,17 +154,15 @@ export class InputAutoComplete extends InputAutoCompleteBase {
             return;
         }
 
-        const className = 'selected';
-
         Array
             .from(this.suggestionsContainer.children)
             .forEach((li, index) => {
-                if (li.classList.contains(className)) {
-                    li.classList.remove(className);
+                if (li.classList.contains(SUGGESTION_SELECTED_CSS_CLASS_NAME)) {
+                    li.classList.remove(SUGGESTION_SELECTED_CSS_CLASS_NAME);
                 }
 
                 if (suggestionIndex === index) {
-                    li.classList.add(className);
+                    li.classList.add(SUGGESTION_SELECTED_CSS_CLASS_NAME);
                 }
             });
     }

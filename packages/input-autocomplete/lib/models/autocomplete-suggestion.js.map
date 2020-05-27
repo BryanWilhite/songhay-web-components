@@ -1,1 +1,0 @@
-{"version":3,"file":"autocomplete-suggestion.js","sourceRoot":"","sources":["../../src/models/autocomplete-suggestion.ts"],"names":[],"mappings":"","sourcesContent":["export interface AutoCompleteSuggestion { text: string, value: string, suggestion?: string }"]}

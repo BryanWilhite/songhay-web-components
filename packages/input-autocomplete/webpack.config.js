@@ -1,5 +1,6 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     entry: './src/input-autocomplete.ts',
@@ -23,6 +24,10 @@ module.exports = {
         /^lit-element\/.+$/,
         'lit-html',
     ],
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
+    },
     output: {
         path: path.resolve(__dirname, 'lib'),
         filename: 'index.js'

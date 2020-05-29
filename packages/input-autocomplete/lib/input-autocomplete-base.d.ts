@@ -1,0 +1,43 @@
+import { LitElement, PropertyValues } from 'lit-element';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
+import { ComponentCssClasses } from './models/component-css-classes';
+import { CssTextAlignment } from './types/css-text-alignment';
+import { InputModes } from './types/input-modes';
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
+export declare abstract class InputAutoCompleteBase extends LitElement {
+    static suggestionGeneratorPropertyName: string;
+    activeSuggestionIndex: number;
+    componentActive: boolean;
+    protected _autoCompleteSuggestions: AutoCompleteSuggestions;
+    inputId: string;
+    cssSuggestionAlignment: CssTextAlignment | '';
+    cssSuggestionSelectedCommand: string;
+    cssSuggestionSelectedContainer: string;
+    cssWidth: string;
+    placeholder: string;
+    text: string;
+    value: string;
+    disabled: boolean;
+    required: boolean;
+    maxSuggestions: number;
+    minInput: number;
+    cssClasses: ComponentCssClasses;
+    inputMode: InputModes;
+    suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
+    clearData(): Promise<void>;
+    clearSelection(clearOnlyValue?: boolean): void;
+    close(): Promise<void>;
+    dispatchCustomEvent(eventName: string, data: {
+        detail: any;
+    }): void;
+    getSuggestionsCssClasses(index: number): string;
+    handleBlur(e: FocusEvent): Promise<void>;
+    handleFocus(e: FocusEvent): void;
+    handleKeyDown(e: KeyboardEvent): Promise<void>;
+    handleKeyUp(e: KeyboardEvent): Promise<void>;
+    handleSuggestionClick(suggestionIndex: number): Promise<void>;
+    prepareSuggestions(text: string): Promise<void>;
+    setActiveSuggestionIndex(key: string): void;
+    updated(changedProperties: PropertyValues): void;
+    protected abstract handleSuggestionSelection(suggestionIndex: number): void;
+}

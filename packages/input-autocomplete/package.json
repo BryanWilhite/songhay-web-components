@@ -14,7 +14,8 @@
     "bugs": {
         "url": "https://github.com/BryanWilhite/songhay-web-components/issues"
     },
-    "module": "lib/index.js",
+    "module": "lib/input-autocomplete.js",
+    "types": "lib/input-autocomplete.d.ts",
     "publishConfig": {
         "access": "public"
     },

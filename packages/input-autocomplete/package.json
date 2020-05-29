@@ -2,23 +2,19 @@
     "name": "@songhay/input-autocomplete",
     "version": "0.0.1",
     "description": "see README",
+    "license": "MIT",
+    "author": "Bryan Wilhite <rasx@songhaysystem.com>",
+    "homepage": "https://github.com/BryanWilhite/songhay-web-components/tree/master/packages/input-autocomplete#readme",
     "keywords": [
         "components",
         "lit-element",
         "lit-html",
         "web-components"
     ],
-    "author": "Bryan Wilhite <rasx@songhaysystem.com>",
-    "homepage": "https://github.com/BryanWilhite/songhay-web-components/tree/master/packages/input-autocomplete#readme",
-    "license": "MIT",
-    "module": "lib/index.js",
-    "directories": {
-        "lib": "lib",
-        "test": "__tests__"
+    "bugs": {
+        "url": "https://github.com/BryanWilhite/songhay-web-components/issues"
     },
-    "files": [
-        "lib"
-    ],
+    "module": "lib/index.js",
     "publishConfig": {
         "access": "public"
     },
@@ -26,11 +22,22 @@
         "type": "git",
         "url": "git+https://github.com/BryanWilhite/songhay-web-components.git"
     },
+    "directories": {
+        "lib": "lib",
+        "test": "__tests__"
+    },
+    "files": [
+        "lib"
+    ],
     "dependencies": {
         "lit-element": "2.3.1",
         "lit-html": "1.2.1"
     },
-    "bugs": {
-        "url": "https://github.com/BryanWilhite/songhay-web-components/issues"
+    "scripts": {
+        "pack": "npm pack",
+        "release": "npm run pack && npm publish",
+        "version:major": "npm version major -m \":rocket: :snowflake: version major up to %s\"",
+        "version:minor": "npm version minor -m \":rocket: :snowflake: version minor up to %s\"",
+        "version:patch": "npm version patch -m \":rocket: :snowflake: version patch up to %s\""
     }
 }

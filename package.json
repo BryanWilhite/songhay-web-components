@@ -7,11 +7,10 @@
         "lerna:build:typescript": "npx lerna exec -- tsc",
         "lerna:clean": "npx lerna clean --yes",
         "lerna:install": "npx lerna exec -- npm i",
-        "input-autocomplete:start:test": "npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
+        "input-autocomplete:start:test": "npm run input-autocomplete:tsc:test && npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
         "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts",
         "input-autocomplete:tsc": "tsc --project packages/input-autocomplete/tsconfig.json",
-        "input-autocomplete:tsc:test": "tsc --project packages/input-autocomplete/tsconfig.spec.json",
-        "input-autocomplete:webpack:prod": "npx webpack --config packages/input-autocomplete/webpack.config.js --context packages/input-autocomplete/ --mode='production' --progress"
+        "input-autocomplete:tsc:test": "tsc --project packages/input-autocomplete/tsconfig.spec.json"
     },
     "repository": {
         "type": "git",
@@ -37,16 +36,11 @@
         "@types/mocha": "^7.0.2",
         "chai": "^4.2.0",
         "chai-spies": "1.0.0",
-        "clean-webpack-plugin": "3.0.0",
         "es-dev-server": "1.50.2",
         "lerna": "^3.20.2",
         "mocha": "^7.1.2",
-        "terser-webpack-plugin": "3.0.1",
         "ts-mocha": "^7.0.0",
         "tslint": "^6.1.2",
-        "ts-loader": "7.0.4",
-        "typescript": "^3.8.3",
-        "webpack": "4.43.0",
-        "webpack-cli": "3.3.11"
+        "typescript": "^3.8.3"
     }
 }

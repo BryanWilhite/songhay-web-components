@@ -11,7 +11,7 @@
         "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts",
         "input-autocomplete:tsc": "tsc --project packages/input-autocomplete/tsconfig.json",
         "input-autocomplete:tsc:test": "tsc --project packages/input-autocomplete/tsconfig.spec.json",
-        "input-autocomplete:typedoc": "--options packages/input-autocomplete/tsconfig.json"
+        "input-autocomplete:typedoc": "cd ./packages/input-autocomplete && npx typedoc --tsconfig packages/input-autocomplete/tsconfig.json"
     },
     "repository": {
         "type": "git",

@@ -25,29 +25,124 @@ const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
     setTimeout(function () { resolve(); }, timeInMilliseconds);
 });
+/**
+ * defines the base class for this Web Component
+ *
+ * @extends {LitElement}
+ */
 export class InputAutoCompleteBase extends LitElement {
     constructor() {
         super(...arguments);
+        /**
+         * tracks the active @type {AutoCompleteSuggestion} in the DOM
+         */
         this.activeSuggestionIndex = -1;
+        /**
+         * when `true` the `input` element has received focus
+         */
         this.componentActive = false;
+        /**
+         * exposes the @type {AutoCompleteSuggestions} service
+         * to subclasses
+         */
         this._autoCompleteSuggestions = new AutoCompleteSuggestions();
+        /**
+         * LitElement property/attribute
+         * for the ID of the `input` element
+         */
         this.inputId = '';
+        /**
+         * LitElement property/attribute
+         * for the text alignment
+         * of @type {AutoCompleteSuggestion} elements
+         */
         this.cssSuggestionAlignment = '';
+        /**
+         * LitElement property/attribute
+         * for the CSS block
+         * of @type {AutoCompleteSuggestion} element command
+         * (usually a `button` element)
+         */
         this.cssSuggestionSelectedCommand = '';
+        /**
+         * LitElement property/attribute
+         * for the CSS block
+         * of @type {AutoCompleteSuggestion} element command
+         * (usually a `li` element)
+         */
         this.cssSuggestionSelectedContainer = '';
+        /**
+         * LitElement property/attribute
+         * for the CSS width of this Web Component
+         */
         this.cssWidth = '';
+        /**
+         * LitElement property/attribute
+         * for the placeholder value
+         * of the `input` element
+         */
         this.placeholder = '';
+        /**
+         * LitElement property/attribute
+         * for the text displayed in the `input` element
+         */
         this.text = '';
+        /**
+         * LitElement property/attribute
+         * for the value selected by this Web Component
+         */
         this.value = '';
+        /**
+         * LitElement property/attribute
+         * determining whether this Web Component is
+         * enabled or disabled in the DOM
+         */
         this.disabled = false;
+        /**
+         * LitElement property/attribute
+         * determining whether this Web Component
+         * value is required
+         */
         this.required = true;
+        /**
+         * LitElement property/attribute
+         * setting the maximum number
+         * of @type {AutoCompleteSuggestion} elements
+         * to display
+         */
         this.maxSuggestions = 5;
+        /**
+         * LitElement property/attribute
+         * setting the minimum number
+         * of text characters entered
+         * before @type {AutoCompleteSuggestion} elements
+         * are displayed
+         */
         this.minInput = 0;
+        /**
+         * LitElement property/attribute
+         * for all of the CSS class names
+         * of this Web Component
+         */
         this.cssClasses = new ComponentCssClasses();
+        /**
+         * LitElement property/attribute
+         * for the input mode of the `input` element
+         * for OS virtual keyboards
+         */
         this.inputMode = 'none';
+        /**
+         * LitElement property/attribute
+         * for the generation strategy
+         * of @type {AutoCompleteSuggestion} elements
+         */
         this.suggestionGenerator = () => Promise.resolve([]);
     }
-    clearData() {
+    /**
+     * clear the @type {AutoCompleteSuggestion} data
+     * and call `.requestUpdate()`
+     */
+    clearSuggestionData() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.clearData();
@@ -56,7 +151,11 @@ export class InputAutoCompleteBase extends LitElement {
             this.componentActive = false;
         });
     }
-    clearSelection(clearOnlyValue = false) {
+    /**
+     * clear any @type {AutoCompleteSuggestion}
+     * previously selected
+     */
+    clearSuggestionSelection(clearOnlyValue = false) {
         if (this.value !== '') {
             this.dispatchCustomEvent(CUSTOM_EVENT_NAME_UNSELECTED, { detail: { text: this.text, value: this.value } });
             this.value = '';
@@ -65,12 +164,19 @@ export class InputAutoCompleteBase extends LitElement {
             this.text = '';
         }
     }
+    /**
+     * clear @type {AutoCompleteSuggestion} data
+     * and selection
+     */
     close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.clearSelection();
-            yield this.clearData();
+            this.clearSuggestionSelection();
+            yield this.clearSuggestionData();
         });
     }
+    /**
+     * emit the custom events of this Web Component
+     */
     dispatchCustomEvent(eventName, data) {
         switch (eventName) {
             case CUSTOM_EVENT_NAME_SELECTED:
@@ -79,9 +185,17 @@ export class InputAutoCompleteBase extends LitElement {
                 break;
         }
     }
+    /**
+     * get CSS class names related
+     * to @type {AutoCompleteSuggestion} elements
+     */
     getSuggestionsCssClasses(index) {
         return `${this.cssClasses.suggestion}${(this.activeSuggestionIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
+    /**
+     * handle the blur event of the `input` element
+     * of this Web Component
+     */
     handleBlur(e) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!e) {
@@ -93,6 +207,10 @@ export class InputAutoCompleteBase extends LitElement {
             yield this.close();
         });
     }
+    /**
+     * handle the focus event of the `input` element
+     * of this Web Component
+     */
     handleFocus(e) {
         if (!e) {
             console.error(`The expected \`${FocusEvent.name}\` is not here.`);
@@ -100,6 +218,10 @@ export class InputAutoCompleteBase extends LitElement {
         }
         this.componentActive = true;
     }
+    /**
+     * handle the `keydown` event of the `input` element
+     * of this Web Component
+     */
     handleKeyDown(e) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!e) {
@@ -122,6 +244,10 @@ export class InputAutoCompleteBase extends LitElement {
             }
         });
     }
+    /**
+     * handle the `keyup` event of the `input` element
+     * of this Web Component
+     */
     handleKeyUp(e) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!e) {
@@ -139,7 +265,7 @@ export class InputAutoCompleteBase extends LitElement {
                 case Key.Enter:
                 case Key.Tab:
                 case Key.Escape:
-                    this.clearSelection(true);
+                    this.clearSuggestionSelection(true);
                     break;
                 default:
                     yield this.prepareSuggestions(text);
@@ -147,6 +273,11 @@ export class InputAutoCompleteBase extends LitElement {
             }
         });
     }
+    /**
+     * handle the click event
+     * of a selected @type {AutoCompleteSuggestion} element
+     * of this Web Component
+     */
     handleSuggestionClick(suggestionIndex) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -168,10 +299,14 @@ export class InputAutoCompleteBase extends LitElement {
                 this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, {
                     detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex)
                 });
-                yield this.clearData();
+                yield this.clearSuggestionData();
             }
         });
     }
+    /**
+     * prepares @type {AutoCompleteSuggestion} element display
+     * based on the specified text input
+     */
     prepareSuggestions(text) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -179,12 +314,16 @@ export class InputAutoCompleteBase extends LitElement {
             yield this.requestUpdate();
         });
     }
+    /**
+     * sets `this.activeSuggestionIndex`
+     * based on the specified Arrow-key input
+     */
     setActiveSuggestionIndex(key) {
         var _a;
         if (!((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.hasSuggestionData())) {
             return;
         }
-        const isKeyDown = (key === Key.ArrowDown);
+        const isArrowDownKey = (key === Key.ArrowDown);
         //#region functional members:
         const activeSuggestionIndexIsValid = () => {
             var _a;
@@ -192,24 +331,27 @@ export class InputAutoCompleteBase extends LitElement {
         };
         const setActiveSuggestionIndexBoundary = () => {
             var _a;
-            if (isKeyDown) {
+            if (isArrowDownKey) {
                 this.activeSuggestionIndex = 0;
             }
-            else if (!isKeyDown && (this.activeSuggestionIndex) > 0) {
+            else if (!isArrowDownKey && (this.activeSuggestionIndex) > 0) {
                 this.activeSuggestionIndex -= 1;
             }
-            else if (!isKeyDown) {
+            else if (!isArrowDownKey) {
                 this.activeSuggestionIndex = ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()) - 1;
             }
         };
         //#endregion
-        if (isKeyDown && activeSuggestionIndexIsValid()) {
+        if (isArrowDownKey && activeSuggestionIndexIsValid()) {
             this.activeSuggestionIndex += 1;
         }
         else {
             setActiveSuggestionIndexBoundary();
         }
     }
+    /**
+     * conventional LitElement method
+     */
     updated(changedProperties) {
         super.updated(changedProperties);
         if (changedProperties.has(InputAutoCompleteBase.suggestionGeneratorPropertyName)) {
@@ -217,6 +359,9 @@ export class InputAutoCompleteBase extends LitElement {
         }
     }
 }
+/**
+ * the conventional property name of `this.suggestionGenerator`
+ */
 InputAutoCompleteBase.suggestionGeneratorPropertyName = 'suggestionGenerator';
 __decorate([
     property({ type: String }),

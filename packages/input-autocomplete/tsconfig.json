@@ -11,9 +11,11 @@
     "typedocOptions": {
         "entryPoint": "./src/input-autocomplete.ts",
         "exclude": "**/*.spec.ts",
+        "excludeExternals": true,
         "inputFiles": "./src",
-        "mode": "library",
-        "out": "./docs",
-        "readme": "./README.md"
+        "mode": "modules",
+        "out": "../../docs/input-autocomplete",
+        "readme": "none",
+        "stripInternal": true
     }
 }

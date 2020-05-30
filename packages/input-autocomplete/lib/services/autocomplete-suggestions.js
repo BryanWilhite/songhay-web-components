@@ -7,25 +7,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+/**
+ * defines routines
+ * for @type {AutoCompleteSuggestion} data
+ */
 export class AutoCompleteSuggestions {
+    /**
+     * creates an instance of @type {AutoCompleteSuggestions}
+     */
     constructor(suggestionGenerator = () => Promise.resolve([]), maxSuggestions = 5, minInput = 0) {
+        /**
+         * gets/sets the array
+         * of @type {AutoCompleteSuggestion} data
+         */
         this.suggestionData = [];
         this.suggestionGenerator = suggestionGenerator;
         this.maxSuggestions = maxSuggestions;
         this.minInput = minInput;
     }
+    /**
+     * clear any @type {AutoCompleteSuggestion} data
+     */
     clearData() {
         this.suggestionData = [];
     }
+    /**
+     * get @type {AutoCompleteSuggestion} datum
+     * at the specified index
+     */
     getSuggestionDatum(index) {
         return this.suggestionData[index];
     }
+    /**
+     * get the @type {AutoCompleteSuggestion} data count
+     */
     getSuggestionDataCount() {
         return this.suggestionData.length;
     }
+    /**
+     * return `true` when this instance
+     * has @type {AutoCompleteSuggestion} data
+     */
     hasSuggestionData() {
         return this.suggestionData.length > 0;
     }
+    /**
+     * prepare @type {AutoCompleteSuggestion} data
+     * based on the specified text input
+     */
     prepareSuggestions(text) {
         return __awaiter(this, void 0, void 0, function* () {
             //#region functional members:

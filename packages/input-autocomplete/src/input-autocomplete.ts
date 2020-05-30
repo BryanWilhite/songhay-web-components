@@ -10,12 +10,29 @@ import { InputAutoCompleteBase } from './input-autocomplete-base';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
 
+/**
+ * defines rendering methods for @type {InputAutoCompleteBase}
+ *
+ * @export
+ * @extends {InputAutoCompleteBase}
+ */
 @customElement(CUSTOM_ELEMENT_NAME)
 export class InputAutoComplete extends InputAutoCompleteBase {
+
+    /**
+     * conventional element name of this Web Component
+     */
     static customElementName = CUSTOM_ELEMENT_NAME;
 
+    /**
+     * references the auto-complete DOM container
+     * of suggestions
+     */
     suggestionsContainer: HTMLUListElement | null = null;
 
+    /**
+     * renders CSS according to LitElement conventions
+     */
     static get styles() {
         return css`
             div > ul {
@@ -31,11 +48,17 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         `;
     }
 
+    /**
+     * conventional LitElement method
+     */
     firstUpdated(changedProperties: PropertyValues) {
         super.firstUpdated(changedProperties);
         this.setSuggestionsContainer();
     }
 
+    /**
+     * conventional LitElement method
+     */
     render(): TemplateResult {
 
         const cssSuggestionAlignmentBlock = html`
@@ -108,6 +131,9 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         `;
     }
 
+    /**
+     * renders @type {AutoCompleteSuggestion}
+     */
     renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult {
         return html`
         <li>
@@ -124,6 +150,9 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         </li>`;
     }
 
+    /**
+     * sets `this.suggestionsContainer`
+     */
     setSuggestionsContainer(): void {
         const collection = this.shadowRoot?.children;
 
@@ -149,6 +178,9 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         }
     }
 
+    /**
+     * handles @type {AutoCompleteSuggestion} selection
+     */
     handleSuggestionSelection(suggestionIndex: number): void {
         if (!this.suggestionsContainer) {
             return;

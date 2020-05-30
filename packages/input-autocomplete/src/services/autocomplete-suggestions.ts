@@ -1,12 +1,41 @@
 import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion';
 
+/**
+ * defines routines
+ * for @type {AutoCompleteSuggestion} data
+ */
 export class AutoCompleteSuggestions {
 
+    /**
+     * gets/sets the maximum number
+     * of @type {AutoCompleteSuggestion} elements
+     * to display
+     */
     maxSuggestions: number;
+
+    /**
+     * gets.sets the minimum number
+     * of text characters entered
+     * before @type {AutoCompleteSuggestion} elements
+     * are displayed
+     */
     minInput: number;
+
+    /**
+     * gets/sets the array
+     * of @type {AutoCompleteSuggestion} data
+     */
     suggestionData: AutoCompleteSuggestion[] = [];
+
+    /**
+     * gets/sets the generation strategy
+     * of @type {AutoCompleteSuggestion} elements
+     */
     suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
 
+    /**
+     * creates an instance of @type {AutoCompleteSuggestions}
+     */
     constructor(
         suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]),
         maxSuggestions: number = 5,
@@ -17,22 +46,40 @@ export class AutoCompleteSuggestions {
         this.minInput = minInput;
     }
 
+    /**
+     * clear any @type {AutoCompleteSuggestion} data
+     */
     clearData(): void {
         this.suggestionData = [];
     }
 
+    /**
+     * get @type {AutoCompleteSuggestion} datum
+     * at the specified index
+     */
     getSuggestionDatum(index: number): AutoCompleteSuggestion {
         return this.suggestionData[index];
     }
 
+    /**
+     * get the @type {AutoCompleteSuggestion} data count
+     */
     getSuggestionDataCount(): number {
         return this.suggestionData.length;
     }
 
+    /**
+     * return `true` when this instance
+     * has @type {AutoCompleteSuggestion} data
+     */
     hasSuggestionData(): boolean {
         return this.suggestionData.length > 0;
     }
 
+    /**
+     * prepare @type {AutoCompleteSuggestion} data
+     * based on the specified text input
+     */
     async prepareSuggestions(text: string): Promise<void> {
 
         //#region functional members:

@@ -10,7 +10,8 @@
         "input-autocomplete:start:test": "npm run input-autocomplete:tsc:test && npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
         "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts",
         "input-autocomplete:tsc": "tsc --project packages/input-autocomplete/tsconfig.json",
-        "input-autocomplete:tsc:test": "tsc --project packages/input-autocomplete/tsconfig.spec.json"
+        "input-autocomplete:tsc:test": "tsc --project packages/input-autocomplete/tsconfig.spec.json",
+        "input-autocomplete:typedoc": "--options packages/input-autocomplete/tsconfig.json"
     },
     "repository": {
         "type": "git",
@@ -41,6 +42,7 @@
         "mocha": "^7.1.2",
         "ts-mocha": "^7.0.0",
         "tslint": "^6.1.2",
+        "typedoc": "0.17.7",
         "typescript": "^3.8.3"
     }
 }

@@ -8,8 +8,8 @@ Here is a sample declaration of this Web Component from the `mocha` [test harnes
 <rx-input-autocomplete
     inputId="my-input"
     cssSuggestionAlignment="left"
-    cssSuggestionSelectedContainer="{ border: solid red; }"
-    cssSuggestionSelectedCommand="{ font-weight: bold; }"
+    cssSuggestionSelectedContainer="border: solid red;"
+    cssSuggestionSelectedCommand="font-weight: bold;"
     cssWidth="16em"
     placeholder="enter here">
 </rx-input-autocomplete>

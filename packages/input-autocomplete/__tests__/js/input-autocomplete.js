@@ -10,11 +10,24 @@ import { customElement } from 'lit-element/lib/decorators';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
+/**
+ * defines rendering methods for @type {InputAutoCompleteBase}
+ *
+ * @export
+ * @extends {InputAutoCompleteBase}
+ */
 let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
     constructor() {
         super(...arguments);
+        /**
+         * references the auto-complete DOM container
+         * of suggestions
+         */
         this.suggestionsContainer = null;
     }
+    /**
+     * renders CSS according to LitElement conventions
+     */
     static get styles() {
         return css `
             div > ul {
@@ -29,10 +42,16 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             }
         `;
     }
+    /**
+     * conventional LitElement method
+     */
     firstUpdated(changedProperties) {
         super.firstUpdated(changedProperties);
         this.setSuggestionsContainer();
     }
+    /**
+     * conventional LitElement method
+     */
     render() {
         var _a;
         const cssSuggestionAlignmentBlock = html `
@@ -58,11 +77,11 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         const cssSuggestionSelectedBlock = html `
             <style>
                 ${this.cssSuggestionSelectedContainer ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} ${this.cssSuggestionSelectedContainer}`
+            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} \{${this.cssSuggestionSelectedContainer}\}`
             :
                 html ``}
                 ${this.cssSuggestionSelectedCommand ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button ${this.cssSuggestionSelectedCommand}`
+            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button \{${this.cssSuggestionSelectedCommand}\}`
             :
                 html ``}
             </style>`;
@@ -98,6 +117,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         ${(this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html ``}
         `;
     }
+    /**
+     * renders @type {AutoCompleteSuggestion}
+     */
     renderSuggestion(suggestion, index) {
         return html `
         <li>
@@ -113,6 +135,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             </button>
         </li>`;
     }
+    /**
+     * sets `this.suggestionsContainer`
+     */
     setSuggestionsContainer() {
         var _a;
         const collection = (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.children;
@@ -133,6 +158,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             return;
         }
     }
+    /**
+     * handles @type {AutoCompleteSuggestion} selection
+     */
     handleSuggestionSelection(suggestionIndex) {
         if (!this.suggestionsContainer) {
             return;
@@ -149,6 +177,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         });
     }
 };
+/**
+ * conventional element name of this Web Component
+ */
 InputAutoComplete.customElementName = CUSTOM_ELEMENT_NAME;
 InputAutoComplete = __decorate([
     customElement(CUSTOM_ELEMENT_NAME)

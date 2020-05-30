@@ -66,6 +66,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the CSS block
      * of @type {AutoCompleteSuggestion} element command
      * (usually a `button` element)
+     * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
      */
     @property({ type: String }) cssSuggestionSelectedCommand = '';
 
@@ -74,6 +75,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the CSS block
      * of @type {AutoCompleteSuggestion} element command
      * (usually a `li` element)
+     * @example `cssSuggestionSelectedContainer="border: solid red;"`
      */
     @property({ type: String }) cssSuggestionSelectedContainer = '';
 

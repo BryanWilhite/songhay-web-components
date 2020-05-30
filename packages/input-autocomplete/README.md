@@ -1,11 +1,7 @@
 # `@songhay/input-autocomplete`
 
-> TODO: description
+## an HTML input element with auto-complete functionality
 
-## Usage
+![component animated demo](../../docs/images/input-autocomplete.peek.gif)
 
-```
-const inputAutocomplete = require('@songhay/input-autocomplete');
-
-// TODO: DEMONSTRATE API
-```
+@[BryanWilhite](https://twitter.com/BryanWilhite)

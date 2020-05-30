@@ -267,6 +267,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
             case Key.Enter:
             case Key.Tab:
+                e.preventDefault();
                 this.handleSuggestionClick(this.activeSuggestionIndex);
                 break;
 
@@ -301,6 +302,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
             case Key.Enter:
             case Key.Tab:
             case Key.Escape:
+                e.preventDefault();
                 this.clearSuggestionSelection(true);
                 break;
 

@@ -77,11 +77,11 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         const cssSuggestionSelectedBlock = html `
             <style>
                 ${this.cssSuggestionSelectedContainer ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} ${this.cssSuggestionSelectedContainer}`
+            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} \{${this.cssSuggestionSelectedContainer}\}`
             :
                 html ``}
                 ${this.cssSuggestionSelectedCommand ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button ${this.cssSuggestionSelectedCommand}`
+            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button \{${this.cssSuggestionSelectedCommand}\}`
             :
                 html ``}
             </style>`;

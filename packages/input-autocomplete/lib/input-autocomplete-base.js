@@ -62,6 +62,7 @@ export class InputAutoCompleteBase extends LitElement {
          * for the CSS block
          * of @type {AutoCompleteSuggestion} element command
          * (usually a `button` element)
+         * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
          */
         this.cssSuggestionSelectedCommand = '';
         /**
@@ -69,6 +70,7 @@ export class InputAutoCompleteBase extends LitElement {
          * for the CSS block
          * of @type {AutoCompleteSuggestion} element command
          * (usually a `li` element)
+         * @example `cssSuggestionSelectedContainer="border: solid red;"`
          */
         this.cssSuggestionSelectedContainer = '';
         /**
@@ -236,6 +238,7 @@ export class InputAutoCompleteBase extends LitElement {
                     break;
                 case Key.Enter:
                 case Key.Tab:
+                    e.preventDefault();
                     this.handleSuggestionClick(this.activeSuggestionIndex);
                     break;
                 case Key.Escape:
@@ -265,6 +268,7 @@ export class InputAutoCompleteBase extends LitElement {
                 case Key.Enter:
                 case Key.Tab:
                 case Key.Escape:
+                    e.preventDefault();
                     this.clearSuggestionSelection(true);
                     break;
                 default:

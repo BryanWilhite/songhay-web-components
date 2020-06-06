@@ -1,7 +1,7 @@
 {
     "name": "@songhay/input-autocomplete",
-    "version": "0.0.1",
-    "description": "see README",
+    "version": "0.0.2",
+    "description": "an HTML input element with auto-complete functionality",
     "license": "MIT",
     "author": "Bryan Wilhite <rasx@songhaysystem.com>",
     "homepage": "https://github.com/BryanWilhite/songhay-web-components/tree/master/packages/input-autocomplete#readme",

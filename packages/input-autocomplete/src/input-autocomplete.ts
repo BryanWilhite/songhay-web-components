@@ -56,6 +56,8 @@ export class InputAutoComplete extends InputAutoCompleteBase {
             div > ul > li > button {
                 border: none;
                 cursor: pointer;
+                overflow: hidden;
+                white-space: nowrap;
             }
 
             div > input,
@@ -83,10 +85,11 @@ export class InputAutoComplete extends InputAutoCompleteBase {
      */
     render(): TemplateResult {
 
-        const cssSuggestionAlignmentBlock = html`
+        const cssSuggestionAlignmentAndTextOverflowBlock = html`
             <style>
                 :host div > ul > li > button {
                     text-align: ${this.cssSuggestionAlignment};
+                    text-overflow: ${this.cssSuggestionTextOverflow};
                 }
             </style>
         `;
@@ -145,7 +148,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
         </div>
 
         ${this.cssWidth ? cssWidthAndZIndexStyleBlock : html``}
-        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html``}
+        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentAndTextOverflowBlock : html``}
         ${
             (this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html``}
         `;

@@ -2,6 +2,7 @@ import { LitElement, PropertyValues } from 'lit-element';
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { ComponentCssClasses } from './models/component-css-classes';
 import { CssTextAlignment } from './types/css-text-alignment';
+import { CssTextOverflow } from './types/css-text-overflow';
 import { InputModes } from './types/input-modes';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 /**
@@ -54,6 +55,13 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
      * @example `cssSuggestionSelectedContainer="border: solid red;"`
      */
     cssSuggestionSelectedContainer: string;
+    /**
+     * LitElement property/attribute
+     * for the CSS `text-overflow` selector
+     * of @type {AutoCompleteSuggestion} element command
+     * (usually a `button` element)
+     */
+    cssSuggestionTextOverflow: CssTextOverflow;
     /**
      * LitElement property/attribute
      * for the CSS width of this Web Component

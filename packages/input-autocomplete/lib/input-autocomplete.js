@@ -51,6 +51,8 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             div > ul > li > button {
                 border: none;
                 cursor: pointer;
+                overflow: hidden;
+                white-space: nowrap;
             }
 
             div > input,
@@ -76,10 +78,11 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
      */
     render() {
         var _a;
-        const cssSuggestionAlignmentBlock = html `
+        const cssSuggestionAlignmentAndTextOverflowBlock = html `
             <style>
                 :host div > ul > li > button {
                     text-align: ${this.cssSuggestionAlignment};
+                    text-overflow: ${this.cssSuggestionTextOverflow};
                 }
             </style>
         `;
@@ -133,7 +136,7 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
         </div>
 
         ${this.cssWidth ? cssWidthAndZIndexStyleBlock : html ``}
-        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html ``}
+        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentAndTextOverflowBlock : html ``}
         ${(this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html ``}
         `;
     }

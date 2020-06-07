@@ -75,6 +75,13 @@ export class InputAutoCompleteBase extends LitElement {
         this.cssSuggestionSelectedContainer = '';
         /**
          * LitElement property/attribute
+         * for the CSS `text-overflow` selector
+         * of @type {AutoCompleteSuggestion} element command
+         * (usually a `button` element)
+         */
+        this.cssSuggestionTextOverflow = 'ellipsis';
+        /**
+         * LitElement property/attribute
          * for the CSS width of this Web Component
          */
         this.cssWidth = '';
@@ -390,6 +397,10 @@ __decorate([
     property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "cssSuggestionSelectedContainer", void 0);
+__decorate([
+    property({ type: String }),
+    __metadata("design:type", String)
+], InputAutoCompleteBase.prototype, "cssSuggestionTextOverflow", void 0);
 __decorate([
     property({ type: String }),
     __metadata("design:type", Object)

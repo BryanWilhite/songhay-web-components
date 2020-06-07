@@ -35,17 +35,31 @@ export class InputAutoComplete extends InputAutoCompleteBase {
      */
     static get styles() {
         return css`
+            div {
+                position: relative;
+            }
+
             div > ul {
+                left: 0;
                 list-style: none;
                 margin: 0;
                 padding: 0;
+                position: absolute;
+                right: 0;
             }
 
             div > ul > li > button {
                 border: none;
                 cursor: pointer;
             }
-        `;
+
+            div > input,
+            div > ul,
+            div > ul > li,
+            div > ul > li > button {
+                width: 100%;
+            }
+    `;
     }
 
     /**
@@ -69,30 +83,28 @@ export class InputAutoComplete extends InputAutoCompleteBase {
             </style>
         `;
 
-        const cssWidthStyleBlock = html`
+        const cssWidthAndZIndexStyleBlock = html`
             <style>
                 :host div {
                     width: ${this.cssWidth};
+                    z-index: ${this.cssZIndexBase + 1};
                 }
 
-                :host div > input,
-                :host div > ul,
-                :host div > ul > li,
-                :host div > ul > li > button {
-                    width: 100%;
+                :host div > ul {
+                    z-index: ${this.cssZIndexBase + 2};
                 }
             </style>`;
 
         const cssSuggestionSelectedBlock = html`
             <style>
                 ${this.cssSuggestionSelectedContainer ?
-                    html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} \{${this.cssSuggestionSelectedContainer}\}`
-                    :
-                    html``}
+                html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} \{${this.cssSuggestionSelectedContainer}\}`
+                :
+                html``}
                 ${this.cssSuggestionSelectedCommand ?
-                    html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button \{${this.cssSuggestionSelectedCommand}\}`
-                    :
-                    html``}
+                html`:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button \{${this.cssSuggestionSelectedCommand}\}`
+                :
+                html``}
             </style>`;
 
         return html`
@@ -124,7 +136,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
             </ul>
         </div>
 
-        ${this.cssWidth ? cssWidthStyleBlock : html``}
+        ${this.cssWidth ? cssWidthAndZIndexStyleBlock : html``}
         ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html``}
         ${
             (this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html``}

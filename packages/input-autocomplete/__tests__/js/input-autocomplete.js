@@ -30,17 +30,31 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
      */
     static get styles() {
         return css `
+            div {
+                position: relative;
+            }
+
             div > ul {
+                left: 0;
                 list-style: none;
                 margin: 0;
                 padding: 0;
+                position: absolute;
+                right: 0;
             }
 
             div > ul > li > button {
                 border: none;
                 cursor: pointer;
             }
-        `;
+
+            div > input,
+            div > ul,
+            div > ul > li,
+            div > ul > li > button {
+                width: 100%;
+            }
+    `;
     }
     /**
      * conventional LitElement method
@@ -61,17 +75,15 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 }
             </style>
         `;
-        const cssWidthStyleBlock = html `
+        const cssWidthAndZIndexStyleBlock = html `
             <style>
                 :host div {
                     width: ${this.cssWidth};
+                    z-index: ${this.cssZIndexBase + 1};
                 }
 
-                :host div > input,
-                :host div > ul,
-                :host div > ul > li,
-                :host div > ul > li > button {
-                    width: 100%;
+                :host div > ul {
+                    z-index: ${this.cssZIndexBase + 2};
                 }
             </style>`;
         const cssSuggestionSelectedBlock = html `
@@ -112,7 +124,7 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             </ul>
         </div>
 
-        ${this.cssWidth ? cssWidthStyleBlock : html ``}
+        ${this.cssWidth ? cssWidthAndZIndexStyleBlock : html ``}
         ${this.cssSuggestionAlignment ? cssSuggestionAlignmentBlock : html ``}
         ${(this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html ``}
         `;

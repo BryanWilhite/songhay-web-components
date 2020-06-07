@@ -108,6 +108,13 @@ export class InputAutoCompleteBase extends LitElement {
         this.required = true;
         /**
          * LitElement property/attribute
+         * setting the base `z-index` value
+         * upon which any `z-index` values
+         * in this Web Component ascend.
+         */
+        this.cssZIndexBase = 0;
+        /**
+         * LitElement property/attribute
          * setting the maximum number
          * of @type {AutoCompleteSuggestion} elements
          * to display
@@ -238,6 +245,7 @@ export class InputAutoCompleteBase extends LitElement {
                     break;
                 case Key.Enter:
                 case Key.Tab:
+                    e.preventDefault();
                     this.handleSuggestionClick(this.activeSuggestionIndex);
                     break;
                 case Key.Escape:
@@ -267,6 +275,7 @@ export class InputAutoCompleteBase extends LitElement {
                 case Key.Enter:
                 case Key.Tab:
                 case Key.Escape:
+                    e.preventDefault();
                     this.clearSuggestionSelection(true);
                     break;
                 default:
@@ -405,6 +414,10 @@ __decorate([
     property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "required", void 0);
+__decorate([
+    property({ type: Number }),
+    __metadata("design:type", Object)
+], InputAutoCompleteBase.prototype, "cssZIndexBase", void 0);
 __decorate([
     property({ type: Number }),
     __metadata("design:type", Object)

@@ -7,6 +7,8 @@ import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 
+import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css';
+
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
 
@@ -35,6 +37,8 @@ export class InputAutoComplete extends InputAutoCompleteBase {
      */
     static get styles() {
         return css`
+            ${TEMPLATE_NORMALIZE_CSS}
+
             div {
                 position: relative;
             }

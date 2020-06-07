@@ -1,3 +1,4 @@
+export * from './constants/normalize-css';
 export * from './models/autocomplete-suggestion';
 export * from './models/component-css-classes';
 export * from './models/key';

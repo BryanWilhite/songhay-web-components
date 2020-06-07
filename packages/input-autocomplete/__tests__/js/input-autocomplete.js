@@ -8,6 +8,7 @@ import { html } from 'lit-html';
 import { css } from 'lit-element/lib/css-tag';
 import { customElement } from 'lit-element/lib/decorators';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
+import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
 /**
@@ -30,6 +31,8 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
      */
     static get styles() {
         return css `
+            ${TEMPLATE_NORMALIZE_CSS}
+
             div {
                 position: relative;
             }
@@ -93,7 +96,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                     z-index: ${this.cssZIndexBase + 1};
                 }
 
-                :host div > ul {
+                :host div > ul,
+                :host div > ul > li,
+                :host div > ul > li > button {
                     z-index: ${this.cssZIndexBase + 2};
                 }
             </style>`;

@@ -116,7 +116,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * determining whether this Web Component
      * value is required
      */
-    @property({ type: Boolean }) required = true;
+    @property({ type: Boolean }) required = false;
 
     /**
      * LitElement property/attribute

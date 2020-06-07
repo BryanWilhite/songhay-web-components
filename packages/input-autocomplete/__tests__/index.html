@@ -19,12 +19,15 @@
                     <rx-input-autocomplete
                         inputId="my-input"
                         cssSuggestionAlignment="left"
-                        cssSuggestionSelectedContainer="border: solid red;"
-                        cssSuggestionSelectedCommand="font-weight: bold;"
+                        cssSuggestionSelectedCommand="border: solid red; font-weight: bold;"
                         cssWidth="16em"
                         placeholder="enter here">
                     </rx-input-autocomplete>
                 </div>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <p>This is a paragraph that should render under the suggestions.</p>
+                <p>Suggestions should drop down over this paragraph as well.</p>
             </div>
         </div>
 

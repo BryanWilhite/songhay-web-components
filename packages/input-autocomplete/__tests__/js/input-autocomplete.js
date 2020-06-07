@@ -43,6 +43,11 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 right: 0;
             }
 
+            div > ul > li {
+                display: inline-block;
+                padding: 0;
+            }
+
             div > ul > li > button {
                 border: none;
                 cursor: pointer;
@@ -52,6 +57,9 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             div > ul,
             div > ul > li,
             div > ul > li > button {
+                display: inline-block;
+                height: 100%;
+                margin: 0;
                 width: 100%;
             }
     `;

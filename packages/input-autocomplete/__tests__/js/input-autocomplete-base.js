@@ -105,7 +105,7 @@ export class InputAutoCompleteBase extends LitElement {
          * determining whether this Web Component
          * value is required
          */
-        this.required = true;
+        this.required = false;
         /**
          * LitElement property/attribute
          * setting the base `z-index` value

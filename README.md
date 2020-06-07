@@ -10,6 +10,6 @@ This repository layout is inspired by Google’s work with Lerna [[GitHub](https
 
 | 📦 package name | 📦 description |
 |-|-|
-`@songhay/input-autocomplete`<br /> 📁 [[folder](./packages/input-autocomplete)] | an HTML input element with auto-complete functionality
+`@songhay/input-autocomplete` | an HTML input element with auto-complete functionality<br /> 📁 [[folder](./packages/input-autocomplete)]
 
 @[BryanWilhite](https://twitter.com/BryanWilhite)

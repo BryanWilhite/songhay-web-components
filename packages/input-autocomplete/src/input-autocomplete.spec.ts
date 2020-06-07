@@ -96,7 +96,7 @@ describe(InputAutoComplete.name, function () {
     it('has an `input` element with expected default properties/attributes',
         function () {
             chai.expect(inputElement.disabled).eq(false);
-            chai.expect(inputElement.required).eq(true);
+            chai.expect(inputElement.required).eq(customElement.required);
 
             chai.expect(inputElement.id).eq(customElement.inputId);
             chai.expect(inputElement.inputMode).eq(customElement.inputMode);

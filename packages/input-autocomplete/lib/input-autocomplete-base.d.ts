@@ -89,6 +89,13 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
     required: boolean;
     /**
      * LitElement property/attribute
+     * setting the base `z-index` value
+     * upon which any `z-index` values
+     * in this Web Component ascend.
+     */
+    cssZIndexBase: number;
+    /**
+     * LitElement property/attribute
      * setting the maximum number
      * of @type {AutoCompleteSuggestion} elements
      * to display

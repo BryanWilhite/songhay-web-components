@@ -14,6 +14,8 @@ import { InputModes } from './types/input-modes';
 
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 
+import { TEMPLATE_SUGGESTION_SELECTED_COMMAND } from './constants/suggestion-selected-css';
+
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
@@ -60,7 +62,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the text alignment
      * of @type {AutoCompleteSuggestion} elements
      */
-    @property({ type: String }) cssSuggestionAlignment: CssTextAlignment | '' = '';
+    @property({ type: String }) cssSuggestionAlignment: CssTextAlignment = 'left';
 
     /**
      * LitElement property/attribute
@@ -69,7 +71,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * (usually a `button` element)
      * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
      */
-    @property({ type: String }) cssSuggestionSelectedCommand = '';
+    @property({ type: String }) cssSuggestionSelectedCommand = TEMPLATE_SUGGESTION_SELECTED_COMMAND;
 
     /**
      * LitElement property/attribute
@@ -92,7 +94,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * LitElement property/attribute
      * for the CSS width of this Web Component
      */
-    @property({ type: String }) cssWidth = '';
+    @property({ type: String }) cssWidth = '16em';
 
     /**
      * LitElement property/attribute

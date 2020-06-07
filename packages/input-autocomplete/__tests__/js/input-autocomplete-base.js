@@ -20,6 +20,7 @@ import { LitElement, property } from 'lit-element';
 import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
+import { TEMPLATE_SUGGESTION_SELECTED_COMMAND } from './constants/suggestion-selected-css';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
@@ -56,7 +57,7 @@ export class InputAutoCompleteBase extends LitElement {
          * for the text alignment
          * of @type {AutoCompleteSuggestion} elements
          */
-        this.cssSuggestionAlignment = '';
+        this.cssSuggestionAlignment = 'left';
         /**
          * LitElement property/attribute
          * for the CSS block
@@ -64,7 +65,7 @@ export class InputAutoCompleteBase extends LitElement {
          * (usually a `button` element)
          * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
          */
-        this.cssSuggestionSelectedCommand = '';
+        this.cssSuggestionSelectedCommand = TEMPLATE_SUGGESTION_SELECTED_COMMAND;
         /**
          * LitElement property/attribute
          * for the CSS block
@@ -84,7 +85,7 @@ export class InputAutoCompleteBase extends LitElement {
          * LitElement property/attribute
          * for the CSS width of this Web Component
          */
-        this.cssWidth = '';
+        this.cssWidth = '16em';
         /**
          * LitElement property/attribute
          * for the placeholder value

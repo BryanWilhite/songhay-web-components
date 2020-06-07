@@ -96,20 +96,26 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                     z-index: ${this.cssZIndexBase + 1};
                 }
 
-                :host div > ul,
-                :host div > ul > li,
-                :host div > ul > li > button {
+                :host div > ul {
                     z-index: ${this.cssZIndexBase + 2};
                 }
             </style>`;
         const cssSuggestionSelectedBlock = html `
             <style>
-                ${this.cssSuggestionSelectedContainer ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} \{${this.cssSuggestionSelectedContainer}\}`
+            ${this.cssSuggestionSelectedContainer ?
+            html `
+                    :host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME},
+                    :host div > ul > li:hover {
+                        ${this.cssSuggestionSelectedContainer}
+                    }`
             :
                 html ``}
-                ${this.cssSuggestionSelectedCommand ?
-            html `:host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button \{${this.cssSuggestionSelectedCommand}\}`
+            ${this.cssSuggestionSelectedCommand ?
+            html `
+                    :host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button,
+                    :host div > ul > li > button:hover {
+                        ${this.cssSuggestionSelectedCommand}
+                    }`
             :
                 html ``}
             </style>`;

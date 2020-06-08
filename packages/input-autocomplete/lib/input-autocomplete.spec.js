@@ -134,8 +134,8 @@ describe(InputAutoComplete.name, function () {
             //#endregion
             yield DOMTestingUtility.delay(10);
             inputElement.value = '';
-            yield DOMTestingUtility.delay(10);
             customElement.close();
+            yield DOMTestingUtility.delay(10);
             chai.expect(customElement.componentActive).to.eq(false);
         });
     });

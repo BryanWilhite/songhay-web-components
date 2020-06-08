@@ -159,20 +159,5 @@ describe(InputAutoComplete.name, function () {
             chai.expect(collection.length).eq(expectedNumberOfSuggestions);
 
             //#endregion
-
-            await DOMTestingUtility.delay(10);
-
-            //#region expected `blur` state:
-
-            const blurEvent = new FocusEvent('blur');
-            inputElement.dispatchEvent(blurEvent);
-
-            await DOMTestingUtility.delay(251); // `handleBlur` has a delay of 250ms 🕗
-
-            chai.expect(customElement.componentActive).to.eq(false);
-
-            inputElement.value = '';
-
-            //#endregion
         });
 });

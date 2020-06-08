@@ -107,11 +107,6 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
         detail: any;
     }): void;
     /**
-     * handle the blur event of the `input` element
-     * of this Web Component
-     */
-    handleBlur(e: FocusEvent): Promise<void>;
-    /**
      * handle the focus event of the `input` element
      * of this Web Component
      */

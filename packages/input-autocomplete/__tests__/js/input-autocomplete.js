@@ -108,7 +108,6 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 .placeholder="${this.placeholder}"
                 .value="${this.text}"
 
-                @blur="${this.handleBlur}"
                 @focus="${this.handleFocus}"
                 @keydown="${this.handleKeyDown}"
                 @keyup="${this.handleKeyUp}"

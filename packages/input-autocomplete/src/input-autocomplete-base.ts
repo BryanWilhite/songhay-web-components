@@ -10,10 +10,6 @@ import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
-const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
-    setTimeout(function () { resolve(); }, timeInMilliseconds);
-});
-
 /**
  * defines the base class for this Web Component
  *
@@ -130,6 +126,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * previously selected
      */
     clearSuggestionSelection(clearOnlyValue = false): void {
+
         if (this.value !== '') {
             this.dispatchCustomEvent(
                 CUSTOM_EVENT_NAME_UNSELECTED,
@@ -164,23 +161,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 this.dispatchEvent(new CustomEvent(eventName, data));
                 break;
         }
-    }
-
-    /**
-     * handle the blur event of the `input` element
-     * of this Web Component
-     */
-    async handleBlur(e: FocusEvent): Promise<void> {
-        if (!e) {
-            console.error(`The expected \`${FocusEvent.name}\` is not here.`);
-            return;
-        }
-
-        e.preventDefault();
-
-        await EVENT_HANDLER_DELAY(250);
-
-        await this.close();
     }
 
     /**

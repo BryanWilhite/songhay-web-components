@@ -21,9 +21,6 @@ import { Key } from './models/key';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
-const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
-    setTimeout(function () { resolve(); }, timeInMilliseconds);
-});
 /**
  * defines the base class for this Web Component
  *
@@ -152,21 +149,6 @@ export class InputAutoCompleteBase extends LitElement {
                 this.dispatchEvent(new CustomEvent(eventName, data));
                 break;
         }
-    }
-    /**
-     * handle the blur event of the `input` element
-     * of this Web Component
-     */
-    handleBlur(e) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!e) {
-                console.error(`The expected \`${FocusEvent.name}\` is not here.`);
-                return;
-            }
-            e.preventDefault();
-            yield EVENT_HANDLER_DELAY(250);
-            yield this.close();
-        });
     }
     /**
      * handle the focus event of the `input` element

@@ -7,12 +7,32 @@ Here is a sample declaration of this Web Component from the `mocha` [test harnes
 ```html
 <rx-input-autocomplete
     inputId="my-input"
-    cssSuggestionAlignment="left"
-    cssSuggestionSelectedCommand="border: solid red; font-weight: bold;"
-    cssWidth="16em"
+    maxSuggestions="5"
+    minInput="0"
     placeholder="enter here">
 </rx-input-autocomplete>
 ```
+
+Styling depends on CSS Variables also summarized in the test harness:
+
+```html
+<style>
+    :root {
+        --input-autocomplete-width: 16em;
+        --input-autocomplete-z-index: 1;
+        --input-autocomplete-suggestion-border: none;
+        --input-autocomplete-suggestion-font-weight: normal;
+        --input-autocomplete-suggestion-margin: 0;
+        --input-autocomplete-suggestion-text-align: left;
+        --input-autocomplete-suggestion-text-overflow: ellipses;
+        --input-autocomplete-suggestion-selected-background-color: #e2e2e2;
+        --input-autocomplete-suggestion-selected-border: solid #f00;
+        --input-autocomplete-suggestion-selected-font-weight: bold;
+    }
+</style>
+```
+
+The values of these variables are the defaults set by this Web Component.
 
 ![component animated demo](../../docs/images/input-autocomplete.peek.gif)
 

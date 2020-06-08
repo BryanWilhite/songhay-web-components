@@ -33,7 +33,7 @@ export declare class InputAutoComplete extends InputAutoCompleteBase {
     /**
      * renders @type {AutoCompleteSuggestion}
      */
-    renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult;
+    renderSuggestion(data: AutoCompleteSuggestion, index: number): TemplateResult;
     /**
      * sets `this.suggestionsContainer`
      */

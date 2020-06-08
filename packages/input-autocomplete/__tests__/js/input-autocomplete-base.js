@@ -80,13 +80,6 @@ export class InputAutoCompleteBase extends LitElement {
         this.required = false;
         /**
          * LitElement property/attribute
-         * setting the base `z-index` value
-         * upon which any `z-index` values
-         * in this Web Component ascend.
-         */
-        this.cssZIndexBase = 0;
-        /**
-         * LitElement property/attribute
          * setting the maximum number
          * of @type {AutoCompleteSuggestion} elements
          * to display
@@ -357,10 +350,6 @@ __decorate([
     property({ type: Boolean }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "required", void 0);
-__decorate([
-    property({ type: Number }),
-    __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssZIndexBase", void 0);
 __decorate([
     property({ type: Number }),
     __metadata("design:type", Object)

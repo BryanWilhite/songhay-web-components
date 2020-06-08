@@ -1,8 +1,5 @@
 import { LitElement, PropertyValues } from 'lit-element';
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { ComponentCssClasses } from './models/component-css-classes';
-import { CssTextAlignment } from './types/css-text-alignment';
-import { CssTextOverflow } from './types/css-text-overflow';
 import { InputModes } from './types/input-modes';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 /**
@@ -35,40 +32,6 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
     inputId: string;
     /**
      * LitElement property/attribute
-     * for the text alignment
-     * of @type {AutoCompleteSuggestion} elements
-     */
-    cssSuggestionAlignment: CssTextAlignment | '';
-    /**
-     * LitElement property/attribute
-     * for the CSS block
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `button` element)
-     * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
-     */
-    cssSuggestionSelectedCommand: string;
-    /**
-     * LitElement property/attribute
-     * for the CSS block
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `li` element)
-     * @example `cssSuggestionSelectedContainer="border: solid red;"`
-     */
-    cssSuggestionSelectedContainer: string;
-    /**
-     * LitElement property/attribute
-     * for the CSS `text-overflow` selector
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `button` element)
-     */
-    cssSuggestionTextOverflow: CssTextOverflow;
-    /**
-     * LitElement property/attribute
-     * for the CSS width of this Web Component
-     */
-    cssWidth: string;
-    /**
-     * LitElement property/attribute
      * for the placeholder value
      * of the `input` element
      */
@@ -97,13 +60,6 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
     required: boolean;
     /**
      * LitElement property/attribute
-     * setting the base `z-index` value
-     * upon which any `z-index` values
-     * in this Web Component ascend.
-     */
-    cssZIndexBase: number;
-    /**
-     * LitElement property/attribute
      * setting the maximum number
      * of @type {AutoCompleteSuggestion} elements
      * to display
@@ -117,12 +73,6 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
      * are displayed
      */
     minInput: number;
-    /**
-     * LitElement property/attribute
-     * for all of the CSS class names
-     * of this Web Component
-     */
-    cssClasses: ComponentCssClasses;
     /**
      * LitElement property/attribute
      * for the input mode of the `input` element
@@ -156,11 +106,6 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
     dispatchCustomEvent(eventName: string, data: {
         detail: any;
     }): void;
-    /**
-     * get CSS class names related
-     * to @type {AutoCompleteSuggestion} elements
-     */
-    getSuggestionsCssClasses(index: number): string;
     /**
      * handle the blur event of the `input` element
      * of this Web Component

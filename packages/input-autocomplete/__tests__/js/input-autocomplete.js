@@ -68,7 +68,7 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
             div > ul > li.${unsafeCSS(SUGGESTION_SELECTED_CSS_CLASS_NAME)} > button,
             div > ul > li > button:hover {
                 background-color: var(--input-autocomplete-suggestion-selected-background-color, #e2e2e2);
-                border: var(--input-autocomplete-suggestion-selected-border, solid red);
+                border: var(--input-autocomplete-suggestion-selected-border, solid #f00);
                 font-weight: var(--input-autocomplete-suggestion-selected-font-weight, bold);
             }
 
@@ -80,8 +80,7 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 height: 100%;
                 margin: 0;
                 width: 100%;
-            }
-    `;
+            }`;
     }
     /**
      * conventional LitElement method

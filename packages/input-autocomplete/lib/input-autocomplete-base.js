@@ -17,7 +17,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { LitElement, property } from 'lit-element';
-import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
@@ -53,40 +52,6 @@ export class InputAutoCompleteBase extends LitElement {
         this.inputId = '';
         /**
          * LitElement property/attribute
-         * for the text alignment
-         * of @type {AutoCompleteSuggestion} elements
-         */
-        this.cssSuggestionAlignment = '';
-        /**
-         * LitElement property/attribute
-         * for the CSS block
-         * of @type {AutoCompleteSuggestion} element command
-         * (usually a `button` element)
-         * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
-         */
-        this.cssSuggestionSelectedCommand = '';
-        /**
-         * LitElement property/attribute
-         * for the CSS block
-         * of @type {AutoCompleteSuggestion} element command
-         * (usually a `li` element)
-         * @example `cssSuggestionSelectedContainer="border: solid red;"`
-         */
-        this.cssSuggestionSelectedContainer = '';
-        /**
-         * LitElement property/attribute
-         * for the CSS `text-overflow` selector
-         * of @type {AutoCompleteSuggestion} element command
-         * (usually a `button` element)
-         */
-        this.cssSuggestionTextOverflow = 'ellipsis';
-        /**
-         * LitElement property/attribute
-         * for the CSS width of this Web Component
-         */
-        this.cssWidth = '';
-        /**
-         * LitElement property/attribute
          * for the placeholder value
          * of the `input` element
          */
@@ -115,13 +80,6 @@ export class InputAutoCompleteBase extends LitElement {
         this.required = false;
         /**
          * LitElement property/attribute
-         * setting the base `z-index` value
-         * upon which any `z-index` values
-         * in this Web Component ascend.
-         */
-        this.cssZIndexBase = 0;
-        /**
-         * LitElement property/attribute
          * setting the maximum number
          * of @type {AutoCompleteSuggestion} elements
          * to display
@@ -135,12 +93,6 @@ export class InputAutoCompleteBase extends LitElement {
          * are displayed
          */
         this.minInput = 0;
-        /**
-         * LitElement property/attribute
-         * for all of the CSS class names
-         * of this Web Component
-         */
-        this.cssClasses = new ComponentCssClasses();
         /**
          * LitElement property/attribute
          * for the input mode of the `input` element
@@ -200,13 +152,6 @@ export class InputAutoCompleteBase extends LitElement {
                 this.dispatchEvent(new CustomEvent(eventName, data));
                 break;
         }
-    }
-    /**
-     * get CSS class names related
-     * to @type {AutoCompleteSuggestion} elements
-     */
-    getSuggestionsCssClasses(index) {
-        return `${this.cssClasses.suggestion}${(this.activeSuggestionIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
     /**
      * handle the blur event of the `input` element
@@ -387,26 +332,6 @@ __decorate([
 ], InputAutoCompleteBase.prototype, "inputId", void 0);
 __decorate([
     property({ type: String }),
-    __metadata("design:type", String)
-], InputAutoCompleteBase.prototype, "cssSuggestionAlignment", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssSuggestionSelectedCommand", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssSuggestionSelectedContainer", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", String)
-], InputAutoCompleteBase.prototype, "cssSuggestionTextOverflow", void 0);
-__decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssWidth", void 0);
-__decorate([
-    property({ type: String }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "placeholder", void 0);
 __decorate([
@@ -428,19 +353,11 @@ __decorate([
 __decorate([
     property({ type: Number }),
     __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssZIndexBase", void 0);
-__decorate([
-    property({ type: Number }),
-    __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "maxSuggestions", void 0);
 __decorate([
     property({ type: Number }),
     __metadata("design:type", Object)
 ], InputAutoCompleteBase.prototype, "minInput", void 0);
-__decorate([
-    property({ type: Object }),
-    __metadata("design:type", Object)
-], InputAutoCompleteBase.prototype, "cssClasses", void 0);
 __decorate([
     property({ type: Object }),
     __metadata("design:type", String)

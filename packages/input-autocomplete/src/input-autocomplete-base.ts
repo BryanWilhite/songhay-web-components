@@ -1,20 +1,11 @@
-import {
-    LitElement,
-    property,
-    PropertyValues
-} from 'lit-element';
+import { LitElement, property, PropertyValues } from 'lit-element';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { ComponentCssClasses } from './models/component-css-classes';
 import { Key } from './models/key';
 
-import { CssTextAlignment } from './types/css-text-alignment';
-import { CssTextOverflow } from './types/css-text-overflow';
 import { InputModes } from './types/input-modes';
 
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
-
-import { TEMPLATE_SUGGESTION_SELECTED_COMMAND } from './constants/suggestion-selected-css';
 
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
@@ -56,45 +47,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the ID of the `input` element
      */
     @property({ type: String }) inputId = '';
-
-    /**
-     * LitElement property/attribute
-     * for the text alignment
-     * of @type {AutoCompleteSuggestion} elements
-     */
-    @property({ type: String }) cssSuggestionAlignment: CssTextAlignment = 'left';
-
-    /**
-     * LitElement property/attribute
-     * for the CSS block
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `button` element)
-     * @example `cssSuggestionSelectedCommand="font-weight: bold;"`
-     */
-    @property({ type: String }) cssSuggestionSelectedCommand = TEMPLATE_SUGGESTION_SELECTED_COMMAND;
-
-    /**
-     * LitElement property/attribute
-     * for the CSS block
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `li` element)
-     * @example `cssSuggestionSelectedContainer="border: solid red;"`
-     */
-    @property({ type: String }) cssSuggestionSelectedContainer = '';
-
-    /**
-     * LitElement property/attribute
-     * for the CSS `text-overflow` selector
-     * of @type {AutoCompleteSuggestion} element command
-     * (usually a `button` element)
-     */
-    @property({ type: String }) cssSuggestionTextOverflow: CssTextOverflow = 'ellipsis';
-
-    /**
-     * LitElement property/attribute
-     * for the CSS width of this Web Component
-     */
-    @property({ type: String }) cssWidth = '16em';
 
     /**
      * LitElement property/attribute
@@ -153,13 +105,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * are displayed
      */
     @property({ type: Number }) minInput = 0;
-
-    /**
-     * LitElement property/attribute
-     * for all of the CSS class names
-     * of this Web Component
-     */
-    @property({ type: Object }) cssClasses = new ComponentCssClasses();
 
     /**
      * LitElement property/attribute
@@ -227,14 +172,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 this.dispatchEvent(new CustomEvent(eventName, data));
                 break;
         }
-    }
-
-    /**
-     * get CSS class names related
-     * to @type {AutoCompleteSuggestion} elements
-     */
-    getSuggestionsCssClasses(index: number): string {
-        return `${this.cssClasses.suggestion}${(this.activeSuggestionIndex === index) ? ' ' + this.cssClasses.active : ''}`;
     }
 
     /**

@@ -68,9 +68,6 @@ describe(InputAutoComplete.name, function () {
             const expectedShadowRootElementNames = [
                 'div',
                 'style',
-                'style',
-                'style',
-                'style',
             ];
             chai.expect(shadowRoot.children).to.be.instanceOf(HTMLCollection);
             chai.expect(shadowRoot.children.length).to.be.eq(expectedShadowRootElementNames.length);

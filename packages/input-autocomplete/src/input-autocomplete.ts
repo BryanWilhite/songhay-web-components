@@ -1,5 +1,5 @@
 import { html, TemplateResult } from 'lit-html';
-import { css } from 'lit-element/lib/css-tag';
+import { css, unsafeCSS } from 'lit-element/lib/css-tag';
 import { customElement } from 'lit-element/lib/decorators';
 import { PropertyValues } from 'lit-element/lib/updating-element';
 
@@ -41,6 +41,8 @@ export class InputAutoComplete extends InputAutoCompleteBase {
 
             div {
                 position: relative;
+                width: var(--input-autocomplete-width, 16em);
+                z-index: var(--input-autocomplete-z-index, 0);
             }
 
             div > ul {
@@ -50,6 +52,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
                 padding: 0;
                 position: absolute;
                 right: 0;
+                z-index: calc(var(--input-autocomplete-z-index) + 1);
             }
 
             div > ul > li {
@@ -58,10 +61,21 @@ export class InputAutoComplete extends InputAutoCompleteBase {
             }
 
             div > ul > li > button {
-                border: none;
+                border: var(--input-autocomplete-suggestion-border, none);
                 cursor: pointer;
+                font-weight: var(--input-autocomplete-suggestion-font-weight, normal);
+                margin: var(--input-autocomplete-suggestion-margin, 0);
                 overflow: hidden;
+                text-align: var(--input-autocomplete-suggestion-text-align, left);
+                text-overflow: var(--input-autocomplete-suggestion-text-overflow, ellipses);
                 white-space: nowrap;
+            }
+
+            div > ul > li.${unsafeCSS(SUGGESTION_SELECTED_CSS_CLASS_NAME)} > button,
+            div > ul > li > button:hover {
+                background-color: var(--input-autocomplete-suggestion-selected-background-color, #e2e2e2);
+                border: var(--input-autocomplete-suggestion-selected-border, solid red);
+                font-weight: var(--input-autocomplete-suggestion-selected-font-weight, bold);
             }
 
             div > input,
@@ -89,51 +103,8 @@ export class InputAutoComplete extends InputAutoCompleteBase {
      */
     render(): TemplateResult {
 
-        const cssSuggestionAlignmentAndTextOverflowBlock = html`
-            <style>
-                :host div > ul > li > button {
-                    text-align: ${this.cssSuggestionAlignment};
-                    text-overflow: ${this.cssSuggestionTextOverflow};
-                }
-            </style>
-        `;
-
-        const cssWidthAndZIndexStyleBlock = html`
-            <style>
-                :host div {
-                    width: ${this.cssWidth};
-                    z-index: ${this.cssZIndexBase + 1};
-                }
-
-                :host div > ul {
-                    z-index: ${this.cssZIndexBase + 2};
-                }
-            </style>`;
-
-        const cssSuggestionSelectedBlock = html`
-            <style>
-            ${this.cssSuggestionSelectedContainer ?
-                html`
-                    :host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME},
-                    :host div > ul > li:hover {
-                        ${this.cssSuggestionSelectedContainer}
-                    }`
-                :
-                html``
-            }
-            ${this.cssSuggestionSelectedCommand ?
-                html`
-                    :host div > ul > li.${SUGGESTION_SELECTED_CSS_CLASS_NAME} > button,
-                    :host div > ul > li > button:hover {
-                        ${this.cssSuggestionSelectedCommand}
-                    }`
-                :
-                html``
-            }
-            </style>`;
-
         return html`
-        <div .class=${this.cssClasses.wrapper}>
+        <div>
             <input
                 autocomplete="off"
                 type="text"
@@ -141,7 +112,6 @@ export class InputAutoComplete extends InputAutoCompleteBase {
                 ?disabled="${this.disabled}"
                 ?required="${this.required}"
 
-                .class="${this.cssClasses.input}"
                 .id="${this.inputId}"
                 .inputMode="${this.inputMode}"
                 .placeholder="${this.placeholder}"
@@ -154,35 +124,28 @@ export class InputAutoComplete extends InputAutoCompleteBase {
 
                 />
 
-            <ul class="${this.cssClasses.suggestions}">
+            <ul>
                 ${this._autoCompleteSuggestions
                 ?.suggestionData.map((suggestion, index) =>
                     this.renderSuggestion(suggestion, index))}
             </ul>
-        </div>
-
-        ${this.cssWidth ? cssWidthAndZIndexStyleBlock : html``}
-        ${this.cssSuggestionAlignment ? cssSuggestionAlignmentAndTextOverflowBlock : html``}
-        ${
-            (this.cssSuggestionSelectedCommand || this.cssSuggestionSelectedContainer) ? cssSuggestionSelectedBlock : html``}
-        `;
+        </div>`;
     }
 
     /**
      * renders @type {AutoCompleteSuggestion}
      */
-    renderSuggestion(suggestion: AutoCompleteSuggestion, index: number): TemplateResult {
+    renderSuggestion(data: AutoCompleteSuggestion, index: number): TemplateResult {
         return html`
         <li>
             <button
                 type="button"
 
-                .class="${this.getSuggestionsCssClasses(index)}"
-                .data-value="${suggestion.value}"
+                .data-value="${data.value}"
 
                 @click="${() => this.handleSuggestionClick(index)}"
                 >
-                ${suggestion.suggestion ? suggestion.suggestion : suggestion.text}
+                ${data.suggestion ? data.suggestion : data.text}
             </button>
         </li>`;
     }

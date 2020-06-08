@@ -1,1 +1,1 @@
-{"version":3,"file":"css-text-alignment.js","sourceRoot":"","sources":["../../../src/types/css-text-alignment.ts"],"names":[],"mappings":"","sourcesContent":["export type CssTextAlignment = 'left' | 'right' | 'centered' | 'justified';\n"]}
+{"version":3,"file":"css-text-alignment.js","sourceRoot":"","sources":["../../../src/types/css-text-alignment.ts"],"names":[],"mappings":"","sourcesContent":[""]}

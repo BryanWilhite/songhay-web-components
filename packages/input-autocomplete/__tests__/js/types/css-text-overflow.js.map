@@ -1,1 +1,1 @@
-{"version":3,"file":"css-text-overflow.js","sourceRoot":"","sources":["../../../src/types/css-text-overflow.ts"],"names":[],"mappings":"","sourcesContent":["export type CssTextOverflow = 'clip' | 'ellipsis';\n"]}
+{"version":3,"file":"css-text-overflow.js","sourceRoot":"","sources":["../../../src/types/css-text-overflow.ts"],"names":[],"mappings":"","sourcesContent":[""]}

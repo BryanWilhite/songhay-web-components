@@ -9,6 +9,20 @@
         <link rel="stylesheet" href="../../../node_modules/mocha/mocha.css" />
         <link rel="stylesheet" href="../../../node_modules/@material/typography/dist/mdc.typography.css" />
         <link rel="stylesheet" href="../../../node_modules/@material/layout-grid/dist/mdc.layout-grid.css" />
+        <style>
+            :root {
+                --input-autocomplete-width: 16em;
+                --input-autocomplete-z-index: 1;
+                --input-autocomplete-suggestion-border: none;
+                --input-autocomplete-suggestion-font-weight: normal;
+                --input-autocomplete-suggestion-margin: 0;
+                --input-autocomplete-suggestion-text-align: left;
+                --input-autocomplete-suggestion-text-overflow: ellipses;
+                --input-autocomplete-suggestion-selected-background-color: yellow;
+                --input-autocomplete-suggestion-selected-border: solid green;
+                --input-autocomplete-suggestion-selected-font-weight: bold;
+            }
+        </style>
     </head>
 
     <body>
@@ -18,7 +32,6 @@
                 <div id="web-component-container">
                     <rx-input-autocomplete
                         inputId="my-input"
-                        cssWidth="16em"
                         placeholder="enter here">
                     </rx-input-autocomplete>
                 </div>

@@ -1,5 +1,7 @@
 # `@songhay/input-autocomplete`
 
+[![npm version](https://badge.fury.io/js/%40songhay%2Finput-autocomplete.svg)](https://badge.fury.io/js/%40songhay%2Finput-autocomplete)
+
 ## an HTML input element with auto-complete functionality
 
 Here is a sample declaration of this Web Component from the `mocha` [test harness](./__tests__/index.html):

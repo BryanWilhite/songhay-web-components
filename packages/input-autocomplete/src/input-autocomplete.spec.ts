@@ -159,5 +159,16 @@ describe(InputAutoComplete.name, function () {
             chai.expect(collection.length).eq(expectedNumberOfSuggestions);
 
             //#endregion
+
+            await DOMTestingUtility.delay(10);
+
+            inputElement.value = '';
+
+            customElement.close();
+
+            await DOMTestingUtility.delay(10);
+
+            chai.expect(customElement.componentActive).to.eq(false);
+
         });
 });

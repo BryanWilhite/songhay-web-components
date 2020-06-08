@@ -238,6 +238,7 @@ export class InputAutoCompleteBase extends LitElement {
             const setTextAndValue = () => __awaiter(this, void 0, void 0, function* () {
                 var _b;
                 const datum = (_b = this._autoCompleteSuggestions) === null || _b === void 0 ? void 0 : _b.getSuggestionDatum(suggestionIndex);
+                // prevent browsers from caching previous values:
                 this.text = '';
                 this.value = '';
                 yield EVENT_HANDLER_DELAY(50);

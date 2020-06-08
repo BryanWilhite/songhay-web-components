@@ -132,6 +132,11 @@ describe(InputAutoComplete.name, function () {
             chai.expect(collection).is.instanceOf(HTMLCollection);
             chai.expect(collection.length).eq(expectedNumberOfSuggestions);
             //#endregion
+            yield DOMTestingUtility.delay(10);
+            inputElement.value = '';
+            customElement.close();
+            yield DOMTestingUtility.delay(10);
+            chai.expect(customElement.componentActive).to.eq(false);
         });
     });
 });

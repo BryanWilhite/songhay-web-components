@@ -10,6 +10,10 @@ import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
+const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
+    setTimeout(function () { resolve(); }, timeInMilliseconds);
+});
+
 /**
  * defines the base class for this Web Component
  *
@@ -254,8 +258,16 @@ export abstract class InputAutoCompleteBase extends LitElement {
             suggestionIndex >= 0 &&
             suggestionIndex < this._autoCompleteSuggestions?.getSuggestionDataCount();
 
-        const setTextAndValue = () => {
+        const setTextAndValue = async () => {
             const datum = this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex);
+
+            // prevent browsers from caching previous values:
+
+            this.text = '';
+            this.value = '';
+
+            await EVENT_HANDLER_DELAY(50);
+
             this.text = datum.text;
             this.value = datum.value;
         };

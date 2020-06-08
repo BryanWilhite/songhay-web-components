@@ -21,6 +21,9 @@ import { Key } from './models/key';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
+const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
+    setTimeout(function () { resolve(); }, timeInMilliseconds);
+});
 /**
  * defines the base class for this Web Component
  *
@@ -232,12 +235,15 @@ export class InputAutoCompleteBase extends LitElement {
                 return suggestionIndex >= 0 &&
                     suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
             };
-            const setTextAndValue = () => {
-                var _a;
-                const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
+            const setTextAndValue = () => __awaiter(this, void 0, void 0, function* () {
+                var _b;
+                const datum = (_b = this._autoCompleteSuggestions) === null || _b === void 0 ? void 0 : _b.getSuggestionDatum(suggestionIndex);
+                this.text = '';
+                this.value = '';
+                yield EVENT_HANDLER_DELAY(50);
                 this.text = datum.text;
                 this.value = datum.value;
-            };
+            });
             //#endregion
             if (suggestionIndexIsValid()) {
                 setTextAndValue();

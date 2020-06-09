@@ -48,11 +48,16 @@ describe(InputAutoComplete.name, function () {
             { text: 'three', value: '03' },
             { text: 'four', value: '05' },
             { text: 'five', value: '05' },
+            { text: 'fifty', value: '50' },
             { text: 'fifty-one', value: '51' },
             { text: 'fifty-two', value: '52' },
             { text: 'fifty-three', value: '53' },
             { text: 'fifty-four', value: '54' },
             { text: 'fifty-five', value: '55' },
+            { text: 'fifty-six', value: '56' },
+            { text: 'fifty-seven', value: '57' },
+            { text: 'fifty-eight', value: '58' },
+            { text: 'fifty-nine', value: '59' },
         ].filter(i => {
             return (text !== '') ? i.text.startsWith(text) : false;
         }));
@@ -105,7 +110,7 @@ describe(InputAutoComplete.name, function () {
             const spyOn_handleFocus = chai.spy.on(customElement, 'handleFocus');
             const spyOn_handleKeyUp = chai.spy.on(customElement, 'handleKeyUp');
 
-            const expectedNumberOfSuggestions = 5;
+            const expectedNumberOfSuggestions = customElement.maxSuggestions;
 
             this.timeout(500);
 
@@ -134,7 +139,7 @@ describe(InputAutoComplete.name, function () {
 
             //#endregion
 
-            const keys = ['f', 'i', 'f'];
+            const keys = ['f', 'i', 'f', 't'];
 
             //#region expected `keyup` states:
 
@@ -165,10 +170,6 @@ describe(InputAutoComplete.name, function () {
             inputElement.value = '';
 
             customElement.close();
-
-            await DOMTestingUtility.delay(10);
-
-            chai.expect(customElement.componentActive).to.eq(false);
 
         });
 });

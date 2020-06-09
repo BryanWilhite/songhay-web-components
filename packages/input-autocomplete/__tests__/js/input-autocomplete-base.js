@@ -106,6 +106,21 @@ export class InputAutoCompleteBase extends LitElement {
          */
         this.suggestionGenerator = () => Promise.resolve([]);
     }
+    attributeChangedCallback(name, oldVal, newVal) {
+        const getNumber = (x) => {
+            const s = x;
+            return (!s) ? 0 : parseInt(s, 10);
+        };
+        switch (name.toLowerCase()) {
+            case InputAutoCompleteBase.maxSuggestionsPropertyName.toLowerCase():
+                this._autoCompleteSuggestions.maxSuggestions = getNumber(newVal);
+                break;
+            case InputAutoCompleteBase.minInputPropertyName.toLowerCase():
+                this._autoCompleteSuggestions.minInput = getNumber(newVal);
+                break;
+        }
+        super.attributeChangedCallback(name, oldVal, newVal);
+    }
     /**
      * clear the @type {AutoCompleteSuggestion} data
      * and call `.requestUpdate()`
@@ -315,6 +330,14 @@ export class InputAutoCompleteBase extends LitElement {
  * the conventional property name of `this.suggestionGenerator`
  */
 InputAutoCompleteBase.suggestionGeneratorPropertyName = 'suggestionGenerator';
+/**
+ * the conventional property name of `this.maxSuggestions`
+ */
+InputAutoCompleteBase.maxSuggestionsPropertyName = 'maxSuggestions';
+/**
+ * the conventional property name of `this.minInput`
+ */
+InputAutoCompleteBase.minInputPropertyName = 'minInput';
 __decorate([
     property({ type: String }),
     __metadata("design:type", Object)

@@ -13,6 +13,14 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
      */
     static suggestionGeneratorPropertyName: string;
     /**
+     * the conventional property name of `this.maxSuggestions`
+     */
+    static maxSuggestionsPropertyName: string;
+    /**
+     * the conventional property name of `this.minInput`
+     */
+    static minInputPropertyName: string;
+    /**
      * tracks the active @type {AutoCompleteSuggestion} in the DOM
      */
     activeSuggestionIndex: number;
@@ -85,6 +93,7 @@ export declare abstract class InputAutoCompleteBase extends LitElement {
      * of @type {AutoCompleteSuggestion} elements
      */
     suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]>;
+    attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void;
     /**
      * clear the @type {AutoCompleteSuggestion} data
      * and call `.requestUpdate()`

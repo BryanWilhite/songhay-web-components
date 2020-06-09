@@ -98,7 +98,7 @@ export class InputAutoCompleteBase extends LitElement {
          * for the input mode of the `input` element
          * for OS virtual keyboards
          */
-        this.inputMode = 'none';
+        this.inputMode = 'text';
         /**
          * LitElement property/attribute
          * for the generation strategy

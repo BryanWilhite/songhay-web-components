@@ -113,7 +113,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the input mode of the `input` element
      * for OS virtual keyboards
      */
-    @property({ type: Object }) inputMode: InputModes = 'none';
+    @property({ type: Object }) inputMode: InputModes = 'text';
 
     /**
      * LitElement property/attribute

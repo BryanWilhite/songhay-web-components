@@ -2,6 +2,8 @@
 
 [![npm version](https://badge.fury.io/js/%40songhay%2Finput-autocomplete.svg)](https://badge.fury.io/js/%40songhay%2Finput-autocomplete)
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/owner/my-element)
+
 ## an HTML input element with auto-complete functionality
 
 Here is a sample declaration of this Web Component from the `mocha` [test harness](./__tests__/index.html):

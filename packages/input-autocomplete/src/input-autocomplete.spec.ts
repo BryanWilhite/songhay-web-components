@@ -1,7 +1,7 @@
 import { InputAutoComplete } from './input-autocomplete';
 
 class DOMTestingUtility {
-    static delay = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
+    static delay = (timeInMilliseconds: number) => new Promise((resolve: (value?: unknown) => void) => {
         setTimeout(function () { resolve(); }, timeInMilliseconds);
     })
 

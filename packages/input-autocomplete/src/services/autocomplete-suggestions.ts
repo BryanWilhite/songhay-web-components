@@ -82,11 +82,7 @@ export class AutoCompleteSuggestions {
      */
     async prepareSuggestions(text: string): Promise<void> {
 
-        //#region functional members:
-
-        const textIsValid = () => (this.suggestionGenerator && (text.length >= this.minInput));
-
-        //#endregion
+        const textIsValid = () => (text.length >= this.minInput);
 
         if (textIsValid()) {
             const suggestions = await this.suggestionGenerator(text);

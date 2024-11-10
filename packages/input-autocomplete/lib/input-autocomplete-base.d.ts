@@ -1,4 +1,4 @@
-import { LitElement, PropertyValues } from 'lit-element';
+import { LitElement, PropertyValues } from 'lit';
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputModes } from './types/input-modes';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';

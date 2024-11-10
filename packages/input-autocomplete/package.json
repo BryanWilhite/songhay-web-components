@@ -9,6 +9,8 @@
         "components",
         "lit-element",
         "lit-html",
+        "lit",
+        "lit-3.0",
         "web-components"
     ],
     "bugs": {
@@ -30,15 +32,14 @@
     "files": [
         "lib"
     ],
-    "dependencies": {
-        "lit-element": "^2.4.0",
-        "lit-html": "^1.3.0"
-    },
     "scripts": {
         "pack": "npm pack",
         "release": "npm run pack && npm publish",
         "version:major": "npm version major -m \":rocket: :snowflake: version major up to %s\"",
         "version:minor": "npm version minor -m \":rocket: :snowflake: version minor up to %s\"",
         "version:patch": "npm version patch -m \":rocket: :snowflake: version patch up to %s\""
+    },
+    "dependencies": {
+        "lit": "^3.2.1"
     }
 }

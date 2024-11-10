@@ -1,7 +1,5 @@
-import { html, TemplateResult } from 'lit-html';
-import { css, unsafeCSS } from 'lit-element/lib/css-tag';
-import { customElement } from 'lit-element/lib/decorators';
-import { PropertyValues } from 'lit-element/lib/updating-element';
+import { css, unsafeCSS, html, PropertyValues, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 

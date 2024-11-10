@@ -1,5 +1,4 @@
-import { TemplateResult } from 'lit-html';
-import { PropertyValues } from 'lit-element/lib/updating-element';
+import { PropertyValues, TemplateResult } from 'lit';
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { InputAutoCompleteBase } from './input-autocomplete-base';
 /**
@@ -21,7 +20,7 @@ export declare class InputAutoComplete extends InputAutoCompleteBase {
     /**
      * renders CSS according to LitElement conventions
      */
-    static get styles(): import("lit-element/lib/css-tag").CSSResult;
+    static get styles(): import("lit").CSSResult;
     /**
      * conventional LitElement method
      */

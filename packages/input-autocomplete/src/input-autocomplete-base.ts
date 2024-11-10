@@ -1,4 +1,5 @@
-import { LitElement, property, PropertyValues } from 'lit-element';
+import { LitElement, PropertyValues } from 'lit';
+import { property } from 'lit/decorators.js'
 
 import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
 import { Key } from './models/key';
@@ -10,9 +11,7 @@ import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 
-const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise((resolve: () => void) => {
-    setTimeout(function () { resolve(); }, timeInMilliseconds);
-});
+const EVENT_HANDLER_DELAY = (timeInMilliseconds: number) => new Promise(resolve => setTimeout(resolve, timeInMilliseconds));
 
 /**
  * defines the base class for this Web Component

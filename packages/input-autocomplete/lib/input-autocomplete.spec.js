@@ -7,6 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { expect } from 'chai';
+import spies from 'chai-spies';
 import { InputAutoComplete } from './input-autocomplete';
 class DOMTestingUtility {
     static getDocumentNode(selector) {
@@ -39,15 +41,15 @@ describe(InputAutoComplete.name, function () {
         return __awaiter(this, void 0, void 0, function* () {
             const node = yield DOMTestingUtility.getDocumentNode('#web-component-container');
             const container = node;
-            chai.expect(container).to.be.instanceOf(HTMLDivElement);
-            chai.expect(container.children).to.be.instanceOf(HTMLCollection);
-            chai.expect(container.children.length).to.be.eq(1);
+            expect(container).to.be.instanceOf(HTMLDivElement);
+            expect(container.children).to.be.instanceOf(HTMLCollection);
+            expect(container.children.length).to.be.eq(1);
             customElement = container.children[0];
         });
     });
     it('is rendered', function () {
-        chai.expect(customElement).to.be.instanceOf(InputAutoComplete);
-        chai.expect(customElement.localName).to.be.eq(InputAutoComplete.customElementName);
+        expect(customElement).to.be.instanceOf(InputAutoComplete);
+        expect(customElement.localName).to.be.eq(InputAutoComplete.customElementName);
         customElement.suggestionGenerator = (text) => Promise.resolve([
             { text: 'one', value: '01' },
             { text: 'two', value: '02' },
@@ -70,54 +72,54 @@ describe(InputAutoComplete.name, function () {
     });
     it('has a `shadowRoot`', function () {
         shadowRoot = customElement.shadowRoot;
-        chai.expect(shadowRoot).to.be.instanceOf(ShadowRoot);
+        expect(shadowRoot).to.be.instanceOf(ShadowRoot);
     });
     it('has a `shadowRoot` with `style` element(s) and container', function () {
         const expectedShadowRootElementNames = [
             'div',
             'style',
         ];
-        chai.expect(shadowRoot.children).to.be.instanceOf(HTMLCollection);
-        chai.expect(shadowRoot.children.length).to.be.eq(expectedShadowRootElementNames.length);
+        expect(shadowRoot.children).to.be.instanceOf(HTMLCollection);
+        expect(shadowRoot.children.length).to.be.eq(expectedShadowRootElementNames.length);
         const expectedContainerElementNames = [
             'input',
             'ul'
         ];
         divElement = shadowRoot.children[0];
-        chai.expect(divElement).to.be.instanceOf(HTMLDivElement);
-        chai.expect(divElement.children.length).to.be.eq(expectedContainerElementNames.length);
+        expect(divElement).to.be.instanceOf(HTMLDivElement);
+        expect(divElement.children.length).to.be.eq(expectedContainerElementNames.length);
     });
     it('has an input element and suggestions element', function () {
         inputElement = divElement.children[0];
-        chai.expect(inputElement).to.be.instanceOf(HTMLInputElement);
+        expect(inputElement).to.be.instanceOf(HTMLInputElement);
         unorderedListElement = divElement.children[1];
-        chai.expect(unorderedListElement).to.be.instanceOf(HTMLUListElement);
+        expect(unorderedListElement).to.be.instanceOf(HTMLUListElement);
     });
     it('has an `input` element with expected default properties/attributes', function () {
-        chai.expect(inputElement.disabled).eq(false);
-        chai.expect(inputElement.required).eq(customElement.required);
-        chai.expect(inputElement.id).eq(customElement.inputId);
-        chai.expect(inputElement.inputMode).eq(customElement.inputMode);
-        chai.expect(inputElement.placeholder).eq(customElement.placeholder);
+        expect(inputElement.disabled).eq(false);
+        expect(inputElement.required).eq(customElement.required);
+        expect(inputElement.id).eq(customElement.inputId);
+        expect(inputElement.inputMode).eq(customElement.inputMode);
+        expect(inputElement.placeholder).eq(customElement.placeholder);
     });
     it('has the expected number of suggestions after handling DOM events', function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const spyOn_handleFocus = chai.spy.on(customElement, 'handleFocus');
-            const spyOn_handleKeyUp = chai.spy.on(customElement, 'handleKeyUp');
+            const spyOn_handleFocus = spies.on(customElement, 'handleFocus');
+            const spyOn_handleKeyUp = spies.on(customElement, 'handleKeyUp');
             const expectedNumberOfSuggestions = customElement.maxSuggestions;
             this.timeout(500);
             //#region expected initial state:
-            chai.expect(customElement.componentActive).to.eq(false);
+            expect(customElement.componentActive).to.eq(false);
             let collection = unorderedListElement.children;
-            chai.expect(collection).is.instanceOf(HTMLCollection);
-            chai.expect(collection.length).eq(0);
+            expect(collection).is.instanceOf(HTMLCollection);
+            expect(collection.length).eq(0);
             //#endregion
             yield DOMTestingUtility.delay(10);
             //#region expected `focus` state:
             const focusEvent = new FocusEvent('focus');
             inputElement.dispatchEvent(focusEvent);
             yield DOMTestingUtility.delay(10);
-            chai.expect(spyOn_handleFocus).to.have.been.called();
+            expect(spyOn_handleFocus).to.have.been.called();
             inputElement.focus();
             //#endregion
             const keys = ['f', 'i', 'f', 't'];
@@ -131,11 +133,11 @@ describe(InputAutoComplete.name, function () {
                 inputElement.value += key;
                 yield DOMTestingUtility.delay(10);
             }
-            chai.expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
-            chai.expect(customElement.componentActive).to.eq(true);
+            expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
+            expect(customElement.componentActive).to.eq(true);
             collection = unorderedListElement.children;
-            chai.expect(collection).is.instanceOf(HTMLCollection);
-            chai.expect(collection.length).eq(expectedNumberOfSuggestions);
+            expect(collection).is.instanceOf(HTMLCollection);
+            expect(collection.length).eq(expectedNumberOfSuggestions);
             //#endregion
             yield DOMTestingUtility.delay(10);
             inputElement.value = '';

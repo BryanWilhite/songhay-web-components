@@ -57,9 +57,7 @@ export class AutoCompleteSuggestions {
      */
     prepareSuggestions(text) {
         return __awaiter(this, void 0, void 0, function* () {
-            //#region functional members:
-            const textIsValid = () => (this.suggestionGenerator && (text.length >= this.minInput));
-            //#endregion
+            const textIsValid = () => (text.length >= this.minInput);
             if (textIsValid()) {
                 const suggestions = yield this.suggestionGenerator(text);
                 suggestions.splice(this.maxSuggestions);

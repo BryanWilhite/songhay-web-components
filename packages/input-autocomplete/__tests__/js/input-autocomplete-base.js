@@ -16,14 +16,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { LitElement, property } from 'lit-element';
+import { LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
 import { Key } from './models/key';
 import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
-const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise((resolve) => {
-    setTimeout(function () { resolve(); }, timeInMilliseconds);
-});
+const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise(resolve => setTimeout(resolve, timeInMilliseconds));
 /**
  * defines the base class for this Web Component
  *
@@ -126,8 +125,8 @@ export class InputAutoCompleteBase extends LitElement {
      * and call `.requestUpdate()`
      */
     clearSuggestionData() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.clearData();
             yield this.requestUpdate();
             this.activeSuggestionIndex = -1;
@@ -242,17 +241,17 @@ export class InputAutoCompleteBase extends LitElement {
      * of this Web Component
      */
     handleSuggestionClick(suggestionIndex) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             //#region functional members:
+            var _a;
             const suggestionIndexIsValid = () => {
                 var _a;
                 return suggestionIndex >= 0 &&
                     suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
             };
             const setTextAndValue = () => __awaiter(this, void 0, void 0, function* () {
-                var _b;
-                const datum = (_b = this._autoCompleteSuggestions) === null || _b === void 0 ? void 0 : _b.getSuggestionDatum(suggestionIndex);
+                var _a;
+                const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
                 // prevent browsers from caching previous values:
                 this.text = '';
                 this.value = '';
@@ -275,8 +274,8 @@ export class InputAutoCompleteBase extends LitElement {
      * based on the specified text input
      */
     prepareSuggestions(text) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             yield ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.prepareSuggestions(text));
             yield this.requestUpdate();
         });

@@ -4,9 +4,11 @@
     "description": "planting small shadow-tree seeds 🌱👁 and watching them grow in the manner of 🦉 the living standard",
     "main": "index.js",
     "scripts": {
-        "lerna:build:typescript": "npx lerna exec -- tsc",
+        "lerna:info": "npx lerna info",
+        "lerna:list": "npx lerna list",
         "lerna:clean": "npx lerna clean --yes",
         "lerna:install": "npx lerna exec -- npm i",
+        "lerna:exec:tsc": "npx lerna exec -- tsc",
         "input-autocomplete:start:test": "npm run input-autocomplete:tsc:test && npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
         "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts",
         "input-autocomplete:tsc": "tsc --project packages/input-autocomplete/tsconfig.json",

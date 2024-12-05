@@ -1,30 +1,19 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { expect } from 'chai';
 import spies from 'chai-spies';
-import { InputAutoComplete } from './input-autocomplete';
+import { InputAutoComplete } from './input-autocomplete.js';
 class DOMTestingUtility {
-    static getDocumentNode(selector) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise(resolve => {
-                function requestComponent() {
-                    const element = document.querySelector(selector);
-                    if (element) {
-                        resolve(element);
-                    }
-                    else {
-                        window.requestAnimationFrame(requestComponent);
-                    }
+    static async getDocumentNode(selector) {
+        return new Promise(resolve => {
+            function requestComponent() {
+                const element = document.querySelector(selector);
+                if (element) {
+                    resolve(element);
                 }
-                requestComponent();
-            });
+                else {
+                    window.requestAnimationFrame(requestComponent);
+                }
+            }
+            requestComponent();
         });
     }
 }
@@ -37,15 +26,13 @@ describe(InputAutoComplete.name, function () {
     let divElement;
     let inputElement;
     let unorderedListElement;
-    before(function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            const node = yield DOMTestingUtility.getDocumentNode('#web-component-container');
-            const container = node;
-            expect(container).to.be.instanceOf(HTMLDivElement);
-            expect(container.children).to.be.instanceOf(HTMLCollection);
-            expect(container.children.length).to.be.eq(1);
-            customElement = container.children[0];
-        });
+    before(async function () {
+        const node = await DOMTestingUtility.getDocumentNode('#web-component-container');
+        const container = node;
+        expect(container).to.be.instanceOf(HTMLDivElement);
+        expect(container.children).to.be.instanceOf(HTMLCollection);
+        expect(container.children.length).to.be.eq(1);
+        customElement = container.children[0];
     });
     it('is rendered', function () {
         expect(customElement).to.be.instanceOf(InputAutoComplete);
@@ -102,47 +89,44 @@ describe(InputAutoComplete.name, function () {
         expect(inputElement.inputMode).eq(customElement.inputMode);
         expect(inputElement.placeholder).eq(customElement.placeholder);
     });
-    it('has the expected number of suggestions after handling DOM events', function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            const spyOn_handleFocus = spies.on(customElement, 'handleFocus');
-            const spyOn_handleKeyUp = spies.on(customElement, 'handleKeyUp');
-            const expectedNumberOfSuggestions = customElement.maxSuggestions;
-            this.timeout(500);
-            //#region expected initial state:
-            expect(customElement.componentActive).to.eq(false);
-            let collection = unorderedListElement.children;
-            expect(collection).is.instanceOf(HTMLCollection);
-            expect(collection.length).eq(0);
-            //#endregion
-            yield DOMTestingUtility.delay(10);
-            //#region expected `focus` state:
-            const focusEvent = new FocusEvent('focus');
-            inputElement.dispatchEvent(focusEvent);
-            yield DOMTestingUtility.delay(10);
-            expect(spyOn_handleFocus).to.have.been.called();
-            inputElement.focus();
-            //#endregion
-            const keys = ['f', 'i', 'f', 't'];
-            //#region expected `keyup` states:
-            for (const key of keys) {
-                const keyboardEvent = new KeyboardEvent('keyup', {
-                    key: key,
-                    shiftKey: true
-                });
-                inputElement.dispatchEvent(keyboardEvent);
-                inputElement.value += key;
-                yield DOMTestingUtility.delay(10);
-            }
-            expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
-            expect(customElement.componentActive).to.eq(true);
-            collection = unorderedListElement.children;
-            expect(collection).is.instanceOf(HTMLCollection);
-            expect(collection.length).eq(expectedNumberOfSuggestions);
-            //#endregion
-            yield DOMTestingUtility.delay(10);
-            inputElement.value = '';
-            customElement.close();
-        });
+    it('has the expected number of suggestions after handling DOM events', async function () {
+        const spyOn_handleFocus = spies.on(customElement, 'handleFocus');
+        const spyOn_handleKeyUp = spies.on(customElement, 'handleKeyUp');
+        const expectedNumberOfSuggestions = customElement.maxSuggestions;
+        this.timeout(500);
+        //#region expected initial state:
+        expect(customElement.componentActive).to.eq(false);
+        let collection = unorderedListElement.children;
+        expect(collection).is.instanceOf(HTMLCollection);
+        expect(collection.length).eq(0);
+        //#endregion
+        await DOMTestingUtility.delay(10);
+        //#region expected `focus` state:
+        const focusEvent = new FocusEvent('focus');
+        inputElement.dispatchEvent(focusEvent);
+        await DOMTestingUtility.delay(10);
+        expect(spyOn_handleFocus).to.have.been.called();
+        inputElement.focus();
+        //#endregion
+        const keys = ['f', 'i', 'f', 't'];
+        //#region expected `keyup` states:
+        for (const key of keys) {
+            const keyboardEvent = new KeyboardEvent('keyup', {
+                key: key,
+                shiftKey: true
+            });
+            inputElement.dispatchEvent(keyboardEvent);
+            inputElement.value += key;
+            await DOMTestingUtility.delay(10);
+        }
+        expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
+        expect(customElement.componentActive).to.eq(true);
+        collection = unorderedListElement.children;
+        expect(collection).is.instanceOf(HTMLCollection);
+        expect(collection.length).eq(expectedNumberOfSuggestions);
+        //#endregion
+        await DOMTestingUtility.delay(10);
+        inputElement.value = '';
+        customElement.close();
     });
 });
-//# sourceMappingURL=input-autocomplete.spec.js.map

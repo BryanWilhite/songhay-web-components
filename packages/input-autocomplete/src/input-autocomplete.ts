@@ -1,11 +1,11 @@
 import { css, unsafeCSS, html, PropertyValues, TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion.js';
 
-import { InputAutoCompleteBase } from './input-autocomplete-base';
+import { InputAutoCompleteBase } from './input-autocomplete-base.js';
 
-import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css';
+import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css.js';
 
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
@@ -33,7 +33,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
     /**
      * renders CSS according to LitElement conventions
      */
-    static get styles() {
+     static override get styles() {
         return css`
             ${TEMPLATE_NORMALIZE_CSS}
 
@@ -90,7 +90,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
     /**
      * conventional LitElement method
      */
-    firstUpdated(changedProperties: PropertyValues) {
+    override firstUpdated(changedProperties: PropertyValues) {
         super.firstUpdated(changedProperties);
         this.setSuggestionsContainer();
     }
@@ -98,7 +98,7 @@ export class InputAutoComplete extends InputAutoCompleteBase {
     /**
      * conventional LitElement method
      */
-    render(): TemplateResult {
+    override render(): TemplateResult {
 
         return html`
         <div>

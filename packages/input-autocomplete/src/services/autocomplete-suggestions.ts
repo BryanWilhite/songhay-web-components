@@ -1,4 +1,4 @@
-import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion';
+import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion.js';
 
 /**
  * defines routines
@@ -57,8 +57,15 @@ export class AutoCompleteSuggestions {
      * get @type {AutoCompleteSuggestion} datum
      * at the specified index
      */
-    getSuggestionDatum(index: number): AutoCompleteSuggestion {
-        return this.suggestionData[index];
+    getSuggestionDatum(index: number): AutoCompleteSuggestion | null {
+        const data = this.suggestionData.length > index ? this.suggestionData[index] : null;
+
+        if(data === undefined)
+        {
+            return null;
+        }
+
+        return data;
     }
 
     /**

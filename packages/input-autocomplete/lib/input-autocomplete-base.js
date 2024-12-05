@@ -4,22 +4,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { Key } from './models/key';
-import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
+import { Key } from './models/key.js';
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions.js';
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
 const EVENT_HANDLER_DELAY = (timeInMilliseconds) => new Promise(resolve => setTimeout(resolve, timeInMilliseconds));
@@ -124,14 +112,11 @@ export class InputAutoCompleteBase extends LitElement {
      * clear the @type {AutoCompleteSuggestion} data
      * and call `.requestUpdate()`
      */
-    clearSuggestionData() {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.clearData();
-            yield this.requestUpdate();
-            this.activeSuggestionIndex = -1;
-            this.componentActive = false;
-        });
+    async clearSuggestionData() {
+        this._autoCompleteSuggestions?.clearData();
+        await this.requestUpdate();
+        this.activeSuggestionIndex = -1;
+        this.componentActive = false;
     }
     /**
      * clear any @type {AutoCompleteSuggestion}
@@ -150,11 +135,9 @@ export class InputAutoCompleteBase extends LitElement {
      * clear @type {AutoCompleteSuggestion} data
      * and selection
      */
-    close() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.clearSuggestionSelection();
-            yield this.clearSuggestionData();
-        });
+    async close() {
+        this.clearSuggestionSelection();
+        await this.clearSuggestionData();
     }
     /**
      * emit the custom events of this Web Component
@@ -182,121 +165,104 @@ export class InputAutoCompleteBase extends LitElement {
      * handle the `keydown` event of the `input` element
      * of this Web Component
      */
-    handleKeyDown(e) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!e) {
-                console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
-                return;
-            }
-            switch (e.key) {
-                case Key.ArrowDown:
-                case Key.ArrowUp:
-                    this.setActiveSuggestionIndex(e.key);
-                    this.handleSuggestionSelection(this.activeSuggestionIndex);
-                    break;
-                case Key.Enter:
-                case Key.Tab:
-                    e.preventDefault();
-                    this.handleSuggestionClick(this.activeSuggestionIndex);
-                    break;
-                case Key.Escape:
-                    yield this.close();
-                    break;
-            }
-        });
+    async handleKeyDown(e) {
+        if (!e) {
+            console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
+            return;
+        }
+        switch (e.key) {
+            case Key.ArrowDown:
+            case Key.ArrowUp:
+                this.setActiveSuggestionIndex(e.key);
+                this.handleSuggestionSelection(this.activeSuggestionIndex);
+                break;
+            case Key.Enter:
+            case Key.Tab:
+                e.preventDefault();
+                this.handleSuggestionClick(this.activeSuggestionIndex);
+                break;
+            case Key.Escape:
+                await this.close();
+                break;
+        }
     }
     /**
      * handle the `keyup` event of the `input` element
      * of this Web Component
      */
-    handleKeyUp(e) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!e) {
-                console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
-                return;
-            }
-            if (!e.target) {
-                console.error('The expected KeyboardEvent EventTarget is not here.');
-                return;
-            }
-            const text = e.target['value'];
-            switch (e.key) {
-                case Key.ArrowDown:
-                case Key.ArrowUp:
-                case Key.Enter:
-                case Key.Tab:
-                case Key.Escape:
-                    e.preventDefault();
-                    this.clearSuggestionSelection(true);
-                    break;
-                default:
-                    yield this.prepareSuggestions(text);
-                    break;
-            }
-        });
+    async handleKeyUp(e) {
+        if (!e) {
+            console.error(`The expected \`${KeyboardEvent.name}\` is not here.`);
+            return;
+        }
+        if (!e.target) {
+            console.error('The expected KeyboardEvent EventTarget is not here.');
+            return;
+        }
+        switch (e.key) {
+            case Key.ArrowDown:
+            case Key.ArrowUp:
+            case Key.Enter:
+            case Key.Tab:
+            case Key.Escape:
+                e.preventDefault();
+                this.clearSuggestionSelection(true);
+                break;
+            default:
+                const target = e.target;
+                const text = target.value;
+                await this.prepareSuggestions(text);
+                break;
+        }
     }
     /**
      * handle the click event
      * of a selected @type {AutoCompleteSuggestion} element
      * of this Web Component
      */
-    handleSuggestionClick(suggestionIndex) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //#region functional members:
-            var _a;
-            const suggestionIndexIsValid = () => {
-                var _a;
-                return suggestionIndex >= 0 &&
-                    suggestionIndex < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount());
-            };
-            const setTextAndValue = () => __awaiter(this, void 0, void 0, function* () {
-                var _a;
-                const datum = (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex);
-                // prevent browsers from caching previous values:
-                this.text = '';
-                this.value = '';
-                yield EVENT_HANDLER_DELAY(50);
-                this.text = datum.text;
-                this.value = datum.value;
+    async handleSuggestionClick(suggestionIndex) {
+        //#region functional members:
+        const suggestionIndexIsValid = () => suggestionIndex >= 0 &&
+            suggestionIndex < this._autoCompleteSuggestions?.getSuggestionDataCount();
+        const setTextAndValue = async () => {
+            const datum = this._autoCompleteSuggestions?.getSuggestionDatum(suggestionIndex);
+            // prevent browsers from caching previous values:
+            this.text = '';
+            this.value = '';
+            await EVENT_HANDLER_DELAY(50);
+            this.text = datum?.text ?? '';
+            this.value = datum?.value ?? '';
+        };
+        //#endregion
+        if (suggestionIndexIsValid()) {
+            setTextAndValue();
+            this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, {
+                detail: this._autoCompleteSuggestions
+                    ?.getSuggestionDatum(suggestionIndex)
             });
-            //#endregion
-            if (suggestionIndexIsValid()) {
-                setTextAndValue();
-                this.dispatchCustomEvent(CUSTOM_EVENT_NAME_SELECTED, {
-                    detail: (_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDatum(suggestionIndex)
-                });
-                yield this.clearSuggestionData();
-            }
-        });
+            await this.clearSuggestionData();
+        }
     }
     /**
      * prepares @type {AutoCompleteSuggestion} element display
      * based on the specified text input
      */
-    prepareSuggestions(text) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            yield ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.prepareSuggestions(text));
-            yield this.requestUpdate();
-        });
+    async prepareSuggestions(text) {
+        await this._autoCompleteSuggestions?.prepareSuggestions(text);
+        await this.requestUpdate();
     }
     /**
      * sets `this.activeSuggestionIndex`
      * based on the specified Arrow-key input
      */
     setActiveSuggestionIndex(key) {
-        var _a;
-        if (!((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.hasSuggestionData())) {
+        if (!this._autoCompleteSuggestions?.hasSuggestionData()) {
             return;
         }
         const isArrowDownKey = (key === Key.ArrowDown);
         //#region functional members:
-        const activeSuggestionIndexIsValid = () => {
-            var _a;
-            return ((this.activeSuggestionIndex + 1) < ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()));
-        };
+        const activeSuggestionIndexIsValid = () => ((this.activeSuggestionIndex + 1) < this._autoCompleteSuggestions?.getSuggestionDataCount());
         const setActiveSuggestionIndexBoundary = () => {
-            var _a;
             if (isArrowDownKey) {
                 this.activeSuggestionIndex = 0;
             }
@@ -304,7 +270,7 @@ export class InputAutoCompleteBase extends LitElement {
                 this.activeSuggestionIndex -= 1;
             }
             else if (!isArrowDownKey) {
-                this.activeSuggestionIndex = ((_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.getSuggestionDataCount()) - 1;
+                this.activeSuggestionIndex = this._autoCompleteSuggestions?.getSuggestionDataCount() - 1;
             }
         };
         //#endregion
@@ -338,43 +304,32 @@ InputAutoCompleteBase.maxSuggestionsPropertyName = 'maxSuggestions';
  */
 InputAutoCompleteBase.minInputPropertyName = 'minInput';
 __decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
+    property({ type: String })
 ], InputAutoCompleteBase.prototype, "inputId", void 0);
 __decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
+    property({ type: String })
 ], InputAutoCompleteBase.prototype, "placeholder", void 0);
 __decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
+    property({ type: String })
 ], InputAutoCompleteBase.prototype, "text", void 0);
 __decorate([
-    property({ type: String }),
-    __metadata("design:type", Object)
+    property({ type: String })
 ], InputAutoCompleteBase.prototype, "value", void 0);
 __decorate([
-    property({ type: Boolean }),
-    __metadata("design:type", Object)
+    property({ type: Boolean })
 ], InputAutoCompleteBase.prototype, "disabled", void 0);
 __decorate([
-    property({ type: Boolean }),
-    __metadata("design:type", Object)
+    property({ type: Boolean })
 ], InputAutoCompleteBase.prototype, "required", void 0);
 __decorate([
-    property({ type: Number }),
-    __metadata("design:type", Object)
+    property({ type: Number })
 ], InputAutoCompleteBase.prototype, "maxSuggestions", void 0);
 __decorate([
-    property({ type: Number }),
-    __metadata("design:type", Object)
+    property({ type: Number })
 ], InputAutoCompleteBase.prototype, "minInput", void 0);
 __decorate([
-    property({ type: Object }),
-    __metadata("design:type", String)
+    property({ type: Object })
 ], InputAutoCompleteBase.prototype, "inputMode", void 0);
 __decorate([
-    property({ type: Object }),
-    __metadata("design:type", Function)
+    property({ type: Object })
 ], InputAutoCompleteBase.prototype, "suggestionGenerator", void 0);
-//# sourceMappingURL=input-autocomplete-base.js.map

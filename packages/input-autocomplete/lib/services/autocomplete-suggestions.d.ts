@@ -1,4 +1,4 @@
-import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion';
+import { AutoCompleteSuggestion } from '../models/autocomplete-suggestion.js';
 /**
  * defines routines
  * for @type {AutoCompleteSuggestion} data
@@ -39,7 +39,7 @@ export declare class AutoCompleteSuggestions {
      * get @type {AutoCompleteSuggestion} datum
      * at the specified index
      */
-    getSuggestionDatum(index: number): AutoCompleteSuggestion;
+    getSuggestionDatum(index: number): AutoCompleteSuggestion | null;
     /**
      * get the @type {AutoCompleteSuggestion} data count
      */

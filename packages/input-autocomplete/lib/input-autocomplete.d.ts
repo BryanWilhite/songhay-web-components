@@ -1,6 +1,6 @@
 import { PropertyValues, TemplateResult } from 'lit';
-import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { InputAutoCompleteBase } from './input-autocomplete-base';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion.js';
+import { InputAutoCompleteBase } from './input-autocomplete-base.js';
 /**
  * defines rendering methods for @type {InputAutoCompleteBase}
  *

@@ -31,4 +31,3 @@ Key.Escape = 'Escape';
  * @summary `KeyboardEvent.key` value
  */
 Key.Tab = 'Tab';
-//# sourceMappingURL=key.js.map

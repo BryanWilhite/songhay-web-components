@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import spies from 'chai-spies';
-import { InputAutoComplete } from './input-autocomplete';
+import { InputAutoComplete } from './input-autocomplete.js';
 
 class DOMTestingUtility {
     static delay = (timeInMilliseconds: number) => new Promise((resolve: (value?: unknown) => void) => {

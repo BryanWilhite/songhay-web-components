@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { AutoCompleteSuggestions } from './autocomplete-suggestions';
+import { AutoCompleteSuggestions } from './autocomplete-suggestions.js';
 
 const suggestionGenerator = (text: string) => Promise.resolve([
     { text: 'one', value: '01' },

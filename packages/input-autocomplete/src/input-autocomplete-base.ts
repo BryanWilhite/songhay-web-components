@@ -1,12 +1,12 @@
 import { LitElement, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js'
 
-import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { Key } from './models/key';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion.js';
+import { Key } from './models/key.js';
 
-import { InputModes } from './types/input-modes';
+import { InputModes } from './types/input-modes.js';
 
-import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions.js';
 
 const CUSTOM_EVENT_NAME_SELECTED = 'selected';
 const CUSTOM_EVENT_NAME_UNSELECTED = 'unselected';
@@ -112,7 +112,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      * for the input mode of the `input` element
      * for OS virtual keyboards
      */
-    @property({ type: Object }) inputMode: InputModes = 'text';
+    @property({ type: Object }) override inputMode: InputModes = 'text';
 
     /**
      * LitElement property/attribute
@@ -121,7 +121,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
      */
     @property({ type: Object }) suggestionGenerator: (text: string) => Promise<AutoCompleteSuggestion[]> = () => Promise.resolve([]);
 
-    attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
+    override attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
 
         const getNumber = (x: string | null) => {
             const s = x as string;
@@ -255,8 +255,6 @@ export abstract class InputAutoCompleteBase extends LitElement {
             return;
         }
 
-        const text: string = e.target['value'];
-
         switch (e.key) {
             case Key.ArrowDown:
             case Key.ArrowUp:
@@ -268,6 +266,9 @@ export abstract class InputAutoCompleteBase extends LitElement {
                 break;
 
             default:
+
+                const target = e.target as HTMLInputElement;
+                const text: string = target.value;
 
                 await this.prepareSuggestions(text);
 
@@ -297,8 +298,8 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
             await EVENT_HANDLER_DELAY(50);
 
-            this.text = datum.text;
-            this.value = datum.value;
+            this.text = datum?.text ?? '';
+            this.value = datum?.value ?? '';
         };
 
         //#endregion
@@ -366,7 +367,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
     /**
      * conventional LitElement method
      */
-    updated(changedProperties: PropertyValues) {
+    override updated(changedProperties: PropertyValues) {
         super.updated(changedProperties);
 
         if (changedProperties.has(InputAutoCompleteBase.suggestionGeneratorPropertyName)) {

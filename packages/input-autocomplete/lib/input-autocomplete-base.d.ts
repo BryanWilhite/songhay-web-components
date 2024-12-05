@@ -1,7 +1,7 @@
 import { LitElement, PropertyValues } from 'lit';
-import { AutoCompleteSuggestion } from './models/autocomplete-suggestion';
-import { InputModes } from './types/input-modes';
-import { AutoCompleteSuggestions } from './services/autocomplete-suggestions';
+import { AutoCompleteSuggestion } from './models/autocomplete-suggestion.js';
+import { InputModes } from './types/input-modes.js';
+import { AutoCompleteSuggestions } from './services/autocomplete-suggestions.js';
 /**
  * defines the base class for this Web Component
  *

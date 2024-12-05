@@ -148,7 +148,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
     async clearSuggestionData(): Promise<void> {
         this._autoCompleteSuggestions?.clearData();
 
-        await this.requestUpdate();
+        this.requestUpdate();
 
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
@@ -335,7 +335,7 @@ export abstract class InputAutoCompleteBase extends LitElement {
 
         await this._autoCompleteSuggestions?.prepareSuggestions(text);
 
-        await this.requestUpdate();
+        this.requestUpdate();
     }
 
     /**

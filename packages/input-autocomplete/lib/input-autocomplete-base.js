@@ -210,6 +210,10 @@ export class InputAutoCompleteBase extends LitElement {
                 break;
             default:
                 const target = e.target;
+                if ('value' in target === false) {
+                    console.error('The expected KeyboardEvent EventTarget value is not here.');
+                    break;
+                }
                 const text = target.value;
                 await this.prepareSuggestions(text);
                 break;

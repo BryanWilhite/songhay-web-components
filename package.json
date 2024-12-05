@@ -40,7 +40,6 @@
         "@types/mocha": "^10.0.10",
         "chai": "^5.1.2",
         "chai-spies": "^1.1.0",
-        "es-dev-server": "^2.1.0",
         "lerna": "^8.1.9",
         "mocha": "^10.8.2",
         "ts-node": "^10.9.2",

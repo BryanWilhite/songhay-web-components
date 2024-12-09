@@ -11,8 +11,8 @@
         "lerna:exec:tsc": "npx lerna exec -- tsc",
         "lerna:exec:tsc:input-autocomplete:test": "npx lerna exec --scope=@songhay/input-autocomplete -- tsc --project tsconfig.spec.json",
         "lerna:exec:mocha:input-autocomplete:services": "npx lerna exec --scope=@songhay/input-autocomplete -- mocha lib/services/*.spec.js",
-        "lerna:exec:typedoc": "npx lerna exec -- typedoc",
-        "input-autocomplete:start:test": "npm run input-autocomplete:tsc:test && npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch"
+        "lerna:exec:mocha:input-autocomplete:http-server": "http-server . -o packages/input-autocomplete/__tests__ -c-1",
+        "lerna:exec:typedoc": "npx lerna exec -- typedoc"
     },
     "repository": {
         "type": "git",

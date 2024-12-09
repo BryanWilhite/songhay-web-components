@@ -10,9 +10,9 @@
         "lerna:install": "npx lerna exec -- npm i",
         "lerna:exec:tsc": "npx lerna exec -- tsc",
         "lerna:exec:tsc:input-autocomplete:test": "npx lerna exec --scope=@songhay/input-autocomplete -- tsc --project tsconfig.spec.json",
+        "lerna:exec:typedoc": "npx lerna exec -- typedoc",
         "input-autocomplete:start:test": "npm run input-autocomplete:tsc:test && npx es-dev-server --config packages/input-autocomplete/__tests__/es-dev-server.spec.js --watch",
-        "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts",
-        "input-autocomplete:typedoc": "cd ./packages/input-autocomplete && npx typedoc --tsconfig packages/input-autocomplete/tsconfig.json"
+        "input-autocomplete:ts-mocha:test:services": "npx ts-mocha -p packages/input-autocomplete/tsconfig.ts-mocha.spec.json packages/input-autocomplete/src/services/*.spec.ts"
     },
     "repository": {
         "type": "git",

@@ -6,8 +6,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { css, unsafeCSS, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { InputAutoCompleteBase } from './input-autocomplete-base';
-import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css';
+import { InputAutoCompleteBase } from './input-autocomplete-base.js';
+import { TEMPLATE_NORMALIZE_CSS } from './constants/normalize-css.js';
 const CUSTOM_ELEMENT_NAME = 'rx-input-autocomplete';
 const SUGGESTION_SELECTED_CSS_CLASS_NAME = 'selected';
 /**
@@ -92,7 +92,6 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
      * conventional LitElement method
      */
     render() {
-        var _a;
         return html `
         <div>
             <input
@@ -114,7 +113,8 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
                 />
 
             <ul>
-                ${(_a = this._autoCompleteSuggestions) === null || _a === void 0 ? void 0 : _a.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
+                ${this._autoCompleteSuggestions
+            ?.suggestionData.map((suggestion, index) => this.renderSuggestion(suggestion, index))}
             </ul>
         </div>`;
     }
@@ -139,8 +139,7 @@ let InputAutoComplete = class InputAutoComplete extends InputAutoCompleteBase {
      * sets `this.suggestionsContainer`
      */
     setSuggestionsContainer() {
-        var _a;
-        const collection = (_a = this.shadowRoot) === null || _a === void 0 ? void 0 : _a.children;
+        const collection = this.shadowRoot?.children;
         if (!collection) {
             console.error(`The expected \`${HTMLCollection.name}\` is not here.`);
             return;
@@ -185,4 +184,3 @@ InputAutoComplete = __decorate([
     customElement(CUSTOM_ELEMENT_NAME)
 ], InputAutoComplete);
 export { InputAutoComplete };
-//# sourceMappingURL=input-autocomplete.js.map

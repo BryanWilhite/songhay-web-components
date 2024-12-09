@@ -3,19 +3,17 @@
     "compilerOptions": {
         "declaration": true,
         "rootDir": "./src",
-        "outDir": "./lib"
+        "outDir": "./lib",
+        "stripInternal": true
     },
     "include": [
         "./src/**/*.ts"
     ],
     "typedocOptions": {
-        "entryPoint": "./src/input-autocomplete.ts",
-        "exclude": "**/*.spec.ts",
+        "entryPoints": ["./src/input-autocomplete.ts"],
+        "exclude": ["**/*.spec.ts"],
         "excludeExternals": true,
-        "inputFiles": "./src",
-        "mode": "modules",
         "out": "../../docs/input-autocomplete",
-        "readme": "none",
-        "stripInternal": true
+        "readme": "none"
     }
 }

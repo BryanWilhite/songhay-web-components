@@ -114,7 +114,7 @@ export class InputAutoCompleteBase extends LitElement {
      */
     async clearSuggestionData() {
         this._autoCompleteSuggestions?.clearData();
-        await this.requestUpdate();
+        this.requestUpdate();
         this.activeSuggestionIndex = -1;
         this.componentActive = false;
     }
@@ -253,7 +253,7 @@ export class InputAutoCompleteBase extends LitElement {
      */
     async prepareSuggestions(text) {
         await this._autoCompleteSuggestions?.prepareSuggestions(text);
-        await this.requestUpdate();
+        this.requestUpdate();
     }
     /**
      * sets `this.activeSuggestionIndex`

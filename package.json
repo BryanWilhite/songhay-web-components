@@ -34,12 +34,10 @@
     "devDependencies": {
         "@tsconfig/strictest": "^2.0.5",
         "@types/chai": "^5.0.1",
-        "@types/chai-spies": "^1.0.6",
         "@types/expect": "^24.3.2",
         "@types/mocha": "^10.0.10",
         "@types/sinon": "^17.0.3",
         "chai": "^5.1.2",
-        "chai-spies": "^1.1.0",
         "lerna": "^8.1.9",
         "mocha": "^10.8.2",
         "sinon": "^19.0.2",

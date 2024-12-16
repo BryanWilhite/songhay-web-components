@@ -135,7 +135,7 @@ describe(InputAutoComplete.name, function () {
 
             await DOMTestingUtility.delay(10);
 
-            expect(spyOn_handleFocus).to.have.been.called();
+            expect(spyOn_handleFocus.called).to.eq(true);
 
             inputElement.focus();
 
@@ -157,7 +157,7 @@ describe(InputAutoComplete.name, function () {
                 await DOMTestingUtility.delay(10);
             }
 
-            expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
+            expect(spyOn_handleKeyUp.callCount).eq(keys.length);
 
             expect(customElement.componentActive).to.eq(true);
 

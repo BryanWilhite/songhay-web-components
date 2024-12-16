@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-//import { on } from 'chai-spies';
+import { spy } from 'sinon';
 import { InputAutoComplete } from './input-autocomplete.js';
 
 class DOMTestingUtility {
@@ -109,8 +109,8 @@ describe(InputAutoComplete.name, function () {
 
     it('has the expected number of suggestions after handling DOM events',
         async function () {
-            //const spyOn_handleFocus = on(customElement, 'handleFocus');
-            //const spyOn_handleKeyUp = on(customElement, 'handleKeyUp');
+            const spyOn_handleFocus = spy(customElement, 'handleFocus');
+            const spyOn_handleKeyUp = spy(customElement, 'handleKeyUp');
 
             const expectedNumberOfSuggestions = customElement.maxSuggestions;
 
@@ -135,7 +135,7 @@ describe(InputAutoComplete.name, function () {
 
             await DOMTestingUtility.delay(10);
 
-            //expect(spyOn_handleFocus).to.have.been.called();
+            expect(spyOn_handleFocus).to.have.been.called();
 
             inputElement.focus();
 
@@ -157,7 +157,7 @@ describe(InputAutoComplete.name, function () {
                 await DOMTestingUtility.delay(10);
             }
 
-            //expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
+            expect(spyOn_handleKeyUp).to.have.been.called.exactly(keys.length);
 
             expect(customElement.componentActive).to.eq(true);
 

@@ -28,6 +28,9 @@ describe(InputAutoComplete.name, function () {
     let inputElement: HTMLInputElement;
     let unorderedListElement: HTMLUListElement;
 
+    let countForInputElementFocus = 0;
+    let countForInputElementKeyUp = 0;
+
     before(async function () {
         const node = await DOMTestingUtility.getDocumentNode('#web-component-container');
 
@@ -37,7 +40,7 @@ describe(InputAutoComplete.name, function () {
         expect(container.children.length).to.be.eq(1);
 
         customElement = container.children[0] as InputAutoComplete;
-    });
+});
 
     it('is rendered', function () {
         expect(customElement).to.be.instanceOf(InputAutoComplete);
@@ -108,14 +111,11 @@ describe(InputAutoComplete.name, function () {
 
     it('has the expected number of suggestions after handling DOM events',
         async function () {
+            expect(inputElement).to.be.instanceOf(HTMLInputElement);
 
-            let countForFocus = 0;
-            let countForKeyUp = 0;
-
-            customElement.addEventListener('handleFocus', _ => ++countForFocus);
-            customElement.addEventListener('handleKeyUp', _ => ++countForKeyUp);
-
-
+            inputElement.addEventListener('focus', _ => ++countForInputElementFocus);
+            inputElement.addEventListener('keyup', _ => ++countForInputElementKeyUp);
+    
             const expectedNumberOfSuggestions = customElement.maxSuggestions;
 
             this.timeout(500);
@@ -139,7 +139,7 @@ describe(InputAutoComplete.name, function () {
 
             await DOMTestingUtility.delay(10);
 
-            expect(countForFocus).to.be.greaterThan(0);
+            expect(countForInputElementFocus).to.be.greaterThan(0);
 
             inputElement.focus();
 
@@ -161,7 +161,7 @@ describe(InputAutoComplete.name, function () {
                 await DOMTestingUtility.delay(10);
             }
 
-            expect(countForKeyUp).eq(keys.length);
+            expect(countForInputElementKeyUp).eq(keys.length);
 
             expect(customElement.componentActive).to.eq(true);
 

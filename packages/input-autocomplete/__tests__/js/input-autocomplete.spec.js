@@ -25,6 +25,8 @@ describe(InputAutoComplete.name, function () {
     let divElement;
     let inputElement;
     let unorderedListElement;
+    let countForInputElementFocus = 0;
+    let countForInputElementKeyUp = 0;
     before(async function () {
         const node = await DOMTestingUtility.getDocumentNode('#web-component-container');
         const container = node;
@@ -89,10 +91,8 @@ describe(InputAutoComplete.name, function () {
         expect(inputElement.placeholder).eq(customElement.placeholder);
     });
     it('has the expected number of suggestions after handling DOM events', async function () {
-        let countForFocus = 0;
-        let countForKeyUp = 0;
-        customElement.addEventListener('handleFocus', _ => ++countForFocus);
-        customElement.addEventListener('handleKeyUp', _ => ++countForKeyUp);
+        inputElement.addEventListener('focus', _ => ++countForInputElementFocus);
+        inputElement.addEventListener('keyup', _ => ++countForInputElementKeyUp);
         const expectedNumberOfSuggestions = customElement.maxSuggestions;
         this.timeout(500);
         //#region expected initial state:
@@ -106,7 +106,7 @@ describe(InputAutoComplete.name, function () {
         const focusEvent = new FocusEvent('focus');
         inputElement.dispatchEvent(focusEvent);
         await DOMTestingUtility.delay(10);
-        expect(countForFocus).to.be.greaterThan(0);
+        expect(countForInputElementFocus).to.be.greaterThan(0);
         inputElement.focus();
         //#endregion
         const keys = ['f', 'i', 'f', 't'];
@@ -120,7 +120,7 @@ describe(InputAutoComplete.name, function () {
             inputElement.value += key;
             await DOMTestingUtility.delay(10);
         }
-        expect(countForKeyUp).eq(keys.length);
+        expect(countForInputElementKeyUp).eq(keys.length);
         expect(customElement.componentActive).to.eq(true);
         collection = unorderedListElement.children;
         expect(collection).is.instanceOf(HTMLCollection);

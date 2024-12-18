@@ -109,9 +109,12 @@ describe(InputAutoComplete.name, function () {
     it('has the expected number of suggestions after handling DOM events',
         async function () {
 
-            // const spy = sinon.spy;
-            // const spyOn_handleFocus = spy(customElement, 'handleFocus');
-            // const spyOn_handleKeyUp = spy(customElement, 'handleKeyUp');
+            let countForFocus = 0;
+            let countForKeyUp = 0;
+
+            customElement.addEventListener('handleFocus', _ => ++countForFocus);
+            customElement.addEventListener('handleKeyUp', _ => ++countForKeyUp);
+
 
             const expectedNumberOfSuggestions = customElement.maxSuggestions;
 
@@ -136,7 +139,7 @@ describe(InputAutoComplete.name, function () {
 
             await DOMTestingUtility.delay(10);
 
-            //expect(spyOn_handleFocus.called).to.eq(true);
+            expect(countForFocus).to.be.greaterThan(0);
 
             inputElement.focus();
 
@@ -158,7 +161,7 @@ describe(InputAutoComplete.name, function () {
                 await DOMTestingUtility.delay(10);
             }
 
-            //expect(spyOn_handleKeyUp.callCount).eq(keys.length);
+            expect(countForKeyUp).eq(keys.length);
 
             expect(customElement.componentActive).to.eq(true);
 

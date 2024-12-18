@@ -1,7 +1,7 @@
 {
     "type": "module",
     "name": "@songhay/input-autocomplete",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "an HTML input element with auto-complete functionality",
     "license": "MIT",
     "author": "Bryan Wilhite <rasx@songhaysystem.com>",

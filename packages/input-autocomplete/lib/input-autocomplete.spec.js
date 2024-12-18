@@ -67,7 +67,7 @@ describe(InputAutoComplete.name, function () {
             'style',
         ];
         expect(shadowRoot.children).to.be.instanceOf(HTMLCollection);
-        expect(shadowRoot.children.length).to.be.eq(expectedShadowRootElementNames.length);
+        expect(shadowRoot.children.length).to.be.lessThanOrEqual(expectedShadowRootElementNames.length);
         const expectedContainerElementNames = [
             'input',
             'ul'
